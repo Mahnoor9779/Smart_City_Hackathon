@@ -1,0 +1,80 @@
+{
+  "$comment": "Civic Access Score. BUILD_PROMPT.md Section 8.1. Weights are user-adjustable in the interface and the formula is printed on the Rankings screen. A black-box index reads as hand-waving.",
+  "gridVersion": "v1",
+  "weights": {
+    "health": 0.3,
+    "education": 0.2,
+    "air": 0.25,
+    "green": 0.15,
+    "connectivity": 0.1
+  },
+  "bands": {
+    "health": {
+      "$comment": "Population-weighted mean travel minutes to nearest hospital or basic health unit. Linear interpolation between points.",
+      "unit": "minutes",
+      "direction": "lower-is-better",
+      "points": [
+        { "at": 5, "score": 100 },
+        { "at": 10, "score": 80 },
+        { "at": 15, "score": 60 },
+        { "at": 25, "score": 35 },
+        { "at": 40, "score": 15 },
+        { "at": 60, "score": 0 }
+      ]
+    },
+    "education": {
+      "$comment": "Same bands, nearest primary or secondary school.",
+      "unit": "minutes",
+      "direction": "lower-is-better",
+      "points": [
+        { "at": 5, "score": 100 },
+        { "at": 10, "score": 80 },
+        { "at": 15, "score": 60 },
+        { "at": 25, "score": 35 },
+        { "at": 40, "score": 15 },
+        { "at": 60, "score": 0 }
+      ]
+    },
+    "air": {
+      "$comment": "24-hour mean PM2.5. ADR-9 canonical scale. Same breakpoints as the severity ramp: 12, 35, 55, 150, 250.",
+      "unit": "ug/m3",
+      "direction": "lower-is-better",
+      "points": [
+        { "at": 12, "score": 100 },
+        { "at": 35, "score": 80 },
+        { "at": 55, "score": 60 },
+        { "at": 150, "score": 35 },
+        { "at": 250, "score": 15 },
+        { "at": 400, "score": 0 }
+      ]
+    },
+    "green": {
+      "$comment": "Square metres of mapped park or green area per resident. WHO minimum recommendation is 9.",
+      "unit": "m2-per-resident",
+      "direction": "higher-is-better",
+      "points": [
+        { "at": 0, "score": 0 },
+        { "at": 1, "score": 25 },
+        { "at": 3, "score": 50 },
+        { "at": 6, "score": 75 },
+        { "at": 9, "score": 100 }
+      ]
+    },
+    "connectivity": {
+      "$comment": "Road length per square kilometre, normalised against the district maximum, plus an intersection density term.",
+      "unit": "km-per-km2",
+      "direction": "higher-is-better",
+      "points": [
+        { "at": 0, "score": 0 },
+        { "at": 5, "score": 40 },
+        { "at": 10, "score": 70 },
+        { "at": 15, "score": 90 },
+        { "at": 20, "score": 100 }
+      ]
+    }
+  },
+  "rules": {
+    "missingComponent": "exclude-and-renormalise",
+    "$comment": "A missing component is EXCLUDED and the remaining weights renormalise to sum to 1.0. Never substitute zero. A missing park layer is not zero parks."
+  }
+}

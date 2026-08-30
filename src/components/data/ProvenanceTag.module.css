@@ -1,0 +1,102 @@
+/* ProvenanceTag. Small by design but never hidden. */
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* A narrow column used to break "SOURCE name" from "4 minutes ago" onto two
+   ragged lines. Grid keeps the label and value on one row and the age beneath,
+   which reads as a deliberate two-line block rather than an accident. */
+.trigger {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-2);
+  min-height: var(--tap-min);
+  padding: var(--space-1) 0;
+  font: inherit;
+  font-family: var(--font-mono);
+  font-size: var(--size-label);
+  line-height: var(--leading-label);
+  text-align: left;
+  color: var(--text-tertiary);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.trigger:hover .value {
+  color: var(--text-secondary);
+}
+
+.trigger:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.label {
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  color: var(--text-tertiary);
+}
+
+.value {
+  color: var(--text-secondary);
+}
+
+.age {
+  grid-column: 1 / -1;
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  font-size: var(--size-body-sm);
+  line-height: var(--leading-body-sm);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 8.5rem 1fr;
+  gap: var(--space-3);
+}
+
+.row dt {
+  font-family: var(--font-mono);
+  font-size: var(--size-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.row dd {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.restricted {
+  color: var(--warn);
+}
+
+.link {
+  color: var(--text-link);
+  text-underline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  .row {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
+}

@@ -1,0 +1,143 @@
+/*
+ * DistrictMap.
+ *
+ * Motion here is doing a job, not decorating: the outline draws, then the five
+ * regions fade up in sequence, which tells you in under a second that the
+ * district is made of five parts and that this one is yours. It plays once, on
+ * first paint, and is switched off entirely under prefers-reduced-motion.
+ */
+
+.wrap {
+  margin: 0;
+  width: 100%;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.district {
+  fill: var(--bg-sunken);
+  stroke: var(--map-boundary);
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+
+.region {
+  cursor: default;
+}
+
+.hit {
+  cursor: pointer;
+  outline: none;
+}
+
+.area {
+  fill: var(--sev-none);
+  stroke: var(--map-label-halo);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  transition: fill 220ms ease, opacity 160ms ease;
+}
+
+.area[data-step="1"] { fill: var(--sev-1); }
+.area[data-step="2"] { fill: var(--sev-2); }
+.area[data-step="3"] { fill: var(--sev-3); }
+.area[data-step="4"] { fill: var(--sev-4); }
+.area[data-step="5"] { fill: var(--sev-5); }
+.area[data-step="6"] { fill: var(--sev-6); }
+
+.hit:hover .area {
+  opacity: 0.82;
+}
+
+.hit:focus-visible .area {
+  stroke: var(--focus-ring);
+  stroke-width: 8;
+}
+
+/* Selection is an outline, not a fill change, so the reading stays readable. */
+.selectedRing {
+  fill: none;
+  stroke: var(--map-selected);
+  stroke-width: 9;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.labelGroup {
+  pointer-events: none;
+}
+
+.label {
+  fill: var(--map-label);
+  paint-order: stroke;
+  stroke: var(--map-label-halo);
+  stroke-width: 8;
+  stroke-linejoin: round;
+  font-family: var(--font-mono);
+  font-size: 30px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+}
+
+.labelGroup[data-selected="true"] .label,
+.labelGroup[data-selected="true"] .labelValue {
+  fill: var(--text-primary);
+  font-weight: 600;
+}
+
+/* The reading, so the map is informative even when every area shares a band. */
+.labelValue {
+  fill: var(--map-label);
+  paint-order: stroke;
+  stroke: var(--map-label-halo);
+  stroke-width: 8;
+  stroke-linejoin: round;
+  font-family: var(--font-mono);
+  font-size: 34px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+/* ---- entrance, first paint only ---- */
+@media (prefers-reduced-motion: no-preference) {
+  .svg[data-animate="true"] .district {
+    stroke-dasharray: 4000;
+    stroke-dashoffset: 4000;
+    animation: draw 700ms ease-out forwards;
+  }
+
+  .svg[data-animate="true"] .area,
+  .svg[data-animate="true"] .labelGroup {
+    opacity: 0;
+    animation: rise 320ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  }
+
+  .svg[data-animate="true"] .selectedRing {
+    opacity: 0;
+    animation: rise 320ms ease-out 420ms forwards;
+  }
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

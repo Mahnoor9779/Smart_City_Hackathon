@@ -1,0 +1,65 @@
+{
+  "$comment": "Layer registry. Drives the layer rail, the legend, and the table-twin route test. Every entry here must have a reachable table twin, which tests/ asserts.",
+  "layers": [
+    {
+      "id": "air",
+      "label": { "en": "Air quality", "ur": "ہوا کا معیار" },
+      "metric": "pm2_5",
+      "unit": "ug/m3",
+      "clock": "warm",
+      "severityRamp": true,
+      "tableTwin": "/map/data?layer=air",
+      "defaultOn": true
+    },
+    {
+      "id": "population",
+      "label": { "en": "Population", "ur": "آبادی" },
+      "metric": "population",
+      "unit": "people",
+      "clock": "cold",
+      "severityRamp": false,
+      "tableTwin": "/map/data?layer=population",
+      "defaultOn": false
+    },
+    {
+      "id": "access-health",
+      "label": { "en": "Access to care", "ur": "علاج تک رسائی" },
+      "metric": "access_health_min",
+      "unit": "minutes",
+      "clock": "cold",
+      "severityRamp": true,
+      "tableTwin": "/map/data?layer=access-health",
+      "defaultOn": false
+    },
+    {
+      "id": "facilities",
+      "label": { "en": "Facilities", "ur": "سہولیات" },
+      "metric": null,
+      "unit": null,
+      "clock": "cold",
+      "severityRamp": false,
+      "tableTwin": "/map/data?layer=facilities",
+      "defaultOn": true
+    },
+    {
+      "id": "heat",
+      "label": { "en": "Heat", "ur": "گرمی" },
+      "metric": "lst",
+      "unit": "celsius",
+      "clock": "cold",
+      "severityRamp": true,
+      "tableTwin": "/map/data?layer=heat",
+      "defaultOn": false
+    },
+    {
+      "id": "reports",
+      "label": { "en": "Reports", "ur": "شکایات" },
+      "metric": null,
+      "unit": null,
+      "clock": "warm",
+      "severityRamp": false,
+      "tableTwin": "/reports",
+      "defaultOn": false
+    }
+  ]
+}

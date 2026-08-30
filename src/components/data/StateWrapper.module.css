@@ -1,0 +1,117 @@
+/* StateWrapper. Tokens only, no raw colour values, no off-scale spacing. */
+
+.ready {
+  display: contents;
+}
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.skeletonLine {
+  display: block;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-alt);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .skeletonLine {
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.dimmed {
+  opacity: 0.72;
+}
+
+/* Spacing between the value and its note comes from the parent's gap, never
+   from a margin on the note. See BUILD_PROMPT.md Section 9.9. */
+.stale,
+.partial,
+.estimated,
+.offline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.note,
+.noteWarn,
+.noteInfo {
+  font-family: var(--font-mono);
+  font-size: var(--size-label);
+  line-height: var(--leading-label);
+  letter-spacing: var(--tracking-label);
+  color: var(--text-tertiary);
+}
+
+.noteWarn {
+  color: var(--warn);
+}
+
+.noteInfo {
+  color: var(--info);
+}
+
+.link {
+  color: var(--text-link);
+  text-underline-offset: 2px;
+}
+
+.failed {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  align-items: flex-start;
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--error);
+  background: var(--error-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.failedTitle {
+  margin: 0;
+  font-size: var(--size-body-sm);
+  line-height: var(--leading-body-sm);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.retry {
+  min-height: var(--tap-min);
+  padding: var(--space-2) var(--space-4);
+  font: inherit;
+  font-size: var(--size-body-sm);
+  color: var(--text-on-accent);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.retry:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.retry:active {
+  background: var(--accent-active);
+}
+
+.retry:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+

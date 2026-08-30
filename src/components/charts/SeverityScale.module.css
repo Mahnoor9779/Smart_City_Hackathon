@@ -1,0 +1,85 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.scale {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--space-2);
+}
+
+.band {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+/* The active band is outlined, not just tinted, so "you are here" survives
+   greyscale and colour vision deficiency. */
+.band[data-active="true"] {
+  border-color: var(--accent);
+  background: var(--accent-subtle);
+}
+
+.swatch {
+  width: var(--space-3);
+  height: var(--space-5);
+  border-radius: var(--radius-sm);
+  flex: none;
+  border: 1px solid var(--border-default);
+}
+
+.band[data-step="1"] .swatch { background: var(--sev-1); }
+.band[data-step="2"] .swatch { background: var(--sev-2); }
+.band[data-step="3"] .swatch { background: var(--sev-3); }
+.band[data-step="4"] .swatch { background: var(--sev-4); }
+.band[data-step="5"] .swatch { background: var(--sev-5); }
+.band[data-step="6"] .swatch { background: var(--sev-6); }
+
+.bandText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.bandLabel {
+  font-size: var(--size-body-sm);
+  line-height: 1.3;
+  color: var(--text-secondary);
+}
+
+.band[data-active="true"] .bandLabel {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.bandRange {
+  font-family: var(--font-mono);
+  font-size: var(--size-label);
+  color: var(--text-tertiary);
+}
+
+.marker {
+  font-size: var(--size-body-sm);
+  color: var(--text-secondary);
+}
+
+.marker strong {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
+.wrap[data-compact="true"] .bandRange {
+  display: none;
+}

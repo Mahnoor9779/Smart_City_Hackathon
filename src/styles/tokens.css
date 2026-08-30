@@ -1,0 +1,259 @@
+/*
+ * tokens.css
+ *
+ * Every colour in the platform. See BUILD_PROMPT.md Section 9.
+ *
+ * THREE THEME STATES, NOT TWO. An explicit choice stamps data-theme on the root
+ * element. The default "system" setting stamps NOTHING, so only
+ * prefers-color-scheme separates light from dark there. The structure below
+ * handles all three:
+ *
+ *   :root                                  complete light palette
+ *   @media (prefers-color-scheme: dark)
+ *     :root:not([data-theme="light"])      values only, so an explicit light
+ *                                          choice still beats a dark OS
+ *   :root[data-theme="dark"]               values again, so the toggle wins
+ *                                          in the other direction too
+ *
+ * RULES
+ *   1. Every token defined here has a value in BOTH themes. A token defined in
+ *      only one is the classic unreadable-dark-mode bug. tests/tokens/parity
+ *      fails the build on it.
+ *   2. Components reference tokens only. A raw hex outside this file fails
+ *      tests/content/rules.
+ *   3. ACCENT MEANS INTERACTIVE. It never encodes data.
+ *   4. STATUS describes the system. SEVERITY describes the city. Never swap
+ *      them, or a failing sensor looks like hazardous air.
+ */
+
+:root {
+  /* ---- surfaces ---- */
+  --bg-canvas: #f4f6f7;
+  --bg-surface: #ffffff;
+  --bg-surface-alt: #edf2f3;
+  --bg-sunken: #e4ebec;
+  --bg-hover: #e8eff0;
+  --bg-active: #dde7e9;
+  --bg-selected: #d6eaec;
+  --bg-scrim: rgba(11, 18, 21, 0.45);
+
+  /* ---- text ---- */
+  --text-primary: #0e191b;
+  --text-secondary: #45575a;
+  --text-tertiary: #66797c;
+  --text-disabled: #98a8aa;
+  --text-on-accent: #ffffff;
+  --text-link: #08636d;
+
+  /* ---- borders and focus ---- */
+  --border-subtle: #e6eced;
+  --border-default: #cfdadc;
+  --border-strong: #a6b7b9;
+  --focus-ring: #0a6771;
+
+  /* ---- accent, interaction only ---- */
+  --accent: #0a6771;
+  --accent-hover: #085259;
+  --accent-active: #063f45;
+  --accent-subtle: #dcedef;
+  --accent-border: #7fbec4;
+
+  /* ---- status, system feedback only ---- */
+  --ok: #2f6b44;
+  --ok-subtle: #e2f0e7;
+  --warn: #96590a;
+  --warn-subtle: #faeeda;
+  --error: #a03328;
+  --error-subtle: #fae6e3;
+  --info: #2a5b8f;
+  --info-subtle: #e4ecf7;
+
+  /*
+   * ---- severity ramp, data only ----
+   * Keyed to PM2.5 concentration in micrograms per cubic metre (ADR-9).
+   * Boundaries 12, 35, 55, 150, 250. Identical to the Civic Access Score
+   * air bands, so the scale is learned once.
+   *
+   * In LIGHT theme severity increases with DARKNESS.
+   * In DARK theme severity increases with LUMINANCE.
+   * The invariant is visual weight against the ground, not hue: the worst
+   * areas must be what the eye lands on first, and on a dark map a dark
+   * purple hexagon disappears.
+   */
+  --sev-1: #fcfdbf;
+  --sev-1-on: #3a2a00;
+  --sev-2: #fec287;
+  --sev-2-on: #4a2400;
+  --sev-3: #f1605d;
+  --sev-3-on: #3d0a0a;
+  --sev-4: #b63679;
+  --sev-4-on: #ffffff;
+  --sev-5: #721f81;
+  --sev-5-on: #ffffff;
+  --sev-6: #2c115f;
+  --sev-6-on: #ffffff;
+  --sev-none: #eff2f3;
+  --sev-none-on: #66797c;
+
+  /* ---- map ---- */
+  --map-ground: #e9eeef;
+  --map-water: #c9dde4;
+  --map-road-major: #ffffff;
+  --map-road-minor: #f2f5f6;
+  --map-building: #dfe6e8;
+  --map-label: #33474a;
+  --map-label-halo: #ffffff;
+  --map-boundary: #7c9296;
+  --map-hex-stroke: rgba(14, 25, 27, 0.1);
+  --map-selected: #0a6771;
+  --map-facility: #2a5b8f;
+  --map-report-verified: #2f6b44;
+  --map-report-unconfirmed: #96590a;
+
+  /* ---- elevation. In dark mode this becomes a lighter surface, not a
+         stronger shadow, so the values differ per theme. ---- */
+  --shadow-raised: 0 1px 2px rgba(14, 25, 27, 0.06);
+  --shadow-floating: 0 8px 24px rgba(14, 25, 27, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg-canvas: #0b1215;
+    --bg-surface: #131e21;
+    --bg-surface-alt: #182528;
+    --bg-sunken: #080e10;
+    --bg-hover: #1d2c30;
+    --bg-active: #243539;
+    --bg-selected: #10333a;
+    --bg-scrim: rgba(0, 0, 0, 0.62);
+
+    --text-primary: #e8f0f1;
+    --text-secondary: #a6b8bb;
+    --text-tertiary: #7e9295;
+    --text-disabled: #566b6e;
+    --text-on-accent: #06181b;
+    --text-link: #45cbd5;
+
+    --border-subtle: #1b292c;
+    --border-default: #26383b;
+    --border-strong: #3a5054;
+    --focus-ring: #5ad4de;
+
+    --accent: #3fc7d1;
+    --accent-hover: #63d6de;
+    --accent-active: #86e2e9;
+    --accent-subtle: #0f2e33;
+    --accent-border: #2b7f87;
+
+    --ok: #5fb77b;
+    --ok-subtle: #12271a;
+    --warn: #e0a34f;
+    --warn-subtle: #2b2010;
+    --error: #ee7462;
+    --error-subtle: #2e1512;
+    --info: #7faddf;
+    --info-subtle: #131f2d;
+
+    --sev-1: #26363b;
+    --sev-1-on: #9db0b3;
+    --sev-2: #4c4a5c;
+    --sev-2-on: #d6d2de;
+    --sev-3: #8b4a66;
+    --sev-3-on: #ffffff;
+    --sev-4: #c75a54;
+    --sev-4-on: #14060a;
+    --sev-5: #ee8b3e;
+    --sev-5-on: #180b00;
+    --sev-6: #fbd75f;
+    --sev-6-on: #221800;
+    --sev-none: #162124;
+    --sev-none-on: #7e9295;
+
+    --map-ground: #0d1619;
+    --map-water: #10262e;
+    --map-road-major: #26383c;
+    --map-road-minor: #1c2a2d;
+    --map-building: #172326;
+    --map-label: #c6d6d8;
+    --map-label-halo: #0b1215;
+    --map-boundary: #4e6b70;
+    --map-hex-stroke: rgba(232, 240, 241, 0.1);
+    --map-selected: #5ad4de;
+    --map-facility: #7faddf;
+    --map-report-verified: #5fb77b;
+    --map-report-unconfirmed: #e0a34f;
+
+    --shadow-raised: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-floating: 0 8px 24px rgba(0, 0, 0, 0.55);
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg-canvas: #0b1215;
+  --bg-surface: #131e21;
+  --bg-surface-alt: #182528;
+  --bg-sunken: #080e10;
+  --bg-hover: #1d2c30;
+  --bg-active: #243539;
+  --bg-selected: #10333a;
+  --bg-scrim: rgba(0, 0, 0, 0.62);
+
+  --text-primary: #e8f0f1;
+  --text-secondary: #a6b8bb;
+  --text-tertiary: #7e9295;
+  --text-disabled: #566b6e;
+  --text-on-accent: #06181b;
+  --text-link: #45cbd5;
+
+  --border-subtle: #1b292c;
+  --border-default: #26383b;
+  --border-strong: #3a5054;
+  --focus-ring: #5ad4de;
+
+  --accent: #3fc7d1;
+  --accent-hover: #63d6de;
+  --accent-active: #86e2e9;
+  --accent-subtle: #0f2e33;
+  --accent-border: #2b7f87;
+
+  --ok: #5fb77b;
+  --ok-subtle: #12271a;
+  --warn: #e0a34f;
+  --warn-subtle: #2b2010;
+  --error: #ee7462;
+  --error-subtle: #2e1512;
+  --info: #7faddf;
+  --info-subtle: #131f2d;
+
+  --sev-1: #26363b;
+  --sev-1-on: #9db0b3;
+  --sev-2: #4c4a5c;
+  --sev-2-on: #d6d2de;
+  --sev-3: #8b4a66;
+  --sev-3-on: #ffffff;
+  --sev-4: #c75a54;
+  --sev-4-on: #14060a;
+  --sev-5: #ee8b3e;
+  --sev-5-on: #180b00;
+  --sev-6: #fbd75f;
+  --sev-6-on: #221800;
+  --sev-none: #162124;
+  --sev-none-on: #7e9295;
+
+  --map-ground: #0d1619;
+  --map-water: #10262e;
+  --map-road-major: #26383c;
+  --map-road-minor: #1c2a2d;
+  --map-building: #172326;
+  --map-label: #c6d6d8;
+  --map-label-halo: #0b1215;
+  --map-boundary: #4e6b70;
+  --map-hex-stroke: rgba(232, 240, 241, 0.1);
+  --map-selected: #5ad4de;
+  --map-facility: #7faddf;
+  --map-report-verified: #5fb77b;
+  --map-report-unconfirmed: #e0a34f;
+
+  --shadow-raised: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-floating: 0 8px 24px rgba(0, 0, 0, 0.55);
+}

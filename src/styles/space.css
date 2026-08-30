@@ -1,0 +1,60 @@
+/*
+ * space.css
+ *
+ * One spacing scale. 4px base. See BUILD_PROMPT.md Section 9.9.
+ *
+ * THE RULE THAT PREVENTS DRIFT: a component never sets its own outer margin.
+ * Spacing between siblings comes from the parent's gap. This is what stops the
+ * collapsed and doubled margins that make an interface look uneven in exactly
+ * the screenshot that ends up in the deck.
+ *
+ * Nothing sits off this scale. If a value feels like it needs to be 18px, the
+ * answer is 16 or 24. One off-scale value is invisible; forty of them is why an
+ * interface looks amateur without anyone being able to say why.
+ */
+
+:root {
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+  /* Container padding, one token driven by breakpoint. No screen sets its own. */
+  --container-pad: var(--space-4);
+  --section-gap: var(--space-7);
+
+  /* Content widths. Prose 68 characters, panel copy 40. */
+  --width-prose: 68ch;
+  --width-panel-prose: 40ch;
+  --width-panel: 360px;
+  --width-rail: 240px;
+  --width-page: 1280px;
+
+  /* Radius. One per component, never mixed corners. */
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* Minimum touch target. Always. */
+  --tap-min: 44px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --container-pad: var(--space-5);
+  }
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --container-pad: var(--space-6);
+    --section-gap: var(--space-8);
+  }
+}

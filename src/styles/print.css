@@ -1,0 +1,54 @@
+/*
+ * print.css
+ *
+ * The one-page neighbourhood summary a councillor can print. Feature S03.
+ *
+ * Print is a third rendering target alongside light and dark, and it commits
+ * deliberately to a light palette because paper is white. The values below are
+ * TOKEN DEFINITIONS, which is why raw colour is permitted here and nowhere
+ * outside src/styles/. Declarations still read through var(), never a literal.
+ */
+
+@media print {
+  :root {
+    --bg-canvas: #ffffff;
+    --bg-surface: #ffffff;
+    --bg-surface-alt: #f4f6f7;
+    --bg-hover: #ffffff;
+    --text-primary: #000000;
+    --text-secondary: #333333;
+    --text-tertiary: #555555;
+    --border-default: #999999;
+    --border-subtle: #cccccc;
+    --shadow-raised: none;
+    --shadow-floating: none;
+  }
+
+  body {
+    background: var(--bg-canvas);
+    color: var(--text-primary);
+  }
+
+  nav,
+  header,
+  button,
+  .no-print {
+    display: none;
+  }
+
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75em;
+    color: var(--text-tertiary);
+  }
+
+  /* Provenance must survive printing. A number on paper without its source is
+     the same problem as a number on screen without one. */
+  [data-provenance] {
+    display: block;
+  }
+
+  @page {
+    margin: 16mm;
+  }
+}

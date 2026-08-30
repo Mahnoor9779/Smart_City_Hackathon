@@ -1,0 +1,1494 @@
+<title>Nervous System Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+  :root {
+    --ground:#F1F4F5; --surface:#FFFFFF; --surface-2:#E7EDEE; --surface-3:#DCE5E7;
+    --line:#D3DDDF; --line-soft:#E2EAEB;
+    --text:#0F1A1C; --text-2:#48595C; --text-3:#6E8285;
+    --accent:#0B6E77; --accent-2:#0E8A95; --accent-wash:#E0EFF0;
+    --good:#3C7A52; --warn:#A9660F; --crit:#A93A2A;
+    --cold:#4A5FA0;
+    --shadow:0 1px 2px rgba(15,26,28,.05);
+    --f-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+    --f-body:"Public Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:#0C1416; --surface:#121D20; --surface-2:#182629; --surface-3:#1F2F33;
+      --line:#253739; --line-soft:#1C2B2E;
+      --text:#E7EFF0; --text-2:#A4B6B9; --text-3:#7C9093;
+      --accent:#3FC7D1; --accent-2:#6BDDE5; --accent-wash:#13292C;
+      --good:#63B87C; --warn:#DFA24E; --crit:#E8705C;
+      --cold:#8FA3DC;
+      --shadow:0 1px 2px rgba(0,0,0,.3);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:#0C1416; --surface:#121D20; --surface-2:#182629; --surface-3:#1F2F33;
+    --line:#253739; --line-soft:#1C2B2E;
+    --text:#E7EFF0; --text-2:#A4B6B9; --text-3:#7C9093;
+    --accent:#3FC7D1; --accent-2:#6BDDE5; --accent-wash:#13292C;
+    --good:#63B87C; --warn:#DFA24E; --crit:#E8705C;
+    --cold:#8FA3DC;
+    --shadow:0 1px 2px rgba(0,0,0,.3);
+  }
+
+  * { box-sizing:border-box; }
+
+  body {
+    background:var(--ground);
+    color:var(--text);
+    font-family:var(--f-body);
+    font-size:16px;
+    line-height:1.6;
+    margin:0;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap { max-width:1140px; margin:0 auto; padding:0 28px 96px; }
+
+  .masthead { border-bottom:2px solid var(--text); padding:56px 0 22px; margin-bottom:16px; }
+  .eyebrow {
+    font-family:var(--f-mono); font-size:.70rem; font-weight:500; letter-spacing:.13em;
+    text-transform:uppercase; color:var(--accent); margin:0 0 18px;
+  }
+  h1 {
+    font-family:var(--f-display); font-weight:700; font-size:clamp(2rem,5.4vw,3.3rem);
+    line-height:1.03; letter-spacing:-.028em; text-wrap:balance; margin:0 0 20px;
+  }
+  .standfirst { font-size:1.06rem; color:var(--text-2); max-width:64ch; margin:0; }
+
+  .toc { display:flex; flex-wrap:wrap; gap:0 26px; padding:16px 0 0; margin-bottom:44px; }
+  .toc a {
+    font-family:var(--f-mono); font-size:.72rem; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--text-3); text-decoration:none; padding:4px 0;
+  }
+  .toc a:hover { color:var(--accent); }
+
+  h2 {
+    font-family:var(--f-display); font-weight:700; font-size:1.55rem; letter-spacing:-.022em;
+    line-height:1.15; text-wrap:balance; margin:0;
+  }
+  h3 {
+    font-family:var(--f-display); font-weight:600; font-size:1.05rem;
+    letter-spacing:-.012em; margin:0 0 8px;
+  }
+  .sub {
+    font-family:var(--f-display); font-weight:600; font-size:1.18rem; letter-spacing:-.016em;
+    margin:44px 0 12px; padding-bottom:8px; border-bottom:1px solid var(--line);
+  }
+  h4 {
+    font-family:var(--f-mono); font-size:.70rem; font-weight:600; letter-spacing:.11em;
+    text-transform:uppercase; color:var(--accent); margin:0 0 10px;
+  }
+  p { margin:0 0 14px; max-width:70ch; }
+  p:last-child { margin-bottom:0; }
+  em { font-style:italic; color:var(--text-2); }
+  strong { font-weight:600; }
+  code {
+    font-family:var(--f-mono); font-size:.84em; background:var(--surface-2);
+    padding:.1em .38em; border-radius:3px;
+  }
+  a { color:var(--accent); text-underline-offset:2px; }
+  a:focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:2px; }
+
+  .band { margin-top:64px; scroll-margin-top:20px; }
+  .band-head {
+    display:flex; align-items:baseline; gap:16px;
+    border-bottom:1px solid var(--text); padding-bottom:12px;
+  }
+  .band-head .tag {
+    font-family:var(--f-mono); font-size:.68rem; font-weight:600; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--surface); background:var(--accent);
+    padding:3px 8px; border-radius:3px; white-space:nowrap; flex:none;
+  }
+  .band-note { color:var(--text-2); font-size:.95rem; margin:16px 0 26px; max-width:70ch; }
+
+  .adr {
+    display:grid; grid-template-columns:132px 1fr; gap:26px;
+    padding:20px 0; border-bottom:1px solid var(--line-soft);
+  }
+  .adr:last-child { border-bottom:0; }
+  .adr-id { font-family:var(--f-mono); font-size:.72rem; font-weight:600; color:var(--accent); letter-spacing:.06em; }
+  .adr-body p { font-size:.95rem; color:var(--text-2); }
+  .adr-body p strong { color:var(--text); }
+  .because {
+    font-size:.87rem; color:var(--text-3); border-left:2px solid var(--accent);
+    padding-left:12px; margin-top:9px; max-width:68ch;
+  }
+
+  .stack { border:1px solid var(--line); border-radius:4px; overflow:hidden; margin-top:6px; }
+  .layer {
+    display:grid; grid-template-columns:60px 1.1fr 1.5fr 1fr; gap:20px;
+    padding:16px 20px; border-bottom:1px solid var(--line-soft); background:var(--surface);
+  }
+  .layer:last-child { border-bottom:0; }
+  .layer:nth-child(even) { background:var(--ground); }
+  .layer .lid { font-family:var(--f-mono); font-size:.82rem; font-weight:600; color:var(--accent); }
+  .layer .lname { font-family:var(--f-display); font-weight:600; font-size:.95rem; letter-spacing:-.01em; }
+  .layer .lname span {
+    display:block; font-family:var(--f-body); font-weight:400;
+    font-size:.82rem; color:var(--text-3); margin-top:3px; letter-spacing:0;
+  }
+  .layer .ldesc { font-size:.88rem; color:var(--text-2); }
+  .layer .ltech { font-family:var(--f-mono); font-size:.75rem; color:var(--text-3); line-height:1.7; }
+
+  .diagram {
+    margin:26px 0 0; padding:22px; background:var(--surface);
+    border:1px solid var(--line); border-radius:4px; overflow-x:auto;
+  }
+  .diagram pre.mermaid { background:transparent; margin:0; text-align:center; }
+  .cap {
+    font-family:var(--f-mono); font-size:.70rem; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--text-3); margin:10px 0 0;
+  }
+
+  .scroll { overflow-x:auto; margin-top:22px; }
+  table { width:100%; border-collapse:collapse; font-size:.86rem; min-width:700px; }
+  th {
+    font-family:var(--f-mono); font-size:.64rem; font-weight:600; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--text-3); text-align:left;
+    padding:0 14px 9px 0; border-bottom:1px solid var(--text); vertical-align:bottom;
+  }
+  td {
+    padding:10px 14px 10px 0; border-bottom:1px solid var(--line-soft);
+    color:var(--text-2); vertical-align:top;
+  }
+  td:first-child { color:var(--text); font-weight:500; }
+  .mono, td.mono { font-family:var(--f-mono); font-size:.78rem; font-variant-numeric:tabular-nums; }
+  table.tokens { min-width:820px; }
+  table.tokens td:first-child { font-family:var(--f-mono); font-size:.76rem; font-weight:500; }
+
+  .sw {
+    display:inline-block; width:15px; height:15px; border-radius:3px;
+    border:1px solid var(--line); vertical-align:-3px; margin-right:8px; flex:none;
+  }
+  .sw-hatch {
+    background-image:repeating-linear-gradient(45deg, currentColor 0 2px, transparent 2px 5px);
+  }
+
+  .pill {
+    display:inline-block; font-family:var(--f-mono); font-size:.64rem; font-weight:600;
+    letter-spacing:.05em; padding:2px 6px; border-radius:3px;
+    border:1px solid currentColor; white-space:nowrap;
+  }
+  .p-ml { color:var(--accent); }
+  .p-det { color:var(--text-3); }
+  .p-llm { color:var(--warn); }
+  .p-cold { color:var(--cold); }
+  .p-warm { color:var(--good); }
+  .p-route { color:var(--accent); }
+  .p-panel { color:var(--cold); }
+  .p-inline { color:var(--good); }
+  .p-chrome { color:var(--warn); }
+  .p-none { color:var(--text-3); }
+
+  .callout {
+    background:var(--surface); border:1px solid var(--line); border-radius:4px;
+    padding:22px 24px; box-shadow:var(--shadow); margin-top:26px;
+  }
+  .callout.warn { border-left:3px solid var(--crit); }
+  .callout.note { border-left:3px solid var(--accent); }
+  .callout p { font-size:.94rem; color:var(--text-2); }
+
+  pre.tree {
+    font-family:var(--f-mono); font-size:.775rem; line-height:1.62; background:var(--surface);
+    border:1px solid var(--line); border-radius:4px; padding:22px 24px; overflow-x:auto;
+    margin:22px 0 0; color:var(--text-2);
+  }
+  pre.tree b { color:var(--text); font-weight:600; }
+  pre.tree i { color:var(--text-3); font-style:normal; }
+  pre.tree u { color:var(--accent); text-decoration:none; }
+
+  .wf {
+    border:1px solid var(--line); border-radius:4px; overflow:hidden; margin-top:22px;
+    background:var(--surface); font-family:var(--f-mono); font-size:.72rem;
+  }
+  .wf-bar {
+    padding:9px 14px; border-bottom:1px solid var(--line); color:var(--text-3);
+    background:var(--surface-2); letter-spacing:.04em;
+  }
+  .wf-main { display:grid; grid-template-columns:200px 1fr 260px; min-height:260px; }
+  .wf-col { padding:14px; border-right:1px solid var(--line-soft); color:var(--text-3); }
+  .wf-col:last-child { border-right:0; }
+  .wf-col b {
+    display:block; color:var(--accent); font-weight:600; margin-bottom:8px;
+    font-size:.66rem; letter-spacing:.1em; text-transform:uppercase;
+  }
+  .wf-col ul { margin:0; padding-left:14px; }
+  .wf-col li { margin-bottom:5px; }
+  .wf-canvas {
+    background:var(--surface-2); display:flex; align-items:center; justify-content:center;
+    color:var(--text-3); text-align:center; padding:20px;
+  }
+
+  .cols {
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1px;
+    background:var(--line-soft); border:1px solid var(--line-soft); margin-top:24px;
+  }
+  .col { background:var(--ground); padding:20px; }
+  .col p { font-size:.88rem; color:var(--text-2); margin:0; }
+  .col ul { margin:8px 0 0; padding-left:18px; font-size:.87rem; color:var(--text-2); }
+  .col li { margin-bottom:5px; }
+
+  .rules { list-style:none; padding:0; margin:20px 0 0; }
+  .rules > li {
+    display:grid; grid-template-columns:30px 1fr; gap:12px;
+    padding:11px 0; border-bottom:1px solid var(--line-soft); align-items:start;
+  }
+  .rules > li:last-child { border-bottom:0; }
+  .rules > li::before {
+    content:counter(r,decimal-leading-zero); counter-increment:r;
+    font-family:var(--f-mono); font-size:.72rem; font-weight:600; color:var(--accent); line-height:1.6;
+  }
+  .rules { counter-reset:r; }
+  .rules .rt { font-weight:600; font-size:.94rem; display:block; margin-bottom:2px; }
+  .rules .rd { font-size:.88rem; color:var(--text-2); }
+
+  .check { list-style:none; padding:0; margin:20px 0 0; }
+  .check > li {
+    display:grid; grid-template-columns:26px 1fr; gap:12px;
+    padding:12px 0; border-bottom:1px solid var(--line-soft); align-items:start;
+  }
+  .check > li:last-child { border-bottom:0; }
+  .check > li::before { content:"\25A2"; color:var(--accent); font-size:1.05rem; line-height:1.4; }
+  .check .ct { font-weight:600; font-size:.94rem; display:block; margin-bottom:3px; }
+  .check .cd { font-size:.88rem; color:var(--text-2); }
+
+  .gate {
+    display:grid; grid-template-columns:150px 1fr; gap:24px;
+    padding:18px 0; border-bottom:1px solid var(--line-soft);
+  }
+  .gate:last-child { border-bottom:0; }
+  .gate .gname { font-family:var(--f-display); font-weight:600; font-size:.95rem; }
+  .gate .gname span {
+    display:block; font-family:var(--f-mono); font-size:.68rem;
+    color:var(--text-3); font-weight:400; letter-spacing:.06em; margin-top:3px;
+  }
+  .gate .gbody { font-size:.9rem; color:var(--text-2); }
+  .gate .gexit {
+    margin-top:8px; font-size:.86rem; color:var(--text-3);
+    border-left:2px solid var(--good); padding-left:11px;
+  }
+  .gate .gexit b {
+    font-family:var(--f-mono); font-size:.66rem; letter-spacing:.09em;
+    text-transform:uppercase; color:var(--good); display:block; margin-bottom:2px;
+  }
+
+  .scale { display:flex; flex-wrap:wrap; gap:1px; background:var(--line-soft);
+           border:1px solid var(--line-soft); margin-top:22px; }
+  .scale div { background:var(--ground); padding:14px 16px; flex:1 1 96px; }
+  .scale .sn { font-family:var(--f-mono); font-size:.70rem; color:var(--accent); font-weight:600; }
+  .scale .sv { font-family:var(--f-mono); font-size:.86rem; color:var(--text); margin-top:3px;
+               font-variant-numeric:tabular-nums; }
+  .scale .su { font-size:.76rem; color:var(--text-3); margin-top:4px; line-height:1.4; }
+
+  footer {
+    margin-top:70px; padding-top:22px; border-top:1px solid var(--line);
+    font-size:.84rem; color:var(--text-3);
+  }
+
+  @media (max-width:860px) {
+    .layer { grid-template-columns:44px 1fr; gap:12px; }
+    .layer .ldesc, .layer .ltech { grid-column:2; }
+    .wf-main { grid-template-columns:1fr; }
+    .wf-col { border-right:0; border-bottom:1px solid var(--line-soft); }
+  }
+  @media (max-width:720px) {
+    .wrap { padding:0 20px 72px; }
+    .adr, .gate { grid-template-columns:1fr; gap:8px; }
+    .band-head { flex-wrap:wrap; gap:10px; }
+  }
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">Companion to the feature plan. Smart City Hackathon Lahore</p>
+  <h1>How the nervous system is put together</h1>
+  <p class="standfirst">Layers, flows, models, files, and the work that has to happen before anyone writes a line of code. Every decision here traces back to a feature ID from the feature plan and forward to a file path, so consistency is something you can check rather than hope for.</p>
+</header>
+
+<nav class="toc">
+  <a href="#adr">Decisions</a>
+  <a href="#layers">Layers</a>
+  <a href="#arch">Architecture flow</a>
+  <a href="#data">Data flow</a>
+  <a href="#user">User flows</a>
+  <a href="#ux">Interface</a>
+  <a href="#models">Models</a>
+  <a href="#files">Files</a>
+  <a href="#before">Before development</a>
+  <a href="#consistency">Consistency</a>
+  <a href="#gates">Stage gates</a>
+</nav>
+
+<!-- ============ 01 DECISIONS ============ -->
+<section class="band" id="adr">
+  <div class="band-head"><span class="tag">01</span><h2>Seven decisions everything else depends on</h2></div>
+  <p class="band-note">Make these before the first commit. Each one removes a whole class of later disagreement, and every later section assumes them. If you change one, the sections downstream change with it. That is what the consistency section exists to catch.</p>
+
+  <div class="adr">
+    <div class="adr-id">ADR-1<br>Grid</div>
+    <div class="adr-body">
+      <p><strong>H3 hexagons at resolution 8 are the universal join key.</strong> Population, air quality, land surface temperature, citizen reports, travel times. Every dataset resolves onto the same hex grid before anything else touches it. Union council and district figures are aggregations over hexes, never separate pipelines.</p>
+      <div class="because">Lahore district is roughly 1,770 km&sup2; and an H3 res 8 cell averages about 0.74 km&sup2;, so the whole district is around 2,400 cells, small enough to ship as a single payload and recompute in the browser. Drop to res 9 for your one focus union council when you need finer detail. Without a shared grid you will write the same spatial join four times and get four slightly different answers.</div>
+    </div>
+  </div>
+
+  <div class="adr">
+    <div class="adr-id">ADR-2<br>Two clocks</div>
+    <div class="adr-body">
+      <p><strong>A cold path and a warm path, never mixed.</strong> Cold is build time: heavy geoprocessing runs on a laptop, outputs versioned artifacts, and never runs again during the demo. Warm is request time: small, cached calls to live feeds.</p>
+      <div class="because">Nothing slow, rate limited, or network dependent may sit on the critical path of a judge clicking a button. This single rule is what stops a throttled Overpass endpoint from ending your presentation.</div>
+    </div>
+  </div>
+
+  <div class="adr">
+    <div class="adr-id">ADR-3<br>Tiles</div>
+    <div class="adr-body">
+      <p><strong>PMTiles on static hosting, not a tile server.</strong> One archive file, HTTP range requests, served from the same CDN as the app.</p>
+      <div class="because">No tile infrastructure to run, pay for, or have fall over mid demo. It also makes the offline mode (X04) close to free, because the archive can be cached.</div>
+    </div>
+  </div>
+
+  <div class="adr">
+    <div class="adr-id">ADR-4<br>Adapters</div>
+    <div class="adr-body">
+      <p><strong>Every source implements one <code>SourceAdapter</code> contract</strong> with a declared status: <code>live</code>, <code>cached</code>, <code>mock</code>, or <code>planned</code>. Open-Meteo, OpenAQ, a recorded fixture, and the not yet available Punjab EPA feed are the same shape to everything above them.</p>
+      <div class="because">This is what makes S04 and R01 structural rather than a claim on a slide. Adding EPA later is one new file, and you can prove it on stage by toggling a mock.</div>
+    </div>
+  </div>
+
+  <div class="adr">
+    <div class="adr-id">ADR-5<br>Observation</div>
+    <div class="adr-body">
+      <p><strong>One canonical record for everything measured.</strong> <code>{ sourceId, metric, value, unit, h3, validAt, retrievedAt, confidence, licence, exportable }</code>. Provenance and licence are fields on the record, not a page you write at the end.</p>
+      <div class="because">R02 and R05 fall out of the data model for free, and R03 has somewhere to put uncertainty. If provenance is a field, an unattributed number becomes a type error rather than an oversight.</div>
+    </div>
+  </div>
+
+  <div class="adr">
+    <div class="adr-id">ADR-6<br>LLM boundary</div>
+    <div class="adr-body">
+      <p><strong>The model never emits anything executable.</strong> Natural language compiles to a validated JSON intent checked against a whitelist of metrics, operators, and geometries. The app executes the intent; it never executes model output.</p>
+      <div class="because">Removes the injection and denial of service risk from A01, and makes the whole feature testable against a fixed golden set instead of impressions.</div>
+    </div>
+  </div>
+
+  <div class="adr">
+    <div class="adr-id">ADR-7<br>Key boundary</div>
+    <div class="adr-body">
+      <p><strong>Keyless sources are called from the browser; keyed sources go through a route handler.</strong> Open-Meteo, Overpass, and Nominatim direct. OpenAQ, AQICN, and the LLM behind the server.</p>
+      <div class="because">Verified: Open-Meteo, Overpass, Nominatim, and HDX all return permissive CORS headers, so the client path genuinely works. OpenAQ returns 401 without a key and AQICN needs a token. Both must be server side, because a token in client code is a token you have published.</div>
+    </div>
+  </div>
+
+  <div class="adr">
+    <div class="adr-id">ADR-8<br>Reachability</div>
+    <div class="adr-body">
+      <p><strong>Travel-time reachability is precomputed as sets, never routed at runtime.</strong> The cold path computes, for every hex, the set of hexes reachable within 5, 10, and 15 minutes by road, and stores it as <code>reachability_h3.parquet</code>.</p>
+      <div class="because">OSRM runs only at build time under ADR-2, so there is no routing engine available when a user drops a what-if pin. Without this decision the what-if feature (D05) and the siting optimiser (D04) simply cannot work, because both need to recompute coverage interactively. With it, a what-if placement is a set union in the browser: no request, no routing engine, instant redraw. About 2,400 sets for one district, well under a megabyte compressed. Build this in the same step as the access surface, not later.</div>
+    </div>
+  </div>
+
+  <div class="adr">
+    <div class="adr-id">ADR-9<br>One scale</div>
+    <div class="adr-body">
+      <p><strong>PM2.5 in micrograms per cubic metre is the one canonical air quality scale.</strong> Every adapter converts to it before emitting an Observation. AQI never reaches analytics, scoring, or the map.</p>
+      <div class="because">Three scales arrive at this system. Open-Meteo returns concentration, AQICN returns a US EPA index from 0 to 500, and OpenAQ returns raw values per pollutant. Mixing them means a hex can be coloured on one scale and scored on another. Concentration wins because it is what the keyless always-available source returns and because it is a physical measurement rather than a country-specific index. The severity ramp and the Civic Access Score air bands then share one set of boundaries: 12, 35, 55, 150, 250. The legend prints both the concentration and the band name, because a resident recognises "hazardous" and a policymaker recognises the number.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 LAYERS ============ -->
+<section class="band" id="layers">
+  <div class="band-head"><span class="tag">02</span><h2>The eight layers</h2></div>
+  <p class="band-note">Read top to bottom as dependency order. A layer may only call the one directly beneath it. The map component never fetches from Open-Meteo; it asks the serving layer, which asks analytics, which reads the store. Cross-cutting concerns are the exception and apply everywhere.</p>
+
+  <div class="stack">
+    <div class="layer">
+      <div class="lid">L0</div>
+      <div class="lname">Sources<span>Outside your control</span></div>
+      <div class="ldesc">Open data APIs, bulk downloads, satellite exports, and the government feeds you cannot reach yet. Assume every one of them can be slow, throttled, or briefly wrong.</div>
+      <div class="ltech">Open-Meteo<br>Overpass, Nominatim<br>OpenAQ, AQICN<br>WorldPop, Copernicus<br>PBS, HDX</div>
+    </div>
+    <div class="layer">
+      <div class="lid">L1</div>
+      <div class="lname">Ingestion<span>Adapters and normalisation</span></div>
+      <div class="ldesc">One adapter per source. Fetches, retries, rate limits, caches, and normalises into the canonical <code>Observation</code>. Records the licence and the retrieval time on every value it emits.</div>
+      <div class="ltech">SourceAdapter<br>zod schemas<br>fetch and retry<br>fixture recorder</div>
+    </div>
+    <div class="layer">
+      <div class="lid">L2</div>
+      <div class="lname">Store<span>Canonical state</span></div>
+      <div class="ldesc">The H3 grid and its static attributes, the observation stream, citizen reports, and the versioned build artifacts. One grid version stamped on everything, so two layers can never silently disagree. Row level security is on for every table, with no anonymous write policy anywhere.</div>
+      <div class="ltech">Postgres, PostGIS<br>PMTiles archive<br>Parquet artifacts<br>Object storage</div>
+    </div>
+    <div class="layer">
+      <div class="lid">L3</div>
+      <div class="lname">Analytics<span>Derived, deterministic</span></div>
+      <div class="ldesc">Pure functions over the store: exposure counts, access surfaces, the Civic Access Score, hotspot statistics, comparison deltas. No network calls, no randomness, fully unit testable.</div>
+      <div class="ltech">turf.js, h3-js<br>OSRM isochrones<br>index maths<br>Getis-Ord</div>
+    </div>
+    <div class="layer">
+      <div class="lid">L4</div>
+      <div class="lname">Intelligence<span>Models and inference</span></div>
+      <div class="ldesc">Forecasting, interpolation, trust scoring, the siting optimiser, and the language features. Every model here declares a baseline it must beat and a fallback it degrades to.</div>
+      <div class="ltech">LightGBM<br>IDW, kriging<br>greedy max-coverage<br>LLM structured output</div>
+    </div>
+    <div class="layer">
+      <div class="lid">L5</div>
+      <div class="lname">Serving<span>The contract with the client</span></div>
+      <div class="ldesc">Typed route handlers, the public read API, tile and GeoJSON delivery, and the alert stream. Caching and revalidation policy lives here, not in components.</div>
+      <div class="ltech">Next.js route handlers<br>zod validated I/O<br>SSE for alerts<br>public /api/v1</div>
+    </div>
+    <div class="layer">
+      <div class="lid">L6</div>
+      <div class="lname">Experience<span>What people actually touch</span></div>
+      <div class="ldesc">The map canvas, panels, the neighbourhood profile, the report flow, and the table equivalents. Every visual encoding has a non-visual twin.</div>
+      <div class="ltech">Next.js App Router<br>MapLibre GL<br>server components<br>token driven CSS</div>
+    </div>
+    <div class="layer">
+      <div class="lid">L7</div>
+      <div class="lname">Cross-cutting<span>Applies at every level</span></div>
+      <div class="ldesc">Provenance display, internationalisation and RTL, accessibility, error and offline states, observability, licence tracking, and rate limit protection.</div>
+      <div class="ltech">next-intl<br>axe-core<br>service worker<br>structured logging</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 ARCH FLOW ============ -->
+<section class="band" id="arch">
+  <div class="band-head"><span class="tag">03</span><h2>Architectural flow</h2></div>
+  <p class="band-note">The whole system in one picture. Note that the two paths into the store never meet at request time. That separation is ADR-2 made visible.</p>
+
+  <div class="diagram">
+<pre class="mermaid">
+flowchart TB
+  subgraph SRC["L0 Sources"]
+    direction LR
+    A1["Open-Meteo<br/>keyless"]
+    A2["Overpass<br/>Nominatim"]
+    A3["OpenAQ<br/>AQICN"]
+    A4["WorldPop<br/>Copernicus<br/>Census"]
+    A5["EPA, Suthra Punjab<br/>One Map. planned"]
+  end
+
+  subgraph ING["L1 Ingestion"]
+    AD["SourceAdapter registry<br/>live, cached, mock, planned"]
+  end
+
+  subgraph STORE["L2 Store"]
+    G["H3 grid res 8<br/>plus static attributes"]
+    O["Observation stream"]
+    R["Citizen reports"]
+    T["PMTiles and artifacts"]
+  end
+
+  subgraph AN["L3 Analytics"]
+    E["Exposure counts"]
+    AC["Access surface"]
+    CS["Civic Access Score"]
+  end
+
+  subgraph ML["L4 Intelligence"]
+    F["Smog forecast"]
+    I["AQI interpolation"]
+    OP["Siting optimiser"]
+    V["Trust scoring"]
+    L["NL query and briefs"]
+  end
+
+  subgraph API["L5 Serving"]
+    RH["Route handlers"]
+    PUB["Public read API"]
+  end
+
+  subgraph UI["L6 Experience"]
+    MAP["Map canvas"]
+    PANEL["Panels and profile"]
+    TBL["Table equivalents"]
+  end
+
+  A1 --> AD
+  A2 --> AD
+  A3 --> AD
+  A4 --> AD
+  A5 -.planned.-> AD
+  AD --> O
+  AD --> G
+  G --> E
+  O --> E
+  G --> AC
+  E --> CS
+  AC --> CS
+  O --> I
+  I --> F
+  AC --> OP
+  E --> OP
+  R --> V
+  CS --> RH
+  F --> RH
+  OP --> RH
+  V --> RH
+  L --> RH
+  T --> MAP
+  RH --> MAP
+  RH --> PANEL
+  RH --> TBL
+  RH --> PUB
+  PANEL --> R
+</pre>
+    <p class="cap">Fig. 1. Dependency direction is strictly downward. The planned government feeds attach at the same point as everything else.</p>
+  </div>
+</section>
+
+<!-- ============ 04 DATA FLOW ============ -->
+<section class="band" id="data">
+  <div class="band-head"><span class="tag">04</span><h2>Data flow</h2></div>
+  <p class="band-note">Two pipelines with different clocks. The cold path runs on a developer laptop and produces committed artifacts. The warm path runs per request with aggressive caching. Anything you are tempted to move from cold to warm, do not.</p>
+
+  <div class="diagram">
+<pre class="mermaid">
+flowchart LR
+  subgraph COLD["Cold path. build time. runs once"]
+    direction TB
+    C1["HOT Export<br/>Lahore OSM slice"] --> C2["Extract facilities<br/>and road graph"]
+    C2 --> C3["Build OSRM graph"]
+    C4["WorldPop raster"] --> C5["Clip to Lahore<br/>aggregate to H3"]
+    C6["Admin boundaries"] --> C7["H3 to UC lookup"]
+    C8["Copernicus LST, DEM"] --> C9["Zonal stats to H3"]
+    C10["Census tables"] --> C11["Clean to CSV"]
+    C3 --> CA["artifacts"]
+    C5 --> CA
+    C7 --> CA
+    C9 --> CA
+    C11 --> CA
+    CA --> CB["PMTiles and parquet<br/>grid_version stamped"]
+  end
+
+  subgraph WARM["Warm path. request time. cached"]
+    direction TB
+    W1["Open-Meteo<br/>weather and PM2.5"] --> W2["Normalise to<br/>Observation"]
+    W3["OpenAQ, AQICN<br/>via route handler"] --> W2
+    W4["Overpass<br/>live facility check"] --> W2
+    W2 --> W5["Interpolate to H3"]
+    W5 --> W6["Join to grid"]
+  end
+
+  CB --> W6
+  W6 --> D1["Derived metrics<br/>exposure, access, score"]
+  D1 --> D2["Serving layer"]
+  D2 --> D3["Map, panels, tables, API"]
+</pre>
+    <p class="cap">Fig. 2. Cold artifacts and warm observations meet at the grid join, and only there.</p>
+  </div>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Stage</th><th>Input</th><th>Transform</th><th>Output</th><th>Clock</th><th>Cache</th></tr></thead>
+      <tbody>
+        <tr><td>Grid build</td><td>District boundary</td><td>Polyfill to H3 res 8</td><td class="mono">grid.parquet</td><td><span class="pill p-cold">COLD</span></td><td class="mono">immutable</td></tr>
+        <tr><td>Population</td><td>WorldPop raster</td><td>Clip, zonal sum to hex</td><td class="mono">pop_h3.parquet</td><td><span class="pill p-cold">COLD</span></td><td class="mono">immutable</td></tr>
+        <tr><td>Facilities</td><td>OSM extract</td><td>Filter amenity tags, snap to hex</td><td class="mono">facilities.geojson</td><td><span class="pill p-cold">COLD</span></td><td class="mono">immutable</td></tr>
+        <tr><td>Road graph</td><td>OSM extract</td><td>OSRM contraction</td><td class="mono">lahore.osrm</td><td><span class="pill p-cold">COLD</span></td><td class="mono">immutable</td></tr>
+        <tr><td>Access surface</td><td>Graph and facilities</td><td>Isochrone per facility, min per hex</td><td class="mono">access_h3.parquet</td><td><span class="pill p-cold">COLD</span></td><td class="mono">immutable</td></tr>
+        <tr><td>Reachability</td><td>Graph and grid</td><td>Reachable set per hex at 5, 10, 15 min</td><td class="mono">reachability_h3.parquet</td><td><span class="pill p-cold">COLD</span></td><td class="mono">immutable</td></tr>
+        <tr><td>Terrain and heat</td><td>Copernicus DEM, LST</td><td>Zonal mean, TWI</td><td class="mono">terrain_h3.parquet</td><td><span class="pill p-cold">COLD</span></td><td class="mono">immutable</td></tr>
+        <tr><td>Weather and PM</td><td>Open-Meteo</td><td>Normalise, interpolate to hex</td><td class="mono">Observation[]</td><td><span class="pill p-warm">WARM</span></td><td class="mono">10 min</td></tr>
+        <tr><td>Station AQI</td><td>OpenAQ, AQICN</td><td>Route handler, normalise</td><td class="mono">Observation[]</td><td><span class="pill p-warm">WARM</span></td><td class="mono">10 min</td></tr>
+        <tr><td>Exposure</td><td>Population and PM</td><td>Multiply per hex, aggregate to UC</td><td class="mono">exposure</td><td><span class="pill p-warm">WARM</span></td><td class="mono">derived</td></tr>
+        <tr><td>Forecast</td><td>Open-Meteo archive and live</td><td>Model inference</td><td class="mono">risk_forecast</td><td><span class="pill p-warm">WARM</span></td><td class="mono">1 hr</td></tr>
+        <tr><td>Reports</td><td>User submission</td><td>Verify, score, cluster</td><td class="mono">report, trust</td><td><span class="pill p-warm">WARM</span></td><td class="mono">live</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout note">
+    <h3>The rule that keeps the demo alive</h3>
+    <p>Every warm path adapter records its responses to <code>data/fixtures/</code> the first time it succeeds. A single environment flag switches the whole registry to fixture mode. Rehearse the demo at least once in fixture mode with the laptop in airplane mode. If it works there, no venue wifi failure and no rate limit can take the presentation down.</p>
+  </div>
+</section>
+
+<!-- ============ 05 USER FLOWS ============ -->
+<section class="band" id="user">
+  <div class="band-head"><span class="tag">05</span><h2>User flows</h2></div>
+  <p class="band-note">Three people use this and they want different things in a different order. Design the entry point for the citizen, because they arrive with no context and no patience. The other two will tolerate more.</p>
+
+  <div class="cols">
+    <div class="col">
+      <h4>Citizen</h4>
+      <p><strong>Wants:</strong> is my air bad, is my street going to flood, where is the nearest clinic, and can I report the rubbish outside.</p>
+      <ul>
+        <li>Lands on a map already centred on their location, no login</li>
+        <li>Sees one headline number and one sentence, not a dashboard</li>
+        <li>Taps through to the neighbourhood profile</li>
+        <li>Subscribes to alerts for their area</li>
+        <li>Submits a report in two taps</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h4>Official or councillor</h4>
+      <p><strong>Wants:</strong> which areas need attention this week, and something they can forward without editing.</p>
+      <ul>
+        <li>Opens the ranked Civic Access Score table</li>
+        <li>Filters to their jurisdiction</li>
+        <li>Reads the generated situation brief</li>
+        <li>Checks report hotspots and response times</li>
+        <li>Exports the one page PDF summary</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h4>Planner or analyst</h4>
+      <p><strong>Wants:</strong> to test an intervention and get defensible numbers out.</p>
+      <ul>
+        <li>Adjusts the score weights and watches the ranking move</li>
+        <li>Runs the siting optimiser for a facility type</li>
+        <li>Drops what-if pins and compares coverage</li>
+        <li>Opens two areas side by side</li>
+        <li>Pulls GeoJSON from the public API</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="diagram">
+<pre class="mermaid">
+flowchart TD
+  S["Citizen opens app"] --> LOC{"Location<br/>permission?"}
+  LOC -->|granted| CEN["Centre on their hex"]
+  LOC -->|denied| SEARCH["Search box<br/>defaults to Lahore"]
+  SEARCH --> CEN
+  CEN --> HEAD["Headline card<br/>one number, one sentence"]
+  HEAD --> BR{"What next?"}
+  BR -->|Understand| PROF["Neighbourhood profile<br/>AQI, access, forecast"]
+  BR -->|Be warned| SUB["Subscribe to alerts<br/>push, email, SMS"]
+  BR -->|Contribute| REP["Report a problem"]
+
+  REP --> PH["Photo and auto location"]
+  PH --> CAT["Category<br/>suggested by vision model"]
+  CAT --> SUBMIT["Submit"]
+  SUBMIT --> VER["Verification pipeline"]
+  VER --> DUP{"Near duplicate?"}
+  DUP -->|yes| MERGE["Merge into<br/>existing report"]
+  DUP -->|no| SCORE["Trust score<br/>corroboration, EXIF, history"]
+  MERGE --> SCORE
+  SCORE --> CONF{"Confidence"}
+  CONF -->|high| PUBM["Shown on map<br/>solid marker"]
+  CONF -->|low| PEND["Shown as unconfirmed<br/>hollow marker"]
+  PUBM --> CL["Hotspot clustering"]
+  PEND --> CL
+  CL --> ESC["Escalation summary<br/>for the official view"]
+  PROF --> PDF["Export one page PDF"]
+</pre>
+    <p class="cap">Fig. 3. The citizen path, including the verification loop that turns a report into evidence.</p>
+  </div>
+
+  <div class="callout warn">
+    <h3>The flow decision most teams get wrong</h3>
+    <p>Do not open on an empty map with a layer panel. A first time visitor who sees fourteen toggles and no answer leaves. Open with <strong>one number, one sentence, one action</strong> for wherever they are, and let the full map be the second screen. This is the difference between a tool and a demo, and a judge notices it in the first three seconds.</p>
+  </div>
+</section>
+
+<!-- ============ 06 INTERFACE ============ -->
+<section class="band" id="ux">
+  <div class="band-head"><span class="tag">06</span><h2>Interface and experience</h2></div>
+  <p class="band-note">Two of the eight judging criteria live here, and this is where most civic data projects visibly fail. The governing idea: the map is not the product. The map is one view onto a set of answers, and every answer must exist without it.</p>
+
+  <h3 class="sub">6.1 Five principles specific to this platform</h3>
+  <ol class="rules">
+    <li><div><span class="rt">The answer comes before the interface</span>
+      <span class="rd">A resident opening this during smog season wants one sentence, not a control panel. Every screen leads with its conclusion and puts the controls that produced it underneath.</span></div></li>
+    <li><div><span class="rt">Every number carries its people</span>
+      <span class="rd">A reading alone is a measurement. A reading next to the population it affects is information. This is a layout rule, not just a data rule: the exposure count sits adjacent to the value at the same visual weight.</span></div></li>
+    <li><div><span class="rt">Uncertainty is rendered, not hidden</span>
+      <span class="rd">Lahore has few public sensors. Interpolated cells get hatching and reduced opacity, and cells with no nearby sensor are drawn as no data rather than smoothed over. A confident looking map of guesses is the failure mode here.</span></div></li>
+    <li><div><span class="rt">Nothing important is only visual</span>
+      <span class="rd">Every map layer has a table twin at a real URL. Severity is never carried by colour alone. The map is an accelerator for people who can use it, never the only route to an answer.</span></div></li>
+    <li><div><span class="rt">Design for the worst device on the worst connection</span>
+      <span class="rd">A 360px screen, a mid range Android, a throttled connection. The people most exposed to bad air and flooding are the least likely to be on fast unmetered data, so the low end is the real target, not a fallback.</span></div></li>
+  </ol>
+
+  <h3 class="sub">6.2 Content rules for the whole platform</h3>
+  <p>These are binding on interface copy, generated briefs, alert text, documentation, commit messages, and the pitch deck. Put them in <code>CLAUDE.md</code> and in the pull request template so they are enforced rather than remembered.</p>
+
+  <div class="cols">
+    <div class="col">
+      <h4>Never use em dashes</h4>
+      <p>No em dash anywhere in the product or its documentation. Use a full stop when the second half is its own thought, a comma for an aside, a colon to introduce, or parentheses for a genuine aside.</p>
+      <ul>
+        <li>They render inconsistently across the Latin and Urdu font stacks, and break awkwardly in RTL layout</li>
+        <li>Screen readers handle them unpredictably, sometimes as a pause and sometimes silently</li>
+        <li>They are a common tell of unedited machine generated text, which matters for a project whose briefs are model written</li>
+        <li>Enforce with a lint rule over source, message catalogues, and generated output</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h4>Never use emoji</h4>
+      <p>No emoji in the interface, labels, legends, markers, alerts, generated text, README, or the deck. Use text labels, and where a graphic is needed use an inline SVG icon from one set.</p>
+      <ul>
+        <li>Screen readers announce them by their full Unicode name, which turns a status chip into noise</li>
+        <li>They render differently on every platform, so a severity indicator becomes a different severity indicator on another device</li>
+        <li>Using emoji as a severity or category marker fails the colour and non text contrast requirements outright</li>
+        <li>They read as unserious on a civic tool that is asking officials to act on its numbers</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h4>How to write the copy instead</h4>
+      <p>Name things the way a resident would, and say what happened rather than what the system did.</p>
+      <ul>
+        <li>Not "PM2.5 concentration 214 &micro;g/m&sup3;" alone, but "Air is hazardous today. 214, about nine times the safe level."</li>
+        <li>Not "no data", but "no sensor within 8 km of here"</li>
+        <li>Every error says what broke, what still works, and what to do next</li>
+        <li>Every estimated number says it is estimated in the same breath as the number</li>
+        <li>A control says exactly what will happen, and the confirmation uses the same verb</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 class="sub">6.3 Colour, defined completely in both themes</h3>
+  <p>Every token below has a value in both themes. Nothing is defined in only one, which is the single most common cause of an unreadable dark mode. Define the light palette on <code>:root</code>, redefine only the values under <code>@media (prefers-color-scheme: dark)</code> guarded by <code>:root:not([data-theme="light"])</code>, and redefine them again under <code>:root[data-theme="dark"]</code> so an explicit toggle wins in both directions. Components reference tokens only, never a raw hex.</p>
+
+  <h4 style="margin-top:26px">Surfaces</h4>
+  <div class="scroll">
+    <table class="tokens">
+      <thead><tr><th>Token</th><th>Light</th><th>Dark</th><th>Used for</th></tr></thead>
+      <tbody>
+        <tr><td>--bg-canvas</td><td class="mono"><span class="sw" style="background:#F4F6F7"></span>#F4F6F7</td><td class="mono"><span class="sw" style="background:#0B1215"></span>#0B1215</td><td>App background, the ground everything sits on</td></tr>
+        <tr><td>--bg-surface</td><td class="mono"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td><td class="mono"><span class="sw" style="background:#131E21"></span>#131E21</td><td>Cards, side panels, bottom sheets, popovers</td></tr>
+        <tr><td>--bg-surface-alt</td><td class="mono"><span class="sw" style="background:#EDF2F3"></span>#EDF2F3</td><td class="mono"><span class="sw" style="background:#182528"></span>#182528</td><td>Alternating table rows, inset wells, code blocks</td></tr>
+        <tr><td>--bg-sunken</td><td class="mono"><span class="sw" style="background:#E4EBEC"></span>#E4EBEC</td><td class="mono"><span class="sw" style="background:#080E10"></span>#080E10</td><td>The container behind the map canvas</td></tr>
+        <tr><td>--bg-hover</td><td class="mono"><span class="sw" style="background:#E8EFF0"></span>#E8EFF0</td><td class="mono"><span class="sw" style="background:#1D2C30"></span>#1D2C30</td><td>Row and list item hover</td></tr>
+        <tr><td>--bg-active</td><td class="mono"><span class="sw" style="background:#DDE7E9"></span>#DDE7E9</td><td class="mono"><span class="sw" style="background:#243539"></span>#243539</td><td>Pressed state on any interactive surface</td></tr>
+        <tr><td>--bg-selected</td><td class="mono"><span class="sw" style="background:#D6EAEC"></span>#D6EAEC</td><td class="mono"><span class="sw" style="background:#10333A"></span>#10333A</td><td>Selected area, active layer, current tab</td></tr>
+        <tr><td>--bg-scrim</td><td class="mono">rgba(11,18,21,.45)</td><td class="mono">rgba(0,0,0,.62)</td><td>Behind modals and expanded sheets</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4 style="margin-top:30px">Text</h4>
+  <div class="scroll">
+    <table class="tokens">
+      <thead><tr><th>Token</th><th>Light</th><th>Dark</th><th>Used for</th></tr></thead>
+      <tbody>
+        <tr><td>--text-primary</td><td class="mono"><span class="sw" style="background:#0E191B"></span>#0E191B</td><td class="mono"><span class="sw" style="background:#E8F0F1"></span>#E8F0F1</td><td>Headings, metric values, anything load bearing</td></tr>
+        <tr><td>--text-secondary</td><td class="mono"><span class="sw" style="background:#45575A"></span>#45575A</td><td class="mono"><span class="sw" style="background:#A6B8BB"></span>#A6B8BB</td><td>Body copy, descriptions, table cells</td></tr>
+        <tr><td>--text-tertiary</td><td class="mono"><span class="sw" style="background:#66797C"></span>#66797C</td><td class="mono"><span class="sw" style="background:#7E9295"></span>#7E9295</td><td>Captions, units, timestamps, provenance</td></tr>
+        <tr><td>--text-disabled</td><td class="mono"><span class="sw" style="background:#98A8AA"></span>#98A8AA</td><td class="mono"><span class="sw" style="background:#566B6E"></span>#566B6E</td><td>Inactive controls only, never for content</td></tr>
+        <tr><td>--text-on-accent</td><td class="mono"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td><td class="mono"><span class="sw" style="background:#06181B"></span>#06181B</td><td>Text sitting on an accent fill</td></tr>
+        <tr><td>--text-link</td><td class="mono"><span class="sw" style="background:#08636D"></span>#08636D</td><td class="mono"><span class="sw" style="background:#45CBD5"></span>#45CBD5</td><td>Inline links inside prose</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:12px; font-size:.88rem; color:var(--text-3)">Primary text reaches about 16:1 on its own surface in both themes, secondary about 7:1, tertiary about 4.6:1. Disabled is below 4.5:1 by design and must never carry information.</p>
+
+  <h4 style="margin-top:30px">Borders and focus</h4>
+  <div class="scroll">
+    <table class="tokens">
+      <thead><tr><th>Token</th><th>Light</th><th>Dark</th><th>Used for</th></tr></thead>
+      <tbody>
+        <tr><td>--border-subtle</td><td class="mono"><span class="sw" style="background:#E6ECED"></span>#E6ECED</td><td class="mono"><span class="sw" style="background:#1B292C"></span>#1B292C</td><td>Row dividers inside a list or table</td></tr>
+        <tr><td>--border-default</td><td class="mono"><span class="sw" style="background:#CFDADC"></span>#CFDADC</td><td class="mono"><span class="sw" style="background:#26383B"></span>#26383B</td><td>Card, panel, and input outlines</td></tr>
+        <tr><td>--border-strong</td><td class="mono"><span class="sw" style="background:#A6B7B9"></span>#A6B7B9</td><td class="mono"><span class="sw" style="background:#3A5054"></span>#3A5054</td><td>Table header rule, section separators</td></tr>
+        <tr><td>--focus-ring</td><td class="mono"><span class="sw" style="background:#0A6771"></span>#0A6771</td><td class="mono"><span class="sw" style="background:#5AD4DE"></span>#5AD4DE</td><td>3px outline, 2px offset, on every focusable element</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4 style="margin-top:30px">Accent and interaction</h4>
+  <div class="scroll">
+    <table class="tokens">
+      <thead><tr><th>Token</th><th>Light</th><th>Dark</th><th>Used for</th></tr></thead>
+      <tbody>
+        <tr><td>--accent</td><td class="mono"><span class="sw" style="background:#0A6771"></span>#0A6771</td><td class="mono"><span class="sw" style="background:#3FC7D1"></span>#3FC7D1</td><td>Primary buttons, active nav, selected controls</td></tr>
+        <tr><td>--accent-hover</td><td class="mono"><span class="sw" style="background:#085259"></span>#085259</td><td class="mono"><span class="sw" style="background:#63D6DE"></span>#63D6DE</td><td>Hover on accent surfaces</td></tr>
+        <tr><td>--accent-active</td><td class="mono"><span class="sw" style="background:#063F45"></span>#063F45</td><td class="mono"><span class="sw" style="background:#86E2E9"></span>#86E2E9</td><td>Pressed accent surfaces</td></tr>
+        <tr><td>--accent-subtle</td><td class="mono"><span class="sw" style="background:#DCEDEF"></span>#DCEDEF</td><td class="mono"><span class="sw" style="background:#0F2E33"></span>#0F2E33</td><td>Tinted backgrounds, chips, active filter pills</td></tr>
+        <tr><td>--accent-border</td><td class="mono"><span class="sw" style="background:#7FBEC4"></span>#7FBEC4</td><td class="mono"><span class="sw" style="background:#2B7F87"></span>#2B7F87</td><td>Outline on accent tinted surfaces</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:12px; font-size:.88rem; color:var(--text-3)">Accent means interactive. It is never used to encode data, and severity is never drawn in accent. Keeping those two jobs separate is what stops the map turning into decoration.</p>
+
+  <h4 style="margin-top:30px">Status, for system feedback only</h4>
+  <div class="scroll">
+    <table class="tokens">
+      <thead><tr><th>Token</th><th>Light</th><th>Dark</th><th>Used for</th></tr></thead>
+      <tbody>
+        <tr><td>--ok</td><td class="mono"><span class="sw" style="background:#2F6B44"></span>#2F6B44</td><td class="mono"><span class="sw" style="background:#5FB77B"></span>#5FB77B</td><td>Feed healthy, report resolved, save succeeded</td></tr>
+        <tr><td>--ok-subtle</td><td class="mono"><span class="sw" style="background:#E2F0E7"></span>#E2F0E7</td><td class="mono"><span class="sw" style="background:#12271A"></span>#12271A</td><td>Background of a success banner</td></tr>
+        <tr><td>--warn</td><td class="mono"><span class="sw" style="background:#96590A"></span>#96590A</td><td class="mono"><span class="sw" style="background:#E0A34F"></span>#E0A34F</td><td>Stale data, degraded feed, unconfirmed report</td></tr>
+        <tr><td>--warn-subtle</td><td class="mono"><span class="sw" style="background:#FAEEDA"></span>#FAEEDA</td><td class="mono"><span class="sw" style="background:#2B2010"></span>#2B2010</td><td>Background of a warning banner</td></tr>
+        <tr><td>--error</td><td class="mono"><span class="sw" style="background:#A03328"></span>#A03328</td><td class="mono"><span class="sw" style="background:#EE7462"></span>#EE7462</td><td>Adapter failure, validation failure, offline</td></tr>
+        <tr><td>--error-subtle</td><td class="mono"><span class="sw" style="background:#FAE6E3"></span>#FAE6E3</td><td class="mono"><span class="sw" style="background:#2E1512"></span>#2E1512</td><td>Background of an error banner</td></tr>
+        <tr><td>--info</td><td class="mono"><span class="sw" style="background:#2A5B8F"></span>#2A5B8F</td><td class="mono"><span class="sw" style="background:#7FADDF"></span>#7FADDF</td><td>Neutral notices, method explanations</td></tr>
+        <tr><td>--info-subtle</td><td class="mono"><span class="sw" style="background:#E4ECF7"></span>#E4ECF7</td><td class="mono"><span class="sw" style="background:#131F2D"></span>#131F2D</td><td>Background of an informational banner</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:12px; font-size:.88rem; color:var(--text-3)">Status colours describe the system. Severity colours describe the city. Never borrow one for the other, or a failing sensor and hazardous air will look like the same thing.</p>
+
+  <h4 style="margin-top:30px">Severity ramp, for data only</h4>
+  <p style="font-size:.92rem">Six steps matching the standard air quality bands, reused for flood and heat risk so a user learns the scale once. Derived from a perceptually uniform, colourblind safe ramp rather than the official red to green scale, which fails for roughly one in twelve men.</p>
+  <div class="scroll">
+    <table class="tokens">
+      <thead><tr><th>Step</th><th>Light fill</th><th>Light text on</th><th>Dark fill</th><th>Dark text on</th></tr></thead>
+      <tbody>
+        <tr><td>1 Good</td><td class="mono"><span class="sw" style="background:#FCFDBF"></span>#FCFDBF</td><td class="mono">#3A2A00</td><td class="mono"><span class="sw" style="background:#26363B"></span>#26363B</td><td class="mono">#9DB0B3</td></tr>
+        <tr><td>2 Moderate</td><td class="mono"><span class="sw" style="background:#FEC287"></span>#FEC287</td><td class="mono">#4A2400</td><td class="mono"><span class="sw" style="background:#4C4A5C"></span>#4C4A5C</td><td class="mono">#D6D2DE</td></tr>
+        <tr><td>3 Unhealthy for some</td><td class="mono"><span class="sw" style="background:#F1605D"></span>#F1605D</td><td class="mono">#FFFFFF</td><td class="mono"><span class="sw" style="background:#8B4A66"></span>#8B4A66</td><td class="mono">#FFFFFF</td></tr>
+        <tr><td>4 Unhealthy</td><td class="mono"><span class="sw" style="background:#B63679"></span>#B63679</td><td class="mono">#FFFFFF</td><td class="mono"><span class="sw" style="background:#C75A54"></span>#C75A54</td><td class="mono">#14060A</td></tr>
+        <tr><td>5 Very unhealthy</td><td class="mono"><span class="sw" style="background:#721F81"></span>#721F81</td><td class="mono">#FFFFFF</td><td class="mono"><span class="sw" style="background:#EE8B3E"></span>#EE8B3E</td><td class="mono">#180B00</td></tr>
+        <tr><td>6 Hazardous</td><td class="mono"><span class="sw" style="background:#2C115F"></span>#2C115F</td><td class="mono">#FFFFFF</td><td class="mono"><span class="sw" style="background:#FBD75F"></span>#FBD75F</td><td class="mono">#221800</td></tr>
+        <tr><td>No data</td><td class="mono"><span class="sw" style="background:#EFF2F3"></span>#EFF2F3 hatched</td><td class="mono">#66797C</td><td class="mono"><span class="sw" style="background:#162124"></span>#162124 hatched</td><td class="mono">#7E9295</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout note">
+    <h3>Why the ramp inverts between themes</h3>
+    <p>In the light theme severity increases with <strong>darkness</strong>. In the dark theme it increases with <strong>luminance</strong>. The invariant being preserved is not hue, it is visual weight against the ground: the worst areas must be the ones your eye lands on first, and on a dark map a dark purple hexagon disappears. Both ramps stay perceptually ordered under deuteranopia and protanopia, and both are doubled with a text label in the legend and a hatch pattern for estimated cells, so hue is never the only carrier. Offer the official air quality colours as an opt in setting for users who already know that scale.</p>
+  </div>
+
+  <h4 style="margin-top:30px">Map specific</h4>
+  <div class="scroll">
+    <table class="tokens">
+      <thead><tr><th>Token</th><th>Light</th><th>Dark</th><th>Used for</th></tr></thead>
+      <tbody>
+        <tr><td>--map-ground</td><td class="mono"><span class="sw" style="background:#E9EEEF"></span>#E9EEEF</td><td class="mono"><span class="sw" style="background:#0D1619"></span>#0D1619</td><td>Basemap land</td></tr>
+        <tr><td>--map-water</td><td class="mono"><span class="sw" style="background:#C9DDE4"></span>#C9DDE4</td><td class="mono"><span class="sw" style="background:#10262E"></span>#10262E</td><td>Ravi, canals, water bodies</td></tr>
+        <tr><td>--map-road-major</td><td class="mono"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td><td class="mono"><span class="sw" style="background:#26383C"></span>#26383C</td><td>Primary and secondary roads</td></tr>
+        <tr><td>--map-road-minor</td><td class="mono"><span class="sw" style="background:#F2F5F6"></span>#F2F5F6</td><td class="mono"><span class="sw" style="background:#1C2A2D"></span>#1C2A2D</td><td>Residential streets</td></tr>
+        <tr><td>--map-building</td><td class="mono"><span class="sw" style="background:#DFE6E8"></span>#DFE6E8</td><td class="mono"><span class="sw" style="background:#172326"></span>#172326</td><td>Building footprints at high zoom</td></tr>
+        <tr><td>--map-label</td><td class="mono"><span class="sw" style="background:#33474A"></span>#33474A</td><td class="mono"><span class="sw" style="background:#C6D6D8"></span>#C6D6D8</td><td>Place names</td></tr>
+        <tr><td>--map-label-halo</td><td class="mono"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td><td class="mono"><span class="sw" style="background:#0B1215"></span>#0B1215</td><td>Halo behind labels, keeps them legible over any fill</td></tr>
+        <tr><td>--map-boundary</td><td class="mono"><span class="sw" style="background:#7C9296"></span>#7C9296</td><td class="mono"><span class="sw" style="background:#4E6B70"></span>#4E6B70</td><td>Union council and district outlines</td></tr>
+        <tr><td>--map-hex-stroke</td><td class="mono">rgba(14,25,27,.10)</td><td class="mono">rgba(232,240,241,.10)</td><td>Hex cell edges, barely visible by design</td></tr>
+        <tr><td>--map-selected</td><td class="mono"><span class="sw" style="background:#0A6771"></span>#0A6771</td><td class="mono"><span class="sw" style="background:#5AD4DE"></span>#5AD4DE</td><td>2px stroke on the selected area</td></tr>
+        <tr><td>--map-facility</td><td class="mono"><span class="sw" style="background:#2A5B8F"></span>#2A5B8F</td><td class="mono"><span class="sw" style="background:#7FADDF"></span>#7FADDF</td><td>Hospital, school, and park markers</td></tr>
+        <tr><td>--map-report-verified</td><td class="mono"><span class="sw" style="background:#2F6B44"></span>#2F6B44</td><td class="mono"><span class="sw" style="background:#5FB77B"></span>#5FB77B</td><td>Solid marker, corroborated report</td></tr>
+        <tr><td>--map-report-unconfirmed</td><td class="mono">#96590A outline</td><td class="mono">#E0A34F outline</td><td>Hollow dashed marker, awaiting corroboration</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub">6.4 Typography</h3>
+  <p>Latin and Urdu need separate stacks, and neither may fall back to the other. Nastaliq is beautiful and needs roughly 1.9 line height; budget for that early or your RTL layout will clip descenders on every heading.</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Role</th><th>Latin</th><th>Urdu</th><th>Size and line height</th><th>Used for</th></tr></thead>
+      <tbody>
+        <tr><td>Display</td><td>Grotesque, 700</td><td>Noto Nastaliq Urdu</td><td class="mono">32 / 1.1 &middot; ur 1.9</td><td>Page titles, the headline number</td></tr>
+        <tr><td>Heading</td><td>Grotesque, 600</td><td>Noto Nastaliq Urdu</td><td class="mono">20 / 1.25 &middot; ur 1.9</td><td>Section and panel headings</td></tr>
+        <tr><td>Body</td><td>Humanist sans, 400</td><td>Noto Sans Arabic</td><td class="mono">16 / 1.6 &middot; ur 1.8</td><td>Prose, descriptions, briefs</td></tr>
+        <tr><td>Body small</td><td>Humanist sans, 400</td><td>Noto Sans Arabic</td><td class="mono">14 / 1.55</td><td>Panel copy, table cells</td></tr>
+        <tr><td>Label</td><td>Mono, 600, .1em tracking</td><td>Noto Sans Arabic, 600</td><td class="mono">11 / 1.4 uppercase</td><td>Field labels, legend keys, eyebrows</td></tr>
+        <tr><td>Data</td><td>Mono, tabular figures</td><td>Mono, Latin digits</td><td class="mono">14 / 1.5</td><td>Every metric, timestamp, coordinate</td></tr>
+        <tr><td>Metric hero</td><td>Mono or grotesque, 600</td><td>same</td><td class="mono">40 / 1.05</td><td>The one number on the Now screen</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:14px">Prose is capped at 68 characters, panel copy at 40. Digits use <code>font-variant-numeric: tabular-nums</code> everywhere they align in a column, which is most places. Urdu keeps Latin digits, because Eastern Arabic numerals alongside English units confuse more than they help in a mixed interface.</p>
+
+  <h3 class="sub">6.5 Whitespace, spacing, and density</h3>
+  <p>One scale, applied everywhere. The rule that prevents drift: <strong>a component never sets its own outer margin</strong>. Spacing between siblings comes from the parent's <code>gap</code>. This is what stops the collapsing and doubling margins that make a hackathon UI look uneven in exactly the screenshot that ends up in the deck.</p>
+
+  <div class="scale">
+    <div><div class="sn">space-1</div><div class="sv">4px</div><div class="su">Label to value, icon nudges</div></div>
+    <div><div class="sn">space-2</div><div class="sv">8px</div><div class="su">Icon to label, chip padding</div></div>
+    <div><div class="sn">space-3</div><div class="sv">12px</div><div class="su">Related items in a group</div></div>
+    <div><div class="sn">space-4</div><div class="sv">16px</div><div class="su">Blocks inside a panel</div></div>
+    <div><div class="sn">space-5</div><div class="sv">24px</div><div class="su">Unrelated groups</div></div>
+    <div><div class="sn">space-6</div><div class="sv">32px</div><div class="su">Desktop container padding</div></div>
+    <div><div class="sn">space-7</div><div class="sv">48px</div><div class="su">Section break, mobile</div></div>
+    <div><div class="sn">space-8</div><div class="sv">64px</div><div class="su">Section break, desktop</div></div>
+    <div><div class="sn">space-9</div><div class="sv">96px</div><div class="su">Major page divisions</div></div>
+  </div>
+
+  <ol class="rules" style="margin-top:26px">
+    <li><div><span class="rt">Base unit is 4px and nothing sits off the scale</span>
+      <span class="rd">No 7px, no 15px, no 22px. If a value feels like it needs to be 18px, the answer is 16 or 24. A single off scale value is invisible; forty of them is why an interface looks amateur without anyone being able to say why.</span></div></li>
+    <li><div><span class="rt">Container padding is one token at three breakpoints</span>
+      <span class="rd">16px below 768, 24px to 1200, 32px above. Set it once on the container and let every page inherit. Never let an individual screen set its own.</span></div></li>
+    <li><div><span class="rt">Minimum 24px between any two unrelated groups</span>
+      <span class="rd">If two blocks are not about the same thing, they get space-5 or more. Panels that violate this are the reason dashboards feel cramped even when nothing is technically overlapping.</span></div></li>
+    <li><div><span class="rt">Panels never nest more than three levels deep</span>
+      <span class="rd">Container, group, item. A fourth level means the information architecture is wrong, and each level of nesting eats padding on a 360px screen until the content column is unusably narrow.</span></div></li>
+    <li><div><span class="rt">Empty space is load bearing on the Now screen</span>
+      <span class="rd">The single headline number and its sentence own the top third of the viewport with nothing competing. Resist filling it. The generosity there is what makes the density of the map screen acceptable by contrast.</span></div></li>
+    <li><div><span class="rt">The map is the only full bleed element</span>
+      <span class="rd">Everything else respects the container. Map controls sit inset by 16px from the canvas edge, never flush.</span></div></li>
+  </ol>
+
+  <h4 style="margin-top:34px">Component padding reference</h4>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Component</th><th>Padding</th><th>Internal gap</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Page container</td><td class="mono">16 / 24 / 32</td><td class="mono">48 / 64</td><td>Breakpoint driven, single source</td></tr>
+        <tr><td>Card and side panel</td><td class="mono">20 (16 mobile)</td><td class="mono">16</td><td>Same on all four sides</td></tr>
+        <tr><td>Bottom sheet</td><td class="mono">20 sides, 16 top</td><td class="mono">16</td><td>Bottom padding adds the safe area inset</td></tr>
+        <tr><td>Table cell</td><td class="mono">12 vertical, 16 right</td><td class="mono">n/a</td><td>First column has no left padding</td></tr>
+        <tr><td>List row</td><td class="mono">12 vertical, 16 horizontal</td><td class="mono">12</td><td>Minimum 44px total height</td></tr>
+        <tr><td>Button, medium</td><td class="mono">10 vertical, 16 horizontal</td><td class="mono">8</td><td>Minimum height 44</td></tr>
+        <tr><td>Button, small</td><td class="mono">6 vertical, 12 horizontal</td><td class="mono">6</td><td>Minimum height 36, desktop only</td></tr>
+        <tr><td>Input and select</td><td class="mono">10 vertical, 12 horizontal</td><td class="mono">8</td><td>Minimum height 44</td></tr>
+        <tr><td>Chip and pill</td><td class="mono">2 vertical, 8 horizontal</td><td class="mono">4</td><td>Never a tap target on its own</td></tr>
+        <tr><td>Map control</td><td class="mono">8</td><td class="mono">8</td><td>44 by 44 target, inset 16 from canvas edge</td></tr>
+        <tr><td>Banner and toast</td><td class="mono">12 vertical, 16 horizontal</td><td class="mono">12</td><td>Full width on mobile</td></tr>
+        <tr><td>Modal</td><td class="mono">24</td><td class="mono">16</td><td>Becomes a full height sheet below 768</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4 style="margin-top:30px">Radius, border, elevation</h4>
+  <div class="cols">
+    <div class="col">
+      <h4>Radius</h4>
+      <ul>
+        <li>3px for chips, badges, and inputs</li>
+        <li>6px for cards, panels, and buttons</li>
+        <li>12px for sheets and modals only</li>
+        <li>Fully round only for the location dot and map markers</li>
+        <li>One radius per component, never mixed corners</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h4>Border</h4>
+      <ul>
+        <li>1px is the only border width except focus and selection</li>
+        <li>Focus is 3px outline with 2px offset</li>
+        <li>Map selection is a 2px stroke</li>
+        <li>Prefer a border over a shadow for separation</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h4>Elevation</h4>
+      <ul>
+        <li>Three levels only: flat, raised, floating</li>
+        <li>Raised is a 1px border plus a barely visible shadow</li>
+        <li>Floating is for sheets, popovers, and the scrim</li>
+        <li>In dark mode elevation is a lighter surface, not a stronger shadow</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 class="sub">6.6 Which features need their own place</h3>
+  <p>Not everything deserves a screen, and the most common structural mistake is giving a feature a route when it should live beside the number it explains. Five decision rules, applied to all 32 core features.</p>
+
+  <ol class="rules">
+    <li><div><span class="rt">Would someone want to send this as a link?</span>
+      <span class="rd">If yes it needs its own route. A neighbourhood profile a councillor forwards, a ranking table, an optimiser result. If it cannot be linked, it cannot be shared, and a civic tool that cannot be shared does not spread.</span></div></li>
+    <li><div><span class="rt">Does it hold state that navigating away would destroy?</span>
+      <span class="rd">Own route. The optimiser parameters, a comparison pair, adjusted score weights. Cramming these into a map panel means one stray click loses the work.</span></div></li>
+    <li><div><span class="rt">Does it only make sense with a live map and a selection?</span>
+      <span class="rd">Map panel. The what-if pin, the selection readout, the time scrubber. These are meaningless without the canvas behind them.</span></div></li>
+    <li><div><span class="rt">Does it explain a single number?</span>
+      <span class="rd">Inline, immediately beside that number. Provenance, uncertainty, the why-this-value explanation, the exposure count. Moving any of these to a separate page is how a system loses its credibility, because nobody navigates to check.</span></div></li>
+    <li><div><span class="rt">Does it run without anyone watching?</span>
+      <span class="rd">No interface at all. Verification, deduplication, clustering, alert dispatch, adapter polling. Surface the result, never the machinery.</span></div></li>
+  </ol>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Feature</th><th>Placement</th><th>Exactly where</th><th>Why there</th></tr></thead>
+      <tbody>
+        <tr><td>S01 Live layers</td><td><span class="pill p-route">ROUTE</span></td><td class="mono">/map</td><td>The map is the route, not a component on another page</td></tr>
+        <tr><td>S02 Boundaries</td><td><span class="pill p-inline">INLINE</span></td><td>The grid the map draws</td><td>Infrastructure, not a destination</td></tr>
+        <tr><td>S03 Neighbourhood profile</td><td><span class="pill p-route">ROUTE</span></td><td class="mono">/area/[id]</td><td>Shareable and printable, so it must have a URL</td></tr>
+        <tr><td>S04 Source panel</td><td><span class="pill p-route">ROUTE</span></td><td class="mono">/sources</td><td>A status page, plus a compact health dot in global chrome</td></tr>
+        <tr><td>D01 Exposure counts</td><td><span class="pill p-inline">INLINE</span></td><td>Beside every metric</td><td>It is the meaning of the number, not a separate view</td></tr>
+        <tr><td>D02 Access surface</td><td><span class="pill p-panel">PANEL</span></td><td>Map layer, plus profile block</td><td>Spatial by nature, summarised in the profile</td></tr>
+        <tr><td>D03 Civic Access Score</td><td><span class="pill p-route">ROUTE</span></td><td class="mono">/rankings</td><td>It is a sortable table; a map panel would destroy it</td></tr>
+        <tr><td>D04 Siting optimiser</td><td><span class="pill p-route">ROUTE</span></td><td class="mono">/plan</td><td>Holds parameters, runs long, results must be linkable</td></tr>
+        <tr><td>D05 What-if pins</td><td><span class="pill p-panel">PANEL</span></td><td>Inside /plan, on the canvas</td><td>Needs a live map and a click target. Recomputes from the precomputed reachability sets in the browser, with no routing call (ADR-8).</td></tr>
+        <tr><td>D06 Compare</td><td><span class="pill p-route">ROUTE</span></td><td class="mono">/compare</td><td>Two selections is a state the map cannot hold</td></tr>
+        <tr><td>P01 Smog forecast</td><td><span class="pill p-route">ROUTE</span></td><td class="mono">/forecast</td><td>Forward looking, a different mental model from now</td></tr>
+        <tr><td>P02 Flood risk</td><td><span class="pill p-route">ROUTE</span></td><td class="mono">/forecast</td><td>Same route, second view; same mental model</td></tr>
+        <tr><td>P03 Heat exposure</td><td><span class="pill p-panel">PANEL</span></td><td>Map layer, plus profile block</td><td>A layer, not a destination</td></tr>
+        <tr><td>P04 Alerts</td><td><span class="pill p-chrome">CHROME</span></td><td>Bell and banner, settings at /alerts</td><td>Must reach the user wherever they are. Web push and email ship; SMS is scoped out and named as roadmap.</td></tr>
+        <tr><td>P05 Historical playback</td><td><span class="pill p-panel">PANEL</span></td><td>Time scrubber on /map</td><td>A control on the map, not its own page</td></tr>
+        <tr><td>C01 Submit a report</td><td><span class="pill p-route">ROUTE</span></td><td class="mono">/report</td><td>Full screen task flow; never a modal on mobile</td></tr>
+        <tr><td>C02 Verification</td><td><span class="pill p-none">NO UI</span></td><td>Confidence badge on each report</td><td>Surface the result, never the pipeline</td></tr>
+        <tr><td>C03 Hotspots</td><td><span class="pill p-route">ROUTE</span></td><td class="mono">/reports</td><td>A ranked list officials work through</td></tr>
+        <tr><td>C04 Accountability</td><td><span class="pill p-route">ROUTE</span></td><td class="mono">/reports</td><td>Same route, second view</td></tr>
+        <tr><td>A01 Natural language query</td><td><span class="pill p-chrome">CHROME</span></td><td>The global search field</td><td>Search and ask are the same affordance to a user</td></tr>
+        <tr><td>A02 Situation brief</td><td><span class="pill p-inline">INLINE</span></td><td>Block inside /area/[id]</td><td>It summarises that page, so it belongs on it</td></tr>
+        <tr><td>A03 Why this value</td><td><span class="pill p-inline">INLINE</span></td><td>Expandable in the selection panel</td><td>Explains one number, must sit beside it</td></tr>
+        <tr><td>X01 Urdu and RTL</td><td><span class="pill p-chrome">CHROME</span></td><td>Language toggle</td><td>Affects every screen, so it lives above all of them</td></tr>
+        <tr><td>X02 Safe palettes</td><td><span class="pill p-chrome">CHROME</span></td><td>Setting, reflected in the legend</td><td>A preference, not a feature to visit</td></tr>
+        <tr><td>X03 Table twins</td><td><span class="pill p-route">ROUTE</span></td><td class="mono">/map/data, /plan/results</td><td>Must be linkable to count as an equivalent</td></tr>
+        <tr><td>X04 Offline mode</td><td><span class="pill p-chrome">CHROME</span></td><td>Persistent banner</td><td>A condition of the whole app, not a place</td></tr>
+        <tr><td>X05 Mobile first</td><td><span class="pill p-none">NO UI</span></td><td>Constraint on everything above</td><td>Not a feature, a rule</td></tr>
+        <tr><td>R01 Adapter contract</td><td><span class="pill p-none">NO UI</span></td><td>Surfaced through /sources</td><td>Architecture made visible in one place</td></tr>
+        <tr><td>R02 Provenance</td><td><span class="pill p-inline">INLINE</span></td><td>On every value</td><td>Unreachable provenance is no provenance</td></tr>
+        <tr><td>R03 Uncertainty</td><td><span class="pill p-inline">INLINE</span></td><td>Hex rendering and legend</td><td>Must be visible at the moment of reading</td></tr>
+        <tr><td>R04 Public API</td><td><span class="pill p-route">ROUTE</span></td><td class="mono">/about/api</td><td>Documentation others link to</td></tr>
+        <tr><td>R05 Attribution</td><td><span class="pill p-route">ROUTE</span></td><td class="mono">/about</td><td>A cited obligation, needs a permanent address</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout note">
+    <h3>Navigation follows from the placement table</h3>
+    <p>Five primary destinations, which is the most a mobile bar can carry: Now, Map, Rankings, Reports, More. Forecast, Plan, Compare, Sources, and About live under More on mobile and sit in the header on desktop. Report is a persistent action button rather than a nav item, because it is a task and not a place. Anything marked inline or chrome never appears in navigation at all, which is exactly why the classification matters: it is what keeps the nav to five items instead of nineteen.</p>
+  </div>
+
+  <h3 class="sub">6.7 Anatomy of the map screen</h3>
+  <div class="wf">
+    <div class="wf-bar">Now &middot; Map &middot; Rankings &middot; Reports &middot; More &nbsp;&nbsp;&nbsp; [ search or ask ] &nbsp;&nbsp; [ EN | UR ] &nbsp; [ theme ] &nbsp; [ Report a problem ]</div>
+    <div class="wf-main">
+      <div class="wf-col">
+        <b>Layers</b>
+        <ul>
+          <li>Air quality <i>live</i></li>
+          <li>Population</li>
+          <li>Access to care</li>
+          <li>Facilities</li>
+          <li>Heat</li>
+          <li>Reports</li>
+        </ul>
+        <b style="margin-top:16px">Time</b>
+        <ul><li>now to +72h</li></ul>
+      </div>
+      <div class="wf-canvas">map canvas<br><i>hex choropleth over basemap</i><br><br>legend bottom left, inset 16<br>attribution bottom right</div>
+      <div class="wf-col">
+        <b>Selection</b>
+        <ul>
+          <li>Area name</li>
+          <li>Headline value and unit</li>
+          <li>People affected <i>(D01)</i></li>
+          <li>Access times <i>(D02)</i></li>
+          <li>Forecast strip <i>(P01)</i></li>
+          <li>Why this value <i>(A03)</i></li>
+          <li>Source and retrieved at <i>(R02)</i></li>
+          <li>Open full profile</li>
+        </ul>
+      </div>
+    </div>
+    <div class="wf-bar">2,412 hexes &middot; grid v3 &middot; updated 4 min ago &nbsp;&nbsp;|&nbsp;&nbsp; View as table</div>
+  </div>
+  <p class="cap" style="margin-top:12px">Below 768px the left rail becomes a bottom sheet at 40 percent height, the right panel becomes that sheet's expanded state, and the map keeps the full viewport behind it.</p>
+
+  <h3 class="sub">6.8 The seven states every data component handles</h3>
+  <p>The highest leverage artifact in this section. Most hackathon dashboards implement one of these and break visibly on the other six, usually while a judge is watching.</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>State</th><th>When</th><th>What the user sees</th><th>Token</th></tr></thead>
+      <tbody>
+        <tr><td>Loading</td><td>First fetch in flight</td><td>Skeleton in the exact final shape, never a spinner over the map</td><td class="mono">--bg-surface-alt</td></tr>
+        <tr><td>Ready</td><td>Fresh data</td><td>Value, unit, source, time since retrieval</td><td class="mono">--text-primary</td></tr>
+        <tr><td>Stale</td><td>Cache past its window</td><td>Value dimmed with an explicit age: last reading 47 minutes ago</td><td class="mono">--warn</td></tr>
+        <tr><td>Partial</td><td>Some hexes uncovered</td><td>Hatched cells and a count: 312 of 2,412 hexes have no nearby sensor</td><td class="mono">--sev-nodata</td></tr>
+        <tr><td>Estimated</td><td>Interpolated, not measured</td><td>Confidence band, hatch overlay, link to the method</td><td class="mono">--warn-subtle</td></tr>
+        <tr><td>Failed</td><td>Adapter error</td><td>What failed, what still works, a retry. Never a blank map</td><td class="mono">--error</td></tr>
+        <tr><td>Offline</td><td>No connectivity</td><td>Cached tiles, last known values with timestamps, persistent banner</td><td class="mono">--info</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub">6.9 Accessibility commitments</h3>
+  <div class="cols">
+    <div class="col">
+      <h4>Structural</h4>
+      <ul>
+        <li>WCAG 2.2 AA as the stated target</li>
+        <li>Every map layer has a sortable table twin at a real URL</li>
+        <li>Full keyboard path through search, layers, selection, and report</li>
+        <li>Visible 3px focus ring on every interactive element</li>
+        <li>Landmark regions and a skip link</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h4>Perceptual</h4>
+      <ul>
+        <li>4.5:1 for text, 3:1 for interface and graphical objects</li>
+        <li>Colourblind safe ramps, verified with a simulator in both themes</li>
+        <li>Severity never encoded by hue alone</li>
+        <li>Alert changes announced through a polite live region</li>
+        <li>Readable at 200 percent zoom with no horizontal scroll</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h4>Situational</h4>
+      <ul>
+        <li>Works at 360px on a mid range Android</li>
+        <li>Usable one handed, primary actions in thumb reach</li>
+        <li>Degrades to text when tiles cannot load</li>
+        <li>Urdu is a first class locale, reviewed by a speaker</li>
+        <li>Print stylesheet for the one page summary</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 MODELS ============ -->
+<section class="band" id="models">
+  <div class="band-head"><span class="tag">07</span><h2>Models, data, and how you prove they work</h2></div>
+  <p class="band-note">Twelve things get called models on a project like this and only four should actually be machine learning. Knowing which is which is itself a technical execution signal. A rules based index honestly labelled beats a fake neural network every time, and a judge who asks will find out which you built.</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>ID</th><th>What it does</th><th>Runs on</th><th>Method</th><th>Baseline to beat</th><th>How you test it</th></tr></thead>
+      <tbody>
+        <tr><td>M1</td><td>AQI surface from sparse stations</td><td class="mono">station obs,<br>Open-Meteo grid</td><td><span class="pill p-ml">ML</span> IDW, kriging if data allows</td><td>Nearest station value</td><td>Leave one station out CV, MAE in &micro;g/m&sup3;</td></tr>
+        <tr><td>M2</td><td>Smog risk 48 to 72 hours</td><td class="mono">Open-Meteo archive,<br>station history</td><td><span class="pill p-ml">ML</span> gradient boosting on forecast residuals</td><td>Raw forecast, and persistence</td><td>Walk forward split by time, MAE plus threshold crossing F1</td></tr>
+        <tr><td>M3</td><td>Flood ponding risk</td><td class="mono">DEM, rainfall,<br>built-up density</td><td><span class="pill p-det">RULES</span> topographic wetness index</td><td>Not applicable, call it an index</td><td>Qualitative check against known flood spots and report history</td></tr>
+        <tr><td>M4</td><td>Travel time access surface</td><td class="mono">OSM road graph,<br>facilities</td><td><span class="pill p-det">EXACT</span> OSRM isochrones</td><td>Straight line distance</td><td>Ten routes against a routing reference, 20 percent tolerance</td></tr>
+        <tr><td>M5</td><td>Facility siting</td><td class="mono">access surface,<br>population</td><td><span class="pill p-det">EXACT</span> greedy maximum coverage</td><td>Random and centroid placement</td><td>Brute force optimum on a small instance, report the gap</td></tr>
+        <tr><td>M6</td><td>Report trust score</td><td class="mono">report metadata,<br>submitter history</td><td><span class="pill p-det">RULES</span> weighted, logistic once labels exist</td><td>Accept everything</td><td>200 hand labelled reports including seeded spam, precision and recall</td></tr>
+        <tr><td>M7</td><td>Report photo category</td><td class="mono">submitted images</td><td><span class="pill p-llm">LLM</span> vision with structured output</td><td>User selected category</td><td>100 image labelled set, confusion matrix, top-1 accuracy</td></tr>
+        <tr><td>M8</td><td>Duplicate detection</td><td class="mono">images, geo, time</td><td><span class="pill p-det">EXACT</span> perceptual hash in a space time window</td><td>No deduplication</td><td>Synthetic duplicates, recall at a fixed false positive rate</td></tr>
+        <tr><td>M9</td><td>Hotspot detection</td><td class="mono">report counts per hex</td><td><span class="pill p-det">STATS</span> Getis-Ord Gi*</td><td>Raw count threshold</td><td>Inject synthetic clusters, confirm detection at p below 0.05</td></tr>
+        <tr><td>M10</td><td>Natural language to query</td><td class="mono">user utterance</td><td><span class="pill p-llm">LLM</span> constrained JSON intent</td><td>Manual filter controls</td><td>40 utterance golden set: exact intent match, schema valid, zero unsafe</td></tr>
+        <tr><td>M11</td><td>Situation brief</td><td class="mono">computed metrics<br>for one area</td><td><span class="pill p-llm">LLM</span> grounded generation over retrieved values</td><td>Template string</td><td>Automated groundedness: every numeral in output must appear in input</td></tr>
+        <tr><td>M12</td><td>Urdu localisation</td><td class="mono">UI strings, briefs</td><td><span class="pill p-llm">LLM</span> translation with pinned civic glossary</td><td>English only</td><td>Native speaker review of 30 strings, glossary consistency check</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout warn">
+    <h3>Three model traps specific to this data</h3>
+    <p><strong>Random splits on time series.</strong> If you shuffle hours into train and test for M2 you will report a spectacular score and have learned nothing. Split by time, always, and hold out the most recent weeks. <strong>Sensor scarcity.</strong> Check how many stations actually report in Lahore before committing to M1. If the answer is three, kriging is theatre, and you should say so and use the forecast grid with an honest uncertainty band. <strong>Groundedness on M11.</strong> A brief that invents a number is worse than no brief. The numeral matching check is ten lines of code and it is the difference between a defensible feature and a liability.</p>
+  </div>
+
+  <h3 class="sub">Test strategy across the whole system</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Level</th><th>Covers</th><th>Tooling</th><th>Gate</th></tr></thead>
+      <tbody>
+        <tr><td>Unit</td><td>Index maths, H3 helpers, scoring, formatters</td><td class="mono">vitest</td><td>Runs on every commit</td></tr>
+        <tr><td>Golden file</td><td>ETL outputs hashed so a pipeline change is visible</td><td class="mono">vitest snapshots</td><td>Hash change requires a note</td></tr>
+        <tr><td>Contract</td><td>Every adapter satisfies SourceAdapter and emits valid Observations</td><td class="mono">vitest, zod</td><td>No adapter merges without one</td></tr>
+        <tr><td>Fixture replay</td><td>Whole app runs offline from recorded responses</td><td class="mono">MSW</td><td>Must pass in airplane mode</td></tr>
+        <tr><td>Model eval</td><td>M1, M2, M6, M7, M10, M11 against their baselines</td><td class="mono">eval scripts in CI</td><td>Beat the baseline or ship the fallback, labelled</td></tr>
+        <tr><td>End to end</td><td>The eight demo beats, in order</td><td class="mono">Playwright</td><td>Green before code freeze</td></tr>
+        <tr><td>Accessibility</td><td>Every route, plus a manual keyboard pass</td><td class="mono">axe-core, manual</td><td>Zero critical violations</td></tr>
+        <tr><td>Content rules</td><td>No em dashes, no emoji, both locales complete</td><td class="mono">lint rule</td><td>Fails the build</td></tr>
+        <tr><td>Device</td><td>Real budget Android, throttled network</td><td class="mono">manual</td><td>Once per day of the build</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:18px"><strong>The demo script is the end to end suite.</strong> Write the eight beats from the feature plan as Playwright tests on day one. They will fail for most of the hackathon, and the moment they all pass you are done, which is a far better completion signal than anyone's opinion about whether it feels ready.</p>
+</section>
+
+<!-- ============ 08 FILES ============ -->
+<section class="band" id="files">
+  <div class="band-head"><span class="tag">08</span><h2>File structure</h2></div>
+  <p class="band-note">Next.js App Router with TypeScript, a Python ETL sidecar for the geoprocessing, and every supporting file a five person team actually needs. Bold entries are directories; teal entries carry the architecture decisions above.</p>
+
+<pre class="tree">
+<b>lahore-nervous-system/</b>
+├── <b>.github/workflows/</b>
+│   ├── ci.yml                       <i>lint, typecheck, unit, contract, a11y, content rules</i>
+│   └── evals.yml                    <i>model evals with baseline gates (M1 to M11)</i>
+├── <b>.claude/</b>
+│   ├── CLAUDE.md                    <u>house rules: no em dashes, no emoji, token only colours</u>
+│   └── launch.json                  <i>dev server config for previews</i>
+├── <b>docs/</b>
+│   ├── <b>adr/</b>                         <i>one file per decision in section 01</i>
+│   │   ├── 001-h3-grid.md
+│   │   ├── 002-cold-warm-paths.md
+│   │   ├── 003-pmtiles.md
+│   │   ├── 004-source-adapters.md
+│   │   ├── 005-observation-record.md
+│   │   ├── 006-llm-boundary.md
+│   │   └── 007-key-boundary.md
+│   ├── <b>model-cards/</b>                 <i>one per model: data, method, limits, baseline</i>
+│   │   ├── m1-aqi-interpolation.md
+│   │   ├── m2-smog-forecast.md
+│   │   └── ...
+│   ├── DESIGN_SYSTEM.md             <u>tokens, spacing, placement rules, content rules</u>
+│   ├── DATA_SOURCES.md              <i>endpoint, auth, CORS, licence, cadence</i>
+│   ├── ATTRIBUTIONS.md              <u>Code of Conduct requirement, fill as you go</u>
+│   ├── METHODOLOGY.md               <i>how every index is computed, public facing</i>
+│   ├── DEMO_SCRIPT.md               <i>the eight beats, verbatim</i>
+│   └── RUNBOOK.md                   <i>what to do when a feed dies mid demo</i>
+├── <b>data/</b>
+│   ├── <b>raw/</b>                         <i>downloads, gitignored, documented in README</i>
+│   ├── <b>interim/</b>                     <i>clipped and reprojected, gitignored</i>
+│   ├── <b>processed/</b>                   <i>committed artifacts, grid_version stamped</i>
+│   │   ├── grid_h3_r8.parquet
+│   │   ├── pop_h3.parquet
+│   │   ├── access_h3.parquet
+│   │   ├── reachability_h3.parquet  <u>ADR-8. Powers what-if and the optimiser.</u>
+│   │   ├── terrain_h3.parquet
+│   │   ├── uc_lookup.json
+│   │   └── facilities.geojson
+│   ├── <b>fixtures/</b>                    <u>recorded API responses, the demo safety net</u>
+│   │   ├── open-meteo.forecast.json
+│   │   ├── openaq.locations.json
+│   │   └── overpass.facilities.json
+│   └── <b>eval/</b>                        <i>labelled sets for M6, M7, M10, M12</i>
+├── <b>etl/</b>                             <u>cold path, never runs at request time</u>
+│   ├── 00_download.py               <i>WorldPop, Copernicus, HDX, census</i>
+│   ├── 01_build_grid.py             <i>polyfill district to H3 res 8</i>
+│   ├── 02_population.py             <i>zonal sum raster to hex</i>
+│   ├── 03_facilities.py             <i>OSM amenity extraction</i>
+│   ├── 04_road_graph.sh             <i>OSRM extract, partition, customise</i>
+│   ├── 05_access_surface.py         <i>isochrones, min travel time per hex</i>
+│   ├── 09_reachability.py           <u>ADR-8. Reachable sets per hex.</u>
+│   ├── 06_terrain_heat.py           <i>DEM, TWI, land surface temperature</i>
+│   ├── 07_train_smog.py             <i>M2 training, writes model + eval report</i>
+│   ├── 08_make_tiles.sh             <i>tippecanoe to PMTiles</i>
+│   ├── validate.py                  <u>sanity gates, see section 09</u>
+│   └── requirements.txt
+├── <b>src/</b>
+│   ├── <b>app/</b>
+│   │   ├── layout.tsx               <i>locale, direction, theme, skip link</i>
+│   │   ├── page.tsx                 <i>Now: one number, one sentence</i>
+│   │   ├── <b>map/</b>                     page.tsx, data/page.tsx <i>(table twin)</i>
+│   │   ├── <b>area/[id]/</b>               page.tsx, print.tsx
+│   │   ├── <b>rankings/</b>                page.tsx
+│   │   ├── <b>compare/</b>                 page.tsx
+│   │   ├── <b>plan/</b>                    page.tsx, results/page.tsx
+│   │   ├── <b>forecast/</b>                page.tsx
+│   │   ├── <b>report/</b>                  page.tsx
+│   │   ├── <b>reports/</b>                 page.tsx
+│   │   ├── <b>alerts/</b>                  page.tsx
+│   │   ├── <b>sources/</b>                 page.tsx
+│   │   ├── <b>about/</b>                   page.tsx, api/page.tsx
+│   │   └── <b>api/</b>
+│   │       ├── <b>aqi/</b>route.ts         <u>keyed: OpenAQ and AQICN proxy</u>
+│   │       ├── <b>ask/</b>route.ts         <u>keyed: NL to validated intent (M10)</u>
+│   │       ├── <b>brief/</b>route.ts       <u>keyed: grounded generation (M11)</u>
+│   │       ├── <b>reports/</b>route.ts     <i>submit, list, verify</i>
+│   │       ├── <b>alerts/</b>route.ts      <i>subscribe and SSE stream</i>
+│   │       └── <b>v1/</b>                  <i>public read API: GeoJSON, scores, hotspots</i>
+│   ├── <b>components/</b>
+│   │   ├── <b>map/</b>                     MapCanvas, LayerRail, HexLayer, Legend, TimeScrubber
+│   │   ├── <b>panels/</b>                  SelectionPanel, ProfileCard, ForecastStrip, WhyThisValue
+│   │   ├── <b>data/</b>                    MetricValue, ProvenanceTag, ConfidenceBand, StateWrapper
+│   │   ├── <b>report/</b>                  CaptureStep, CategoryStep, ConfirmStep
+│   │   ├── <b>tables/</b>                  DataTable <i>(the twin for every layer)</i>
+│   │   └── <b>ui/</b>                      Button, Sheet, Toggle, Skeleton, Banner, Chip
+│   ├── <b>lib/</b>
+│   │   ├── <b>adapters/</b>                <u>ADR-4 lives here</u>
+│   │   │   ├── types.ts             <i>SourceAdapter, status, capability flags</i>
+│   │   │   ├── registry.ts          <i>the one place that knows every source</i>
+│   │   │   ├── open-meteo.ts        <i>live, keyless</i>
+│   │   │   ├── openaq.ts            <i>live, keyed</i>
+│   │   │   ├── aqicn.ts             <i>live, keyed</i>
+│   │   │   ├── overpass.ts          <i>live, keyless, rate limited</i>
+│   │   │   ├── nominatim.ts         <i>live, keyless</i>
+│   │   │   ├── punjab-epa.mock.ts   <u>planned: the empty seat you toggle on stage</u>
+│   │   │   ├── suthra-punjab.mock.ts
+│   │   │   └── one-map.mock.ts
+│   │   ├── <b>schema/</b>                  observation.ts, report.ts, intent.ts <i>(zod)</i>
+│   │   ├── <b>analytics/</b>               exposure.ts, access.ts, score.ts, hotspots.ts, compare.ts
+│   │   ├── <b>models/</b>
+│   │   │   ├── interpolate.ts       <i>M1</i>
+│   │   │   ├── smog-forecast.ts     <i>M2 inference, training lives in etl</i>
+│   │   │   ├── flood-index.ts       <i>M3</i>
+│   │   │   ├── siting.ts            <i>M5 greedy max coverage</i>
+│   │   │   ├── trust.ts             <i>M6</i>
+│   │   │   └── <b>prompts/</b>             <i>M7, M10, M11, M12, versioned prompt files</i>
+│   │   ├── <b>h3/</b>                      grid.ts, aggregate.ts, lookup.ts
+│   │   ├── <b>i18n/</b>                    config.ts, direction.ts, glossary.ur.json
+│   │   ├── cache.ts                 <i>one cache policy, not fifteen</i>
+│   │   ├── provenance.ts            <i>ADR-5 helpers</i>
+│   │   └── env.ts                   <i>parsed and validated at boot</i>
+│   ├── <b>styles/</b>
+│   │   ├── tokens.css               <u>every colour, both themes, section 6.3</u>
+│   │   ├── space.css                <i>the 4px scale, section 6.5</i>
+│   │   ├── type.css                 <i>Latin and Urdu stacks</i>
+│   │   ├── map-theme.json           <i>MapLibre style, both themes</i>
+│   │   └── print.css                <i>the one page summary</i>
+│   └── <b>messages/</b>                    en.json, ur.json
+├── <b>tests/</b>
+│   ├── <b>unit/</b>                        analytics, h3, formatters
+│   ├── <b>contract/</b>                    every adapter against the interface
+│   ├── <b>e2e/</b>demo-script.spec.ts      <u>the eight beats, your completion signal</u>
+│   ├── <b>a11y/</b>routes.spec.ts          axe across every route
+│   ├── <b>content/</b>rules.spec.ts        <u>no em dashes, no emoji, locale parity</u>
+│   └── <b>evals/</b>                       m1, m2, m6, m7, m10, m11
+├── <b>public/</b>
+│   ├── <b>tiles/</b>lahore.pmtiles
+│   ├── <b>fonts/</b>                       <i>Noto Nastaliq Urdu, Noto Sans Arabic subsets</i>
+│   ├── manifest.webmanifest         <i>PWA, X04</i>
+│   └── sw.js                        <i>offline shell and tile cache</i>
+├── .env.example                     <u>every key named, no values</u>
+├── .nvmrc, .editorconfig, .gitignore
+├── eslint.config.mjs                <i>includes the content rule plugin</i>
+├── prettier.config.mjs
+├── tsconfig.json, next.config.ts
+├── vitest.config.ts, playwright.config.ts
+├── LICENCE                          <i>check ODbL implications before choosing</i>
+├── CONTRIBUTING.md                  <i>branch naming, PR rules, code freeze time</i>
+└── README.md                        <i>run it in five commands or it does not count</i>
+</pre>
+</section>
+
+<!-- ============ 09 BEFORE ============ -->
+<section class="band" id="before">
+  <div class="band-head"><span class="tag">09</span><h2>What has to happen before development</h2></div>
+  <p class="band-note">Beyond choosing features and reading the brief. These are the things that, left undone, surface at hour thirty when there is no time to fix them. The first one is not optional and is genuinely urgent.</p>
+
+  <div class="callout warn">
+    <h3>Settle the pre-building question in writing, first</h3>
+    <p>The rules say <strong>all work submitted must be created during the hackathon period</strong>. You are planning heavily in advance, which is good and almost certainly allowed, but planning, scaffolding, and pre-written code are three different things and only the first is unambiguously safe. Email the organisers now and get a written answer on: repository scaffolding, pre-downloaded and pre-cleaned datasets, pre-trained models, and the use of AI coding assistants. Keep the reply. This costs one email and removes the only risk on this page that can disqualify you no matter how good the build is.</p>
+  </div>
+
+  <ul class="check">
+    <li><div><span class="ct">Get every account and key issued and tested</span>
+      <span class="cd">OpenAQ key, AQICN token, Copernicus Data Space account, Earth Engine project if you use it, a database, hosting, an LLM provider, and an SMS gateway if you commit to P04. A key that arrives by email approval on day two is a feature you did not ship.</span></div></li>
+
+    <li><div><span class="ct">Licensing, decided: MIT for code, ODbL for data</span>
+      <span class="cd">OSM is ODbL, and its share-alike clause reaches derived databases. The public API (R04) publishes travel times computed from the OSM road graph plus facility locations lifted from OSM, which makes that export a derived database rather than a picture of one, so it carries ODbL. Share-alike does <em>not</em> reach your code: ODbL governs databases, not software. Dual licence, the standard civic-technology arrangement: MIT for the application, ODbL 1.0 for published exports and committed artifacts, CC-BY-4.0 for documentation. Both licence files are written and the full canonical ODbL text is appended to <code>LICENCE-DATA</code>.</span>
+      <span class="cd" style="display:block;margin-top:9px"><strong>Two upstream sources restrict redistribution, checked against their own published terms.</strong> AQICN is <strong>display only</strong>: their Terms of Service say the data "can not be redistributed as cached or archived data", so those readings appear on the map and in no export. OpenAQ is <strong>conditional and machine readable</strong>: <code>GET /v3/licenses</code> returns a <code>redistributionAllowed</code> flag per licence, and the adapter gates on it. Neither the Pakistan Bureau of Statistics nor Open Data Pakistan publishes a site-wide licence, so terms are established per dataset or the file is excluded from export. This is why the Observation record carries a required <code>exportable</code> boolean: the licence question has to travel with the value rather than be remembered at the export endpoint.</span></div></li>
+
+    <li><div><span class="ct">Establish which admin level OSM actually carries</span>
+      <span class="cd">Your single biggest data risk, and a thirty-minute Overpass query. Union council boundaries for Lahore are not reliably available as open geodata. Count complete polygons at admin levels 6, 7, 8 and 9 inside the district boundary, use the finest level with acceptable coverage, and print that level in the interface footer so the map never implies a precision the data does not have. Union councils are what the brief asks for; towns and tehsils are the fallback that reliably exists. Because the administrative layer is a config value rather than a hardcoded assumption, falling back one level changes nothing else in the system.</span></div></li>
+
+    <li><div><span class="ct">Count the sensors</span>
+      <span class="cd">Query OpenAQ and AQICN for how many stations actually report in Lahore right now. The answer decides whether M1 is a real interpolation model or an honest uncertainty band over a forecast grid. Both are respectable; only one of them is what you should claim.</span></div></li>
+
+    <li><div><span class="ct">Verify Docker Desktop and WSL2 on every machine</span>
+      <span class="cd">OSRM and tippecanoe are Linux binaries with no Windows-native path. This is an install, a reboot, and possibly a corporate policy problem, and it blocks the entire cold path. Check every laptop, not only the one that will run the ETL.</span></div></li>
+
+    <li><div><span class="ct">Decide where build artifacts live</span>
+      <span class="cd">PMTiles plus the WorldPop clip plus the parquet files can cross GitHub's 100 MB per-file hard limit. Choose Git LFS or host them in object storage and fetch at build. Five minutes now, a bad hour at the first push.</span></div></li>
+
+    <li><div><span class="ct">Build unit, decided: Lahore District</span>
+      <span class="cd">The whole district is gridded at H3 resolution 8, roughly 2,400 cells, so the demo's focus area is chosen <em>by the data</em> from the Civic Access Score ranking once the cold path lands, rather than guessed in advance. Opening on the worst-served area after ranking every area is a stronger demo than picking a neighbourhood up front, and it costs nothing extra because the grid already covers everything.</span></div></li>
+
+    <li><div><span class="ct">Set the timezone policy before the first adapter</span>
+      <span class="cd">Asia/Karachi is UTC+5 with no daylight saving, and Open-Meteo returns GMT unless asked otherwise. Store UTC, render local, and request the local timezone so forecast hours align to local days. A naive local timestamp in the store is a five-hour bug that surfaces as the smog forecast being wrong by a day.</span></div></li>
+
+    <li><div><span class="ct">Write the sanity gates before the ETL</span>
+      <span class="cd">Lahore district's population is roughly 11 million on the 2023 census. If your WorldPop clip sums to four, you clipped wrong. Put these assertions in <code>etl/validate.py</code> and fail the pipeline on them. A silently mis-clipped raster produces a beautiful map of nothing, and nobody catches it until a judge does.</span></div></li>
+
+    <li><div><span class="ct">Decide the privacy policy for citizen photos</span>
+      <span class="cd">Reports will contain faces, number plates, and house numbers. The Code of Conduct forbids misusing personal data. Decide now: blur faces and plates automatically, strip EXIF beyond the coordinates you need, set a retention window, collect no names or phone numbers you do not use. Write it on the About page. Both an ethics obligation and an easy point on Real-World Application.</span></div></li>
+
+    <li><div><span class="ct">Agree the design system before the first component</span>
+      <span class="cd">Tokens, spacing scale, and content rules from section 06 go into <code>tokens.css</code>, <code>space.css</code>, and <code>CLAUDE.md</code> on day zero. Retrofitting a spacing scale onto forty components at hour thirty is how teams end up shipping the inconsistent version.</span></div></li>
+
+    <li><div><span class="ct">Confirm the submission requirements</span>
+      <span class="cd">Ask the organisers: presentation length, deck format, whether the repository must be public, whether a video is required, and how the demo is run: your laptop, their screen, or a shared machine. Design the demo for the actual constraint rather than discovering it in the queue.</span></div></li>
+
+    <li><div><span class="ct">Assemble the physical and human prerequisites</span>
+      <span class="cd">A budget Android phone to test on. A fluent Urdu speaker to review X01 and M12, because machine translated Urdu that reads badly is worse than English. At least one person who has used MapLibre before, or an evening spent learning it before the clock starts.</span></div></li>
+
+    <li><div><span class="ct">Agree the working rules</span>
+      <span class="cd">Branch naming, whether you review pull requests or push to main, who has deploy rights, when the code freeze is (three hours before judging, not thirty minutes), and who presents. Decide the freeze time before you are attached to a half finished feature.</span></div></li>
+
+    <li><div><span class="ct">Stand up the deployment on day zero</span>
+      <span class="cd">An empty page deployed to a real URL in the first hour is worth more than a perfect local build. Deploy continuously from then on. Teams that leave deployment to the end demo from localhost, and localhost is where demos die.</span></div></li>
+
+    <li><div><span class="ct">Prepare the demo fallbacks</span>
+      <span class="cd">A fixture mode run that works offline, a recorded screen capture of the full flow, a phone hotspot, and the laptop charger. In that order of usefulness.</span></div></li>
+
+    <li><div><span class="ct">Write the definition of done</span>
+      <span class="cd">One line, agreed by everyone: a feature is done when it has a test, handles all seven states, works at 360px, has provenance on its numbers, exists in both locales, and appears in the demo script. Anything else is in progress, whatever the person building it says.</span></div></li>
+  </ul>
+</section>
+
+<!-- ============ 10 CONSISTENCY ============ -->
+<section class="band" id="consistency">
+  <div class="band-head"><span class="tag">10</span><h2>Keeping it all consistent</h2></div>
+  <p class="band-note">Consistency is not a review meeting. It is a set of invariants that are either true or false at any moment, most of them checkable in CI. If it cannot be asserted, it will drift.</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Invariant</th><th>Why it exists</th><th>How it is checked</th></tr></thead>
+      <tbody>
+        <tr><td>Every number rendered carries a source and a retrieval time</td><td>ADR-5, feature R02</td><td><code>MetricValue</code> requires a provenance prop; a missing one is a type error</td></tr>
+        <tr><td>Every artifact and observation shares one grid_version</td><td>ADR-1</td><td>Boot assertion, mismatched versions refuse to load</td></tr>
+        <tr><td>Every adapter has a contract test and a recorded fixture</td><td>ADR-4, demo safety</td><td>Contract suite enumerates the registry and fails on gaps</td></tr>
+        <tr><td>Every map layer has a table twin at a real URL</td><td>Feature X03</td><td>Route test asserts a twin exists per registered layer</td></tr>
+        <tr><td>Every model has a declared baseline and a fallback</td><td>Section 07</td><td>Eval suite fails a model with no baseline recorded</td></tr>
+        <tr><td>Every numeral in a generated brief appears in its input</td><td>Model M11</td><td>Automated groundedness check on every generation</td></tr>
+        <tr><td>Every data component handles all seven states</td><td>Section 6.8</td><td>State cases enumerated per component in tests</td></tr>
+        <tr><td>Every user visible string exists in en and ur</td><td>Feature X01</td><td>Message key diff in CI</td></tr>
+        <tr><td>No colour literal appears outside tokens.css</td><td>Section 6.3</td><td>Lint rule banning hex values in components</td></tr>
+        <tr><td>Every token has a value in both themes</td><td>Section 6.3</td><td>Token parity test comparing the light and dark blocks</td></tr>
+        <tr><td>No spacing value sits off the 4px scale</td><td>Section 6.5</td><td>Lint rule on raw px in padding, margin, and gap</td></tr>
+        <tr><td>No em dash or emoji anywhere in source or output</td><td>Section 6.2</td><td>Lint rule over source, messages, and generated text</td></tr>
+        <tr><td>No key bearing source is called from a client component</td><td>ADR-7</td><td>Lint rule banning those imports outside <code>app/api</code></td></tr>
+        <tr><td>Every dataset used appears in ATTRIBUTIONS.md</td><td>Code of Conduct</td><td>Registry entries diffed against the attribution file</td></tr>
+        <tr><td>Every table has row level security on and no anonymous write policy</td><td>Security</td><td>Migration test queries <code>pg_policies</code></td></tr>
+        <tr><td>Every stored timestamp is UTC</td><td>Timezone policy</td><td>Lint ban on naive date construction</td></tr>
+        <tr><td>No AQI value reaches analytics or the map</td><td>ADR-9</td><td>Observation type carries concentration only</td></tr>
+        <tr><td>No routing call exists at runtime</td><td>ADR-8</td><td>Lint ban on routing imports outside the ETL</td></tr>
+        <tr><td>No raw IP address or device identifier is persisted</td><td>Privacy</td><td>Schema review plus a grep in CI</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout note">
+    <h3>The traceability chain</h3>
+    <p>Each feature ID from the feature plan should be followable in one direction with no gaps: <strong>feature, layer, source, model, placement, screen, route, file, test</strong>. If any feature cannot complete that chain, it is not designed yet, whatever it looks like on the map. Run the trace at each stage gate below. It takes fifteen minutes and it catches the two or three things that would otherwise be discovered during judging.</p>
+  </div>
+</section>
+
+<!-- ============ 11 GATES ============ -->
+<section class="band" id="gates">
+  <div class="band-head"><span class="tag">11</span><h2>Stage gates</h2></div>
+  <p class="band-note">Seven stages, each with an exit condition that is observable rather than a feeling. Do not start the next stage until the current one exits, and run the traceability chain at every gate.</p>
+
+  <div class="gate">
+    <div class="gname">Groundwork<span>Stage 0</span></div>
+    <div class="gbody">
+      <p>Everything in section 09. Keys issued, licences read, boundaries confirmed, sensors counted, rules clarified in writing, empty app deployed to a live URL.</p>
+      <div class="gexit"><b>Exit</b>A deployed URL renders a blank page, and every key in <code>.env.example</code> has been tested with one real call.</div>
+    </div>
+  </div>
+
+  <div class="gate">
+    <div class="gname">Design system<span>Stage 1</span></div>
+    <div class="gbody">
+      <p>Tokens for both themes, the spacing scale, both font stacks, the content lint rule, and the seven states implemented on one reference component.</p>
+      <div class="gexit"><b>Exit</b>Token parity test passes, the theme toggle works in all three states, and the reference component renders correctly in every one of the seven states.</div>
+    </div>
+  </div>
+
+  <div class="gate">
+    <div class="gname">Grid and cold path<span>Stage 2</span></div>
+    <div class="gbody">
+      <p>ETL produces the H3 grid, population, facilities, road graph, and access surface. Sanity gates pass. PMTiles built and served.</p>
+      <div class="gexit"><b>Exit</b>Population summed over all hexes lands within 10 percent of the census figure, and the tiles render.</div>
+    </div>
+  </div>
+
+  <div class="gate">
+    <div class="gname">The spine<span>Stage 3</span></div>
+    <div class="gbody">
+      <p>Features S01 to S04. Two live sources on one map, boundaries as the unit, the neighbourhood profile, the source panel with mock adapters.</p>
+      <div class="gexit"><b>Exit</b>The brief's hard requirement is met and demoable, and demo beats one to three pass in Playwright.</div>
+    </div>
+  </div>
+
+  <div class="gate">
+    <div class="gname">Decision layer<span>Stage 4</span></div>
+    <div class="gbody">
+      <p>Exposure weighting, access surface in the interface, Civic Access Score, and whichever of the optimiser and what-if mode you committed to.</p>
+      <div class="gexit"><b>Exit</b>The app makes at least one recommendation a person could act on, with a number attached to it.</div>
+    </div>
+  </div>
+
+  <div class="gate">
+    <div class="gname">Forecast and citizens<span>Stage 5</span></div>
+    <div class="gbody">
+      <p>Smog risk, alerts, the report flow, and the verification pipeline. Model evals running in CI against their baselines.</p>
+      <div class="gexit"><b>Exit</b>Every shipped model beats its baseline, or ships visibly labelled with its fallback.</div>
+    </div>
+  </div>
+
+  <div class="gate">
+    <div class="gname">Access and freeze<span>Stage 6</span></div>
+    <div class="gbody">
+      <p>Urdu and RTL, table twins, keyboard paths, offline mode, the print stylesheet, the attribution page. Then no new features: fixture mode rehearsal in airplane mode, the recorded fallback video, and the ninety seconds practised out loud at least five times.</p>
+      <div class="gexit"><b>Exit</b>Zero critical axe violations, a full keyboard pass by hand, the whole flow run once on a real budget phone, and all eight demo beats passing offline.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Companion to the feature plan for Theme 2, Problem Statement 1, Smart City Hackathon Lahore. Feature IDs referenced here (S01, D04, P01, C02, X01, R01 and so on) are defined in that document. Endpoint behaviour, authentication, and CORS status verified directly against the live services. This document follows its own content rules: no em dashes, no emoji.</p>
+</footer>
+
+</div>

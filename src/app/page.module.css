@@ -1,0 +1,320 @@
+/* Now screen. Generous at the top, denser below. Section 9.9 rule 5. */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+  max-width: var(--width-page);
+  margin: 0 auto;
+  padding: var(--space-7) var(--container-pad) var(--space-9);
+}
+
+/* ---------- hero ---------- */
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+  gap: var(--space-8);
+  align-items: center;
+}
+
+.heroText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--size-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* A quiet pulse is the whole "this is live" signal. One element, not a banner. */
+.live {
+  width: var(--space-2);
+  height: var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--ok);
+  flex: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .live {
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.82); }
+}
+
+.title {
+  font-size: clamp(1.75rem, 4.2vw, 2.75rem);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+  text-wrap: balance;
+}
+
+.place {
+  color: var(--accent);
+}
+
+.readout {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.big {
+  font-family: var(--font-mono);
+  font-size: clamp(3.5rem, 11vw, 5.5rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+
+.unit {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.unitValue {
+  font-family: var(--font-mono);
+  font-size: var(--size-body);
+  color: var(--text-tertiary);
+}
+
+/* Severity as a filled chip: colour plus the band name, never colour alone. */
+.band {
+  display: inline-block;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--size-body-sm);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.band[data-step="1"] { background: var(--sev-1); color: var(--sev-1-on); }
+.band[data-step="2"] { background: var(--sev-2); color: var(--sev-2-on); }
+.band[data-step="3"] { background: var(--sev-3); color: var(--sev-3-on); }
+.band[data-step="4"] { background: var(--sev-4); color: var(--sev-4-on); }
+.band[data-step="5"] { background: var(--sev-5); color: var(--sev-5-on); }
+.band[data-step="6"] { background: var(--sev-6); color: var(--sev-6-on); }
+
+.sentence {
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  max-width: 48ch;
+}
+
+.exposure {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--accent-subtle);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: var(--size-body-sm);
+}
+
+.exposure strong {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding-top: var(--space-2);
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap-min);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-md);
+  font-size: var(--size-body-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 160ms ease, transform 160ms ease, border-color 160ms ease;
+}
+
+.primary {
+  color: var(--text-on-accent);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.secondary {
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+}
+
+.secondary:hover {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .primary:active,
+  .secondary:active {
+    transform: translateY(1px);
+  }
+}
+
+.heroMap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.mapCaption {
+  font-size: var(--size-body-sm);
+  line-height: var(--leading-body-sm);
+  color: var(--text-tertiary);
+}
+
+/* ---------- sections ---------- */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border-strong);
+}
+
+.h2 {
+  font-size: 1.375rem;
+  line-height: var(--leading-heading);
+  color: var(--text-primary);
+}
+
+.quiet {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--size-body-sm);
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.quiet:hover {
+  color: var(--accent);
+}
+
+.cards {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.card:hover {
+  border-color: var(--accent-border);
+  box-shadow: var(--shadow-raised);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .card:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.cardGo {
+  position: absolute;
+  top: var(--space-5);
+  inset-inline-end: var(--space-5);
+  color: var(--text-tertiary);
+  transition: transform 160ms ease, color 160ms ease;
+}
+
+.card:hover .cardGo {
+  color: var(--accent);
+  transform: translateX(3px);
+}
+
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+  .heroMap {
+    order: -1;
+  }
+}
+
+/* Sparkline row inside an area card. The word carries the meaning; the glyph
+   carries the shape. */
+.trend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.trendWord {
+  font-family: var(--font-mono);
+  font-size: var(--size-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.scaleNote {
+  font-size: var(--size-body-sm);
+  line-height: var(--leading-body-sm);
+  color: var(--text-tertiary);
+  max-width: var(--width-prose);
+}

@@ -1,0 +1,110 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  max-width: var(--width-page);
+  margin: 0 auto;
+  padding: var(--space-3) var(--container-pad);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--radius-md);
+  min-width: 0;
+}
+
+.mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-8);
+  height: var(--space-8);
+  flex: none;
+  color: var(--text-on-accent);
+  background: var(--accent);
+  border-radius: var(--radius-md);
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.place {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--size-body);
+  line-height: var(--leading-heading);
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.context {
+  font-family: var(--font-mono);
+  font-size: var(--size-label);
+  line-height: var(--leading-label);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.nav {
+  display: flex;
+  gap: var(--space-1);
+  margin-inline-start: auto;
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap-min);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--size-body-sm);
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.navLink:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+@media (max-width: 720px) {
+  .inner {
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+  .nav {
+    order: 3;
+    width: 100%;
+    margin-inline-start: 0;
+    overflow-x: auto;
+  }
+  .navLink span {
+    font-size: var(--size-body-sm);
+  }
+  .context {
+    display: none;
+  }
+}

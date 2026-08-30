@@ -1,0 +1,645 @@
+<title>Lahore Civic Nervous System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+  :root {
+    --ground:#F1F4F5; --surface:#FFFFFF; --surface-2:#E7EDEE;
+    --line:#D3DDDF; --line-soft:#E2EAEB;
+    --text:#0F1A1C; --text-2:#48595C; --text-3:#6E8285;
+    --accent:#0B6E77; --accent-wash:#E0EFF0;
+    --good:#3C7A52; --warn:#A9660F; --crit:#A93A2A;
+    --shadow:0 1px 2px rgba(15,26,28,.05);
+    --f-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+    --f-body:"Public Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:#0C1416; --surface:#121D20; --surface-2:#182629;
+      --line:#253739; --line-soft:#1C2B2E;
+      --text:#E7EFF0; --text-2:#A4B6B9; --text-3:#7C9093;
+      --accent:#3FC7D1; --accent-wash:#13292C;
+      --good:#63B87C; --warn:#DFA24E; --crit:#E8705C;
+      --shadow:0 1px 2px rgba(0,0,0,.3);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:#0C1416; --surface:#121D20; --surface-2:#182629;
+    --line:#253739; --line-soft:#1C2B2E;
+    --text:#E7EFF0; --text-2:#A4B6B9; --text-3:#7C9093;
+    --accent:#3FC7D1; --accent-wash:#13292C;
+    --good:#63B87C; --warn:#DFA24E; --crit:#E8705C;
+    --shadow:0 1px 2px rgba(0,0,0,.3);
+  }
+  * { box-sizing:border-box; }
+  body { background:var(--ground); color:var(--text); font-family:var(--f-body);
+         font-size:16px; line-height:1.6; margin:0; -webkit-font-smoothing:antialiased; }
+ .wrap { max-width:1080px; margin:0 auto; padding:0 28px 96px; }
+
+ .masthead { border-bottom:2px solid var(--text); padding:56px 0 22px; margin-bottom:40px; }
+ .eyebrow { font-family:var(--f-mono); font-size:.70rem; font-weight:500; letter-spacing:.13em;
+             text-transform:uppercase; color:var(--accent); margin:0 0 18px; }
+  h1 { font-family:var(--f-display); font-weight:700; font-size:clamp(2.1rem,5.6vw,3.4rem);
+       line-height:1.02; letter-spacing:-.028em; text-wrap:balance; margin:0 0 20px; }
+ .standfirst { font-size:1.08rem; color:var(--text-2); max-width:63ch; margin:0 0 28px; }
+ .facts { display:flex; flex-wrap:wrap; border-top:1px solid var(--line); }
+ .fact { flex:1 1 150px; padding:14px 20px 14px 0; border-right:1px solid var(--line-soft); }
+ .fact:last-child { border-right:0; }
+ .fact dt { font-family:var(--f-mono); font-size:.66rem; letter-spacing:.11em;
+             text-transform:uppercase; color:var(--text-3); margin:0 0 4px; }
+ .fact dd { margin:0; font-family:var(--f-display); font-weight:600; font-size:.95rem; letter-spacing:-.01em; }
+
+  h2 { font-family:var(--f-display); font-weight:700; font-size:1.55rem; letter-spacing:-.022em;
+       line-height:1.15; text-wrap:balance; margin:0 0 8px; }
+  h3 { font-family:var(--f-display); font-weight:600; font-size:1.02rem; letter-spacing:-.012em; margin:0 0 6px; }
+  p { margin:0 0 14px; max-width:68ch; }
+  p:last-child { margin-bottom:0; }
+  em { font-style:italic; color:var(--text-2); }
+  strong { font-weight:600; }
+  code { font-family:var(--f-mono); font-size:.84em; background:var(--surface-2); padding:.1em .38em; border-radius:3px; }
+
+ .band { margin-top:60px; }
+ .band-head { display:flex; align-items:baseline; gap:16px; border-bottom:1px solid var(--text);
+               padding-bottom:12px; margin-bottom:4px; }
+ .band-head .tag { font-family:var(--f-mono); font-size:.68rem; font-weight:600; letter-spacing:.1em;
+                    text-transform:uppercase; color:var(--surface); background:var(--accent);
+                    padding:3px 8px; border-radius:3px; white-space:nowrap; flex:none; }
+ .band-head h2 { margin:0; }
+ .band-note { color:var(--text-2); font-size:.95rem; margin:14px 0 26px; max-width:68ch; }
+
+ .feature { display:grid; grid-template-columns:210px 1fr; gap:28px; padding:22px 0;
+             border-bottom:1px solid var(--line-soft); }
+ .feature:last-of-type { border-bottom:0; }
+ .f-meta { display:flex; flex-direction:column; gap:9px; }
+ .f-num { font-family:var(--f-mono); font-size:.72rem; font-weight:500; color:var(--text-3); letter-spacing:.06em; }
+ .chips { display:flex; flex-wrap:wrap; gap:5px; }
+ .chip { font-family:var(--f-mono); font-size:.63rem; font-weight:500; letter-spacing:.05em;
+          padding:2px 6px; border:1px solid var(--accent); border-radius:3px;
+          color:var(--accent); background:var(--accent-wash); white-space:nowrap; }
+ .effort { font-family:var(--f-mono); font-size:.63rem; font-weight:600; letter-spacing:.06em;
+            padding:2px 7px; border-radius:3px; align-self:flex-start; border:1px solid transparent; }
+ .e-s { color:var(--good); border-color:var(--good); }
+ .e-m { color:var(--warn); border-color:var(--warn); }
+ .e-l { color:var(--crit); border-color:var(--crit); }
+ .f-body p { font-size:.95rem; color:var(--text-2); }
+ .f-body p strong { color:var(--text); }
+ .why { font-size:.88rem; color:var(--text-3); border-left:2px solid var(--accent);
+         padding-left:12px; margin-top:10px; max-width:66ch; }
+ .why b { font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+           color:var(--accent); font-weight:600; display:block; margin-bottom:2px; }
+
+ .callout { background:var(--surface); border:1px solid var(--line); border-radius:4px;
+             padding:24px 26px; box-shadow:var(--shadow); margin-top:26px; }
+ .callout.warn { border-left:3px solid var(--crit); }
+ .callout h3 { margin-bottom:10px; }
+ .callout p { font-size:.95rem; color:var(--text-2); }
+
+ .scroll { overflow-x:auto; margin-top:22px; }
+  table { width:100%; border-collapse:collapse; font-size:.88rem; min-width:640px; }
+  th { font-family:var(--f-mono); font-size:.66rem; font-weight:600; letter-spacing:.1em;
+       text-transform:uppercase; color:var(--text-3); text-align:left;
+       padding:0 14px 9px 0; border-bottom:1px solid var(--text); white-space:nowrap; }
+  td { padding:10px 14px 10px 0; border-bottom:1px solid var(--line-soft); color:var(--text-2); vertical-align:top; }
+  td:first-child { color:var(--text); font-weight:500; }
+ .mono { font-family:var(--f-mono); font-size:.82rem; font-variant-numeric:tabular-nums; }
+ .dot { display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:7px; }
+ .d-ok { background:var(--good); } .d-mid { background:var(--warn); } .d-no { background:var(--crit); }
+
+ .beats { list-style:none; padding:0; margin:22px 0 0; counter-reset:beat; }
+ .beats li { display:grid; grid-template-columns:46px 1fr; gap:18px; padding:14px 0;
+              border-bottom:1px solid var(--line-soft); align-items:baseline; }
+ .beats li:last-child { border-bottom:0; }
+ .beats li::before { counter-increment:beat; content:counter(beat,decimal-leading-zero);
+                      font-family:var(--f-mono); font-size:.78rem; font-weight:600; color:var(--accent); }
+ .beats .said { font-size:.95rem; color:var(--text); margin:0; }
+ .beats .said span { display:block; color:var(--text-3); font-size:.86rem; margin-top:3px; }
+
+ .roles { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1px;
+           background:var(--line-soft); border:1px solid var(--line-soft); margin-top:24px; }
+ .role { background:var(--ground); padding:18px 20px; }
+ .role .r-label { font-family:var(--f-mono); font-size:.64rem; letter-spacing:.11em;
+                   text-transform:uppercase; color:var(--accent); margin:0 0 7px; }
+ .role p { font-size:.88rem; color:var(--text-2); margin:0; }
+
+ .legend { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:6px 22px;
+            margin-top:40px; padding:18px 0 0; border-top:1px solid var(--line); }
+ .legend div { font-size:.82rem; color:var(--text-3); }
+ .legend .k { font-family:var(--f-mono); font-size:.68rem; font-weight:600; color:var(--accent); letter-spacing:.06em; }
+
+  footer { margin-top:64px; padding-top:22px; border-top:1px solid var(--line);
+           font-size:.84rem; color:var(--text-3); }
+
+  @media (max-width:720px) {
+   .wrap { padding:0 20px 72px; }
+   .feature { grid-template-columns:1fr; gap:12px; }
+   .f-meta { flex-direction:row; flex-wrap:wrap; align-items:center; gap:8px; }
+   .band-head { flex-wrap:wrap; gap:10px; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Smart City Hackathon Lahore &middot; Theme 2 &middot; Problem Statement 1</p>
+    <h1>A civic nervous system for Lahore</h1>
+    <p class="standfirst">Every feature worth building, rated by what it costs you and which judging criteria it actually moves. The brief asks for two or more live data sources on one map. That is the floor, not the project. The score lives in what you do <em>after</em> the data lands.</p>
+    <dl class="facts">
+      <div class="fact"><dt>Build unit</dt><dd>Lahore District</dd></div>
+      <div class="fact"><dt>Team</dt><dd>Up to 5</dd></div>
+      <div class="fact"><dt>Keyless live feeds</dt><dd>5 verified</dd></div>
+      <div class="fact"><dt>Features listed</dt><dd>37</dd></div>
+    </dl>
+  </header>
+
+  <div class="callout warn">
+    <h3>Read this before you pick anything</h3>
+    <p>Thirty-nine features are listed below. A five-person team should ship roughly <strong>twelve</strong>. The failure mode at every hackathon is a demo with fourteen half-working features and no story. Build the Spine completely, add two or three Decision features you can finish, and spend real time on Access. It is a named judging criterion that almost every team ignores, which makes it the cheapest points on the board.</p>
+  </div>
+
+  <section class="band">
+    <div class="band-head"><span class="tag">Spine</span><h2>What the brief literally asks for</h2></div>
+    <p class="band-note">Without these you have not answered Problem Statement 1. Finish all four before anyone starts on anything below.</p>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">S01</span><span class="effort e-m">EFFORT&nbsp;M</span>
+        <div class="chips"><span class="chip">REL</span><span class="chip">TEC</span></div></div>
+      <div class="f-body">
+        <h3>One map, live layers, toggled independently</h3>
+        <p>A single MapLibre canvas carrying air quality, weather, OSM facilities and population density, each switchable. <strong>Open-Meteo's air-quality and forecast APIs are keyless and CORS-open</strong>, so two genuinely live sources are running within the first hour with no backend at all.</p>
+        <div class="why"><b>Why it scores</b>The brief's one hard requirement: two or more live data sources into a single map. Everything else is optional; this is not.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">S02</span><span class="effort e-m">EFFORT&nbsp;M</span>
+        <div class="chips"><span class="chip">TEC</span><span class="chip">FEA</span></div></div>
+      <div class="f-body">
+        <h3>Union council boundaries as the unit of analysis</h3>
+        <p>Every number on the page resolves to a named administrative area, not a floating dot. Pull boundaries from OSM via the HOT Export Tool, snap population and sensor readings onto them, and you have a base that every later feature reuses.</p>
+        <div class="why"><b>Why it scores</b>Officials think in administrative units. A map that says "AQI 214 in Shalimar Town" is usable; a heat blob is not. This is also what makes the whole thing rankable, comparable and sortable later.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">S03</span><span class="effort e-s">EFFORT&nbsp;S</span>
+        <div class="chips"><span class="chip">REL</span><span class="chip">UX</span><span class="chip">CLR</span></div></div>
+      <div class="f-body">
+        <h3>Know Your Neighbourhood. Search, profile, printable summary</h3>
+        <p>Type a neighbourhood, get one page: population, current air quality, nearest hospital and school with travel time, road connectivity, active alerts. Export it as a clean one-page PDF.</p>
+        <div class="why"><b>Why it scores</b>Named explicitly in the problem statement's starter ideas. Cheap to build, and it is the best vehicle for your demo. A judge understands it in four seconds without explanation.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">S04</span><span class="effort e-s">EFFORT&nbsp;S</span>
+        <div class="chips"><span class="chip">FEA</span><span class="chip">CLR</span><span class="chip">RWA</span></div></div>
+      <div class="f-body">
+        <h3>Live source panel with an empty seat for the official feeds</h3>
+        <p>A visible panel listing every connected source, its last-updated timestamp and its health. Below the live ones, greyed out but wired: <strong>Suthra Punjab fleet, Punjab EPA monitors, PITB One Map</strong>. Each behind a real adapter interface with a mock implementation you can toggle on stage.</p>
+        <div class="why"><b>Why it scores</b>The brief names the two-track constraint itself: build on open data, design so an official feed plugs in later without a rebuild. Most teams say this in a slide. Showing a mock adapter flip on is the version judges believe.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="band-head"><span class="tag">Decision</span><h2>Turning display into decision</h2></div>
+    <p class="band-note">The brief's sharpest line: <em>transform raw data into actionable information rather than simply displaying it.</em> This band is where a dashboard stops being a dashboard. Pick two or three.</p>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">D01</span><span class="effort e-s">EFFORT&nbsp;S</span>
+        <div class="chips"><span class="chip">INN</span><span class="chip">IMP</span><span class="chip">CLR</span></div></div>
+      <div class="f-body">
+        <h3>Exposure-weighted metrics. Multiply everything by people</h3>
+        <p>Never show a bare reading. WorldPop &times; AQI gives <strong>people exposed</strong>, not "AQI 214". Distance to a hospital becomes "12,400 residents beyond a 15-minute drive from emergency care." Same data, completely different sentence.</p>
+        <div class="why"><b>Why it scores</b>Highest impact per hour on this entire list. It is a multiplication, it takes an afternoon, and it converts every panel from a measurement into a consequence. WorldPop's own framing invites it: population maps show who is affected by whatever you map.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">D02</span><span class="effort e-l">EFFORT&nbsp;L</span>
+        <div class="chips"><span class="chip">TEC</span><span class="chip">IMP</span><span class="chip">INN</span></div></div>
+      <div class="f-body">
+        <h3>Road-network travel time, not straight-line distance</h3>
+        <p>Run OSRM or Valhalla over a Lahore OSM extract and compute real isochrones, 5, 10, 15 minutes by road. A hospital 800m away across an unbridged canal is not 800m away.</p>
+        <div class="why"><b>Why it scores</b>Every other team will draw circles. Circles are wrong in a city cut by canals, railways and the Ravi, and a technical judge will know it on sight. Clearest available signal of Technical Execution.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">D03</span><span class="effort e-m">EFFORT&nbsp;M</span>
+        <div class="chips"><span class="chip">IMP</span><span class="chip">CLR</span><span class="chip">RWA</span></div></div>
+      <div class="f-body">
+        <h3>Civic Access Score. One composite index, one ranked table</h3>
+        <p>Fold access to health, education and green space, air quality and population density into a single transparent score per union council. Publish the weights and let the user change them. Then rank every UC worst to best.</p>
+        <div class="why"><b>Why it scores</b>A ranked list is a to-do list. It converts a map into "these five areas need attention first," which is the exact output a city official can act on. Keep the formula visible. A black-box index reads as hand-waving.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">D04</span><span class="effort e-l">EFFORT&nbsp;L</span>
+        <div class="chips"><span class="chip">INN</span><span class="chip">IMP</span><span class="chip">TEC</span><span class="chip">RWA</span></div></div>
+      <div class="f-body">
+        <h3>Siting optimiser. Where the next clinic should actually go</h3>
+        <p>Greedy maximum coverage over the access surface: given current facilities and the population grid, compute the location that brings the most underserved people inside a 15-minute threshold. Output a ranked shortlist with the population each site newly covers.</p>
+        <div class="why"><b>Why it scores</b>This is the feature that answers "think beyond traditional dashboards." It is prescriptive, not descriptive. The system makes a recommendation and defends it with a number. If you build exactly one differentiator, build this one.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">D05</span><span class="effort e-m">EFFORT&nbsp;M</span>
+        <div class="chips"><span class="chip">INN</span><span class="chip">UX</span><span class="chip">CLR</span></div></div>
+      <div class="f-body">
+        <h3>What-if mode. Drop a pin, watch coverage recompute</h3>
+        <p>Let the user place a hypothetical hospital, school or park anywhere on the map and immediately see the access surface redraw and the affected population count update. Runs entirely in the browser over precomputed reachability sets, so there is no routing call and no perceptible delay.</p>
+        <div class="why"><b>Why it scores</b>The most demo-able thing on this list. It is interactive, it is instant, and it hands the judge the mouse. Pairs with D04: the optimiser proposes, the user tests.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">D06</span><span class="effort e-s">EFFORT&nbsp;S</span>
+        <div class="chips"><span class="chip">UX</span><span class="chip">CLR</span></div></div>
+      <div class="f-body">
+        <h3>Side-by-side comparison of two areas</h3>
+        <p>Two union councils, same metrics, one screen. Difference bars rather than two separate readouts.</p>
+        <div class="why"><b>Why it scores</b>Inequality between neighbourhoods is the story this data actually tells, and comparison is the only layout that tells it in one glance.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="band-head"><span class="tag">Predictive</span><h2>The forward-looking layer</h2></div>
+    <p class="band-note">The theme asks for a view that is "live, <em>predictive</em>, and citizen-facing." Most teams will deliver live and citizen-facing and quietly skip predictive. Open-Meteo hands you forecast data for free, so there is no excuse.</p>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">P01</span><span class="effort e-m">EFFORT&nbsp;M</span>
+        <div class="chips"><span class="chip">INN</span><span class="chip">IMP</span><span class="chip">REL</span><span class="chip">RWA</span></div></div>
+      <div class="f-body">
+        <h3>Smog risk forecast, 48&ndash;72 hours out</h3>
+        <p>Combine Open-Meteo's PM2.5 forecast with wind speed, wind direction and temperature inversion proxies to flag which union councils are heading into hazardous air, before it arrives. Show the arrival window, not just a number.</p>
+        <div class="why"><b>Why it scores</b>Lahore's smog season is the city's signature public health emergency and it is genuinely predictable from free forecast data. Nothing else here lands harder with a Lahore audience. Your Relevance and Social Impact scores in one feature.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">P02</span><span class="effort e-l">EFFORT&nbsp;L</span>
+        <div class="chips"><span class="chip">INN</span><span class="chip">IMP</span><span class="chip">RWA</span></div></div>
+      <div class="f-body">
+        <h3>Monsoon urban flood risk</h3>
+        <p>Rainfall forecast crossed with terrain low points from a Copernicus DEM and built-up density from OSM, to flag likely ponding areas hours ahead. Weight by population to rank which flood spots matter most.</p>
+        <div class="why"><b>Why it scores</b>This is the Rio parallel the brief opens with, done for Lahore: rainfall crosses a threshold, warnings reach at-risk neighbourhoods. Drainage-poor low-lying areas flood every monsoon and the pattern is known locally, which makes your output checkable against lived experience.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">P03</span><span class="effort e-m">EFFORT&nbsp;M</span>
+        <div class="chips"><span class="chip">INN</span><span class="chip">IMP</span></div></div>
+      <div class="f-body">
+        <h3>Urban heat island exposure</h3>
+        <p>Copernicus land surface temperature against population and tree cover, precomputed as static tiles at build time. Ranks neighbourhoods by heat exposure per resident.</p>
+        <div class="why"><b>Why it scores</b>Adds satellite data credibly without a live Earth Engine pipeline, and heat mortality is the under-discussed twin of Lahore's air quality problem.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">P04</span><span class="effort e-m">EFFORT&nbsp;M</span>
+        <div class="chips"><span class="chip">IMP</span><span class="chip">RWA</span><span class="chip">UX</span></div></div>
+      <div class="f-body">
+        <h3>Threshold alerts that actually leave the building</h3>
+        <p>Subscribe to an area; when air quality, rainfall or heat crosses a threshold, an alert goes out. Web push for smartphones and email for officials both ship. SMS for feature phones is scoped out: it needs a paid gateway, and naming it as roadmap is more honest than gesturing at it.</p>
+        <div class="why"><b>Why it scores</b>The brief's opening example is Rio warning at-risk neighbourhoods within seconds. A dashboard nobody opens saves nobody. The alert is what makes the system operational rather than observational. The SMS path is what makes it real in Pakistan.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">P05</span><span class="effort e-s">EFFORT&nbsp;S</span>
+        <div class="chips"><span class="chip">TEC</span><span class="chip">CLR</span></div></div>
+      <div class="f-body">
+        <h3>Historical playback across the last twelve months</h3>
+        <p>A time scrubber over Open-Meteo's free archive. Watch the smog season arrive and lift; watch monsoon rainfall spike.</p>
+        <div class="why"><b>Why it scores</b>Cheap, visually striking, and it proves seasonality, which is what justifies the forecasting features to a sceptical judge.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="band-head"><span class="tag">Citizen</span><h2>The contribution layer the brief names as missing</h2></div>
+    <p class="band-note">The gap statement is explicit: Lahore has no system that "lets citizens contribute verified data of their own." <strong>Verified</strong> is the operative word. A report form is table stakes, the verification pipeline is the feature.</p>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">C01</span><span class="effort e-m">EFFORT&nbsp;M</span>
+        <div class="chips"><span class="chip">REL</span><span class="chip">IMP</span><span class="chip">UX</span></div></div>
+      <div class="f-body">
+        <h3>Geotagged citizen reports</h3>
+        <p>Photo, location, category. Uncollected waste, standing water, open manhole, dead streetlight, illegal dumping. Works on a cheap Android phone in two taps.</p>
+        <div class="why"><b>Why it scores</b>Mirrors Suthra Punjab's own geo-tagged worker photographs, which means your data model is already shaped to merge with theirs the day access opens.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">C02</span><span class="effort e-m">EFFORT&nbsp;M</span>
+        <div class="chips"><span class="chip">INN</span><span class="chip">TEC</span><span class="chip">FEA</span></div></div>
+      <div class="f-body">
+        <h3>The verification pipeline</h3>
+        <p>Score each report's confidence from corroboration count, geographic plausibility, EXIF timestamp consistency, submitter history, and cross-checks against sensor and satellite data. Surface the confidence on the map instead of treating every report as fact.</p>
+        <div class="why"><b>Why it scores</b>This is the word the brief chose and nobody else will build. It is also the honest answer to the obvious judge question: how do you stop people spamming it?</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">C03</span><span class="effort e-s">EFFORT&nbsp;S</span>
+        <div class="chips"><span class="chip">IMP</span><span class="chip">RWA</span></div></div>
+      <div class="f-body">
+        <h3>Clustering into hotspots and escalation summaries</h3>
+        <p>Nine reports on one street become one hotspot with a severity, not nine pins. Generate a weekly per-UC summary an official could forward without editing.</p>
+        <div class="why"><b>Why it scores</b>Reduces noise into something a department can act on. Individual complaints get ignored; a ranked hotspot list with counts does not.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">C04</span><span class="effort e-s">EFFORT&nbsp;S</span>
+        <div class="chips"><span class="chip">IMP</span><span class="chip">RWA</span></div></div>
+      <div class="f-body">
+        <h3>Public accountability view</h3>
+        <p>Open versus resolved reports, median response time, tracked by area and category, visible to everyone.</p>
+        <div class="why"><b>Why it scores</b>Transparency creates the pressure that makes the reporting loop close. It is also the feature that gives the platform a reason to exist after the hackathon.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="band-head"><span class="tag">AI</span><h2>Assistance, not decoration</h2></div>
+    <p class="band-note">The brief lists AI assistants as a welcome presentation mode. The trap is a chatbot bolted to the corner answering questions the map already answers. Every item here has to produce something the map cannot.</p>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">A01</span><span class="effort e-m">EFFORT&nbsp;M</span>
+        <div class="chips"><span class="chip">INN</span><span class="chip">UX</span><span class="chip">TEC</span></div></div>
+      <div class="f-body">
+        <h3>Natural language to map query</h3>
+        <p>"Show me schools within 2km of an area where AQI is above 200" compiles to a structured filter and redraws the map. Always show the generated query so the user can see what was asked.</p>
+        <div class="why"><b>Why it scores</b>Removes the GIS skill requirement, which is the real accessibility barrier for the citizens and councillors this is meant to serve. Showing the compiled query keeps it verifiable rather than magical.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">A02</span><span class="effort e-s">EFFORT&nbsp;S</span>
+        <div class="chips"><span class="chip">CLR</span><span class="chip">IMP</span><span class="chip">RWA</span></div></div>
+      <div class="f-body">
+        <h3>Daily situation brief per union council</h3>
+        <p>A short written summary generated strictly from the numbers on record. Today's readings, what changed, what is forecast, what needs attention. With every claim carrying its source and timestamp.</p>
+        <div class="why"><b>Why it scores</b>This is what an operations centre actually produces every morning. Grounding it in retrieved values rather than free generation is also your defence against a judge asking whether the AI is making things up.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">A03</span><span class="effort e-s">EFFORT&nbsp;S</span>
+        <div class="chips"><span class="chip">UX</span><span class="chip">CLR</span></div></div>
+      <div class="f-body">
+        <h3>"Why is this area red?"</h3>
+        <p>Click any shaded area and get a plain-language explanation of which inputs drove the score and by how much.</p>
+        <div class="why"><b>Why it scores</b>Explainability, at almost no cost, on a composite index that would otherwise look arbitrary. Directly serves Clarity of the Proposed Solution.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="band-head"><span class="tag">Access</span><h2>User experience and accessibility</h2></div>
+    <p class="band-note">A standalone judging criterion, and the one most teams treat as polish they will get to if there is time. There will not be time. Assign it to someone on day one.</p>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">X01</span><span class="effort e-m">EFFORT&nbsp;M</span>
+        <div class="chips"><span class="chip">UX</span><span class="chip">IMP</span><span class="chip">RWA</span></div></div>
+      <div class="f-body">
+        <h3>Urdu, with proper right-to-left layout</h3>
+        <p>Full interface translation and RTL mirroring, including the generated briefs and alerts.</p>
+        <div class="why"><b>Why it scores</b>A civic tool for Lahore that only speaks English serves the people who least need it. Strongest Real-World Application signal available, and very few teams will do it.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">X02</span><span class="effort e-s">EFFORT&nbsp;S</span>
+        <div class="chips"><span class="chip">UX</span><span class="chip">TEC</span></div></div>
+      <div class="f-body">
+        <h3>Colourblind-safe severity palettes</h3>
+        <p>Use viridis or cividis ramps rather than default red-to-green. Encode severity with pattern or label as well as hue, so the map survives greyscale printing and the roughly one in twelve men with colour vision deficiency.</p>
+        <div class="why"><b>Why it scores</b>Nearly free, and it is the accessibility failure most likely to be sitting in the judging panel's own eyes.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">X03</span><span class="effort e-s">EFFORT&nbsp;S</span>
+        <div class="chips"><span class="chip">UX</span></div></div>
+      <div class="f-body">
+        <h3>A data table behind every map layer</h3>
+        <p>Every visual layer has a sortable table equivalent reachable by keyboard and readable by a screen reader. Full keyboard navigation and visible focus states throughout.</p>
+        <div class="why"><b>Why it scores</b>Maps are inherently inaccessible to screen readers. The table is not a consolation prize. It is also faster for the power user comparing twenty areas.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">X04</span><span class="effort e-m">EFFORT&nbsp;M</span>
+        <div class="chips"><span class="chip">FEA</span><span class="chip">RWA</span><span class="chip">UX</span></div></div>
+      <div class="f-body">
+        <h3>Low-bandwidth and offline mode</h3>
+        <p>Install as a PWA, cache map tiles and last known readings, degrade to a text summary when the connection drops.</p>
+        <div class="why"><b>Why it scores</b>The people most exposed to bad air and flooding are the least likely to be on fast, unmetered data. A tool that fails on a weak connection fails exactly where it is needed.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">X05</span><span class="effort e-s">EFFORT&nbsp;S</span>
+        <div class="chips"><span class="chip">UX</span><span class="chip">RWA</span></div></div>
+      <div class="f-body">
+        <h3>Built mobile-first, tested on a cheap Android</h3>
+        <p>Design for a 360px screen on a mid-range phone, then scale up. Borrow an actual budget handset and run the demo on it.</p>
+        <div class="why"><b>Why it scores</b>Your users are on phones. Your judges may check. A desktop-only map is a prototype of the wrong product.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="band-head"><span class="tag">Credibility</span><h2>Feasibility, scalability and the rules</h2></div>
+    <p class="band-note">Two judging criteria and one Code of Conduct obligation live in this band. All of it is cheap.</p>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">R01</span><span class="effort e-s">EFFORT&nbsp;S</span>
+        <div class="chips"><span class="chip">FEA</span><span class="chip">TEC</span></div></div>
+      <div class="f-body">
+        <h3>A documented adapter interface for future official feeds</h3>
+        <p>One typed contract every source implements, live or mocked. Adding Punjab EPA later means writing one adapter, not touching the app.</p>
+        <div class="why"><b>Why it scores</b>"Scalable so that additional government datasets can easily be integrated over time" is a stated success condition. An interface plus two mock implementations is the proof.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">R02</span><span class="effort e-s">EFFORT&nbsp;S</span>
+        <div class="chips"><span class="chip">CLR</span><span class="chip">FEA</span></div></div>
+      <div class="f-body">
+        <h3>Provenance on every number</h3>
+        <p>Hover or tap any value to see its source, retrieval time and licence. No unattributed figures anywhere in the interface.</p>
+        <div class="why"><b>Why it scores</b>Serves Clarity, and discharges the Code of Conduct's requirement to acknowledge third-party datasets, code and AI-generated content as a designed feature rather than a footnote.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">R03</span><span class="effort e-s">EFFORT&nbsp;S</span>
+        <div class="chips"><span class="chip">TEC</span><span class="chip">FEA</span></div></div>
+      <div class="f-body">
+        <h3>Admitted uncertainty</h3>
+        <p>Lahore has few public air sensors. Where you interpolate, say so, and shade confidence on the map. Show sensor positions so coverage gaps are visible rather than hidden by smooth colour.</p>
+        <div class="why"><b>Why it scores</b>Counterintuitive but reliable: a technical judge trusts the team that draws its own error bars far more than the team whose interpolated surface implies sensors that do not exist.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">R04</span><span class="effort e-s">EFFORT&nbsp;S</span>
+        <div class="chips"><span class="chip">FEA</span><span class="chip">RWA</span></div></div>
+      <div class="f-body">
+        <h3>Open read API and GeoJSON export</h3>
+        <p>Publish your computed layers, meaning access scores, hotspots and exposure counts, so researchers, journalists and other teams can build on them. Served under ODbL, because layers derived from the OpenStreetMap road graph carry its share-alike clause. Your code stays MIT.</p>
+        <div class="why"><b>Why it scores</b>Turns your project from an app into infrastructure, a materially stronger answer to Potential for Real-World Application.</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">R05</span><span class="effort e-s">EFFORT&nbsp;S</span>
+        <div class="chips"><span class="chip">CLR</span></div></div>
+      <div class="f-body">
+        <h3>An attribution and licensing page</h3>
+        <p>Every dataset, library, model and AI-assisted contribution, listed with its licence.</p>
+        <div class="why"><b>Why it scores</b>Explicitly required: teams must acknowledge significant third-party resources and must not violate data or content licences. An hour of work that removes a disqualification risk.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="band-head"><span class="tag">Stretch</span><h2>Only if the spine is finished and tested</h2></div>
+    <p class="band-note">Genuinely good ideas that are not worth a broken demo. Listed so you can mention them as roadmap in the pitch without building them.</p>
+
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">T01</span><span class="effort e-l">EFFORT&nbsp;L</span>
+        <div class="chips"><span class="chip">INN</span><span class="chip">IMP</span></div></div>
+      <div class="f-body"><h3>Satellite change detection</h3>
+        <p>Copernicus imagery across several years to detect built-up expansion, tree canopy loss and encroachment on green space.</p></div>
+    </div>
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">T02</span><span class="effort e-m">EFFORT&nbsp;M</span>
+        <div class="chips"><span class="chip">IMP</span><span class="chip">INN</span></div></div>
+      <div class="f-body"><h3>Green cover equity</h3>
+        <p>NDVI against population density to show which neighbourhoods have the least tree cover per resident, and rank planting priority.</p></div>
+    </div>
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">T03</span><span class="effort e-l">EFFORT&nbsp;L</span>
+        <div class="chips"><span class="chip">INN</span><span class="chip">UX</span></div></div>
+      <div class="f-body"><h3>Clean-air routing</h3>
+        <p>Route a walk or cycle along the least polluted path rather than the shortest one.</p></div>
+    </div>
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">T04</span><span class="effort e-s">EFFORT&nbsp;S</span>
+        <div class="chips"><span class="chip">IMP</span><span class="chip">RWA</span></div></div>
+      <div class="f-body"><h3>School-day air advisory</h3>
+        <p>Cross tomorrow's PM2.5 forecast with school locations and child population to issue a per-school outdoor-activity recommendation.</p></div>
+    </div>
+    <div class="feature">
+      <div class="f-meta"><span class="f-num">T05</span><span class="effort e-s">EFFORT&nbsp;S</span>
+        <div class="chips"><span class="chip">RWA</span></div></div>
+      <div class="f-body"><h3>Embeddable neighbourhood widget</h3>
+        <p>A small iframe any local news site or community page can drop in to show live conditions for its own area.</p></div>
+    </div>
+  </section>
+
+  <div class="legend">
+    <div><span class="k">INN</span> Innovation and creativity</div>
+    <div><span class="k">REL</span> Relevance to the challenge</div>
+    <div><span class="k">IMP</span> Urban and social impact</div>
+    <div><span class="k">TEC</span> Technical execution</div>
+    <div><span class="k">FEA</span> Feasibility and scalability</div>
+    <div><span class="k">UX&nbsp;</span> Experience and accessibility</div>
+    <div><span class="k">CLR</span> Clarity of the solution</div>
+    <div><span class="k">RWA</span> Real-world application</div>
+  </div>
+
+  <section class="band">
+    <div class="band-head"><span class="tag">Data</span><h2>What each source can actually do</h2></div>
+    <p class="band-note">Verified against the live endpoints. Two corrections to the brief's source list worth knowing before you waste an hour: the AQICN Lahore path returns 404. Use <code>aqicn.org/city/lahore</code>. And WorldPop's REST API now lives at <code>hub.worldpop.org</code>.</p>
+
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Source</th><th>Use it for</th><th>Access</th><th>How it fits</th></tr></thead>
+        <tbody>
+          <tr><td>Open-Meteo</td><td>Weather, rainfall, PM2.5 and PM10, forecast and archive</td>
+              <td class="mono"><span class="dot d-ok"></span>keyless, CORS *</td>
+              <td>Your primary live feed. Call it straight from the browser.</td></tr>
+          <tr><td>Overpass and Nominatim</td><td>Hospitals, schools, roads, parks; place search</td>
+              <td class="mono"><span class="dot d-ok"></span>keyless, CORS *</td>
+              <td>Live queries at demo time; mind the shared rate limit.</td></tr>
+          <tr><td>Humanitarian Data Exchange</td><td>Ready-made Pakistan OSM extracts, CKAN search</td>
+              <td class="mono"><span class="dot d-ok"></span>keyless, CORS *</td>
+              <td>Bulk boundaries and facilities, fetched at build time.</td></tr>
+          <tr><td>HOT Export Tool</td><td>A Lahore-only OSM slice, exactly the features you want</td>
+              <td class="mono"><span class="dot d-mid"></span>login</td>
+              <td>Cleanest way to avoid carrying all of Pakistan.</td></tr>
+          <tr><td>WorldPop</td><td>Small-area population grids</td>
+              <td class="mono"><span class="dot d-ok"></span>open, no CORS</td>
+              <td>Download once, trim to Punjab, commit as a static raster.</td></tr>
+          <tr><td>OpenAQ v3</td><td>Ground sensor readings</td>
+              <td class="mono"><span class="dot d-mid"></span>API key</td>
+              <td>Behind a server route. Never put the key in client code.</td></tr>
+          <tr><td>AQICN / WAQI</td><td>Live station AQI for Lahore</td>
+              <td class="mono"><span class="dot d-mid"></span>token</td>
+              <td>Server route. The public demo token silently returns Shanghai. Get a real one before you trust a single reading.</td></tr>
+          <tr><td>Copernicus</td><td>Land surface temperature, NDVI, terrain, built-up growth</td>
+              <td class="mono"><span class="dot d-no"></span>account</td>
+              <td>Export scenes ahead of time, ship as static tiles.</td></tr>
+          <tr><td>Google Earth Engine</td><td>Multi-year satellite analysis</td>
+              <td class="mono"><span class="dot d-no"></span>registered project</td>
+              <td>Precompute only. Too slow and too gated for a live demo.</td></tr>
+          <tr><td>PBS, BoS Punjab, Open Data Pakistan</td><td>2023 census, district tables, Lahore property points</td>
+              <td class="mono"><span class="dot d-no"></span>manual files</td>
+              <td>Clean to CSV or GeoJSON once and commit it.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <h3>The shape this implies</h3>
+      <p>Everything live and keyless runs client-side. Everything keyed runs through a thin server route. Everything gated gets downloaded, trimmed to Lahore and committed as a static asset before judging starts. That split is not a compromise. The server route layer <em>is</em> the demonstration that an official EPA or Suthra Punjab feed can slot in later without a rebuild, which is exactly what the brief asks you to design for.</p>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="band-head"><span class="tag">Demo</span><h2>The ninety seconds that decide it</h2></div>
+    <p class="band-note">Judges remember one moment. Build backwards from this sequence. Anything that does not serve it is a stretch goal, whatever else this document says.</p>
+    <ol class="beats">
+      <li><p class="said">Search a real neighbourhood.<span>Shalimar Town. No login, no setup, no explanation needed.</span></p></li>
+      <li><p class="said">The profile resolves live.<span>Current AQI, and the number of residents breathing it right now.</span></p></li>
+      <li><p class="said">Access, by road, not by circle.<span>Nearest hospital 19 minutes. 12,400 people beyond a 15-minute drive from emergency care.</span></p></li>
+      <li><p class="said">Look forward, not just at now.<span>Smog crossing hazardous in 41 hours. These four union councils, this arrival window.</span></p></li>
+      <li><p class="said">The system makes a recommendation.<span>A clinic sited here brings 31,000 of those people inside fifteen minutes. Here is the second-best site, and the third.</span></p></li>
+      <li><p class="said">Hand over the mouse.<span>Let a judge drop their own pin and watch the coverage surface redraw.</span></p></li>
+      <li><p class="said">Close in Urdu, on a phone.<span>Same brief, right to left, on a budget Android, exported as one page a councillor can print.</span></p></li>
+      <li><p class="said">Flip on the official feed.<span>Toggle the mocked EPA adapter. The map keeps working. Nothing was rebuilt.</span></p></li>
+    </ol>
+  </section>
+
+  <section class="band">
+    <div class="band-head"><span class="tag">Team</span><h2>Five people, five lanes</h2></div>
+    <p class="band-note">The most common five-person failure is four people on the frontend and nobody on the story. Someone must own the pitch from hour one, Clarity of the Proposed Solution is a judged criterion, not a soft skill.</p>
+    <div class="roles">
+      <div class="role"><p class="r-label">Geospatial</p><p>Boundaries, population grids, tiling, isochrones, the access score. Owns S02, D02, D03.</p></div>
+      <div class="role"><p class="r-label">Backend and adapters</p><p>Server routes, key handling, caching, the adapter contract, verification scoring, the public API. Owns S04, C02, R01.</p></div>
+      <div class="role"><p class="r-label">Frontend and map</p><p>The map canvas, layer toggles, what-if interaction, comparison view, mobile. Owns S01, D05, X05.</p></div>
+      <div class="role"><p class="r-label">AI and language</p><p>Grounded briefs, natural-language query, explanations, Urdu and RTL. Owns A01 to A03, X01.</p></div>
+      <div class="role"><p class="r-label">Design, access and pitch</p><p>Information design, WCAG compliance, the printable summary, the demo script, the deck. Owns S03, X02 to X04, and the ninety seconds.</p></div>
+    </div>
+    <div class="callout warn">
+      <h3>Three ways this goes wrong</h3>
+      <p><strong>Scope.</strong> Twelve finished features beat twenty-five broken ones, and a judge can only see what works on the day. <strong>Live dependencies.</strong> Overpass and Nominatim are shared public infrastructure with rate limits. Cache every response and keep a recorded fallback so a throttled endpoint cannot kill the demo. <strong>Untested claims.</strong> If you say the smog forecast is accurate, backtest it against the Open-Meteo archive first; a judge who asks and gets a shrug discounts everything else you said.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>Built against Theme 2, Problem Statement 1 of the Smart City Hackathon Lahore brief. Endpoint availability, authentication and CORS behaviour verified directly. Effort ratings assume a five-person team over a hackathon weekend.</p>
+  </footer>
+</div>

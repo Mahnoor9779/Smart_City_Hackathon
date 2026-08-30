@@ -1,0 +1,56 @@
+/* Compact segmented control. Icons carry meaning on screen, labels for readers. */
+
+.group {
+  display: flex;
+  gap: var(--space-1);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-1);
+  margin: 0;
+  background: var(--bg-surface);
+}
+
+.option {
+  cursor: pointer;
+  display: block;
+}
+
+.input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-8);
+  height: var(--space-7);
+  color: var(--text-tertiary);
+  border-radius: var(--radius-sm);
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.option:hover .input:not(:checked) + .pill {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+}
+
+.input:checked + .pill {
+  color: var(--text-on-accent);
+  background: var(--accent);
+}
+
+.input:focus-visible + .pill {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+@media (max-width: 560px) {
+  .pill {
+    width: var(--space-7);
+  }
+}

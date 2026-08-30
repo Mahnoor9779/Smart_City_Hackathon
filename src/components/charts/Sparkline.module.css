@@ -1,0 +1,22 @@
+.svg {
+  display: block;
+  overflow: visible;
+}
+
+.line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.fill {
+  fill: var(--accent);
+  opacity: 0.12;
+  stroke: none;
+}
+
+.end {
+  fill: var(--accent);
+}

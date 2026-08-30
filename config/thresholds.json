@@ -1,0 +1,33 @@
+{
+  "$comment": "Severity and alert thresholds. ADR-9: all air values are PM2.5 in micrograms per cubic metre, never AQI.",
+  "severity": {
+    "metric": "pm2_5",
+    "unit": "ug/m3",
+    "steps": [
+      { "step": 1, "max": 12, "label": "Good" },
+      { "step": 2, "max": 35, "label": "Moderate" },
+      { "step": 3, "max": 55, "label": "Unhealthy for sensitive groups" },
+      { "step": 4, "max": 150, "label": "Unhealthy" },
+      { "step": 5, "max": 250, "label": "Very unhealthy" },
+      { "step": 6, "max": null, "label": "Hazardous" }
+    ]
+  },
+  "alerts": {
+    "pm2_5": { "warn": 55, "critical": 150, "unit": "ug/m3" },
+    "precipitation_72h": { "warn": 40, "critical": 90, "unit": "mm" },
+    "temperature_max": { "warn": 42, "critical": 46, "unit": "celsius" }
+  },
+  "access": {
+    "thresholdMinutes": 15,
+    "$comment": "The line that defines underserved, used by the access surface, the optimiser, and every exposure count."
+  },
+  "cache": {
+    "weatherSeconds": 600,
+    "stationSeconds": 600,
+    "forecastSeconds": 3600
+  },
+  "trust": {
+    "verifiedAt": 0.75,
+    "$comment": "At or above this a report renders as a solid marker. Below it renders hollow and dashed, labelled unconfirmed. Low-trust reports are LABELLED, never hidden."
+  }
+}

@@ -1,0 +1,171 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  max-width: var(--width-page);
+  margin: 0 auto;
+  padding: var(--space-7) var(--container-pad) var(--space-9);
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.title {
+  font-size: clamp(1.625rem, 3.6vw, 2.25rem);
+  line-height: 1.12;
+  letter-spacing: -0.022em;
+  color: var(--text-primary);
+}
+
+.lede {
+  color: var(--text-secondary);
+  max-width: var(--width-prose);
+}
+
+.lede strong {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Wide content scrolls inside its own container so the page never scrolls
+   sideways. */
+.scroll {
+  overflow-x: auto;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--size-body-sm);
+  min-width: 640px;
+}
+
+.table th,
+.table td {
+  padding: var(--space-3) var(--space-4);
+  text-align: start;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.table thead th {
+  font-family: var(--font-mono);
+  font-size: var(--size-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  border-bottom: 1px solid var(--border-strong);
+  white-space: nowrap;
+}
+
+.table tbody tr:last-child th,
+.table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.table tbody tr {
+  transition: background 140ms ease;
+}
+
+.table tbody tr:hover {
+  background: var(--bg-hover);
+}
+
+.rank {
+  width: var(--space-8);
+  font-family: var(--font-mono);
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+.nameCell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.swatch {
+  width: var(--space-3);
+  height: var(--space-5);
+  border-radius: var(--radius-sm);
+  flex: none;
+  background: var(--sev-none);
+}
+
+.swatch[data-step="1"] { background: var(--sev-1); }
+.swatch[data-step="2"] { background: var(--sev-2); }
+.swatch[data-step="3"] { background: var(--sev-3); }
+.swatch[data-step="4"] { background: var(--sev-4); }
+.swatch[data-step="5"] { background: var(--sev-5); }
+.swatch[data-step="6"] { background: var(--sev-6); }
+
+.numCol {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.num {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.open {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.open:hover {
+  color: var(--accent);
+}
+
+.foot {
+  font-size: var(--size-body-sm);
+  line-height: var(--leading-body-sm);
+  color: var(--text-tertiary);
+  max-width: var(--width-prose);
+}
+
+/* A bar behind the number turns a column of digits into a shape you can scan.
+   The number stays the primary reading; the bar is the secondary encoding. */
+.valueCell {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 112px;
+  padding: var(--space-1) var(--space-2);
+}
+
+.bar {
+  position: absolute;
+  inset-block: var(--space-1);
+  inset-inline-start: 0;
+  border-radius: var(--radius-sm);
+  opacity: 0.32;
+  background: var(--sev-none);
+}
+
+.bar[data-step="1"] { background: var(--sev-1); }
+.bar[data-step="2"] { background: var(--sev-2); }
+.bar[data-step="3"] { background: var(--sev-3); }
+.bar[data-step="4"] { background: var(--sev-4); }
+.bar[data-step="5"] { background: var(--sev-5); }
+.bar[data-step="6"] { background: var(--sev-6); }
+
+.valueCell .num {
+  position: relative;
+}
