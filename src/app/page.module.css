@@ -126,7 +126,7 @@
   gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
   background: var(--accent-subtle);
-  border-left: 3px solid var(--accent);
+  border-inline-start: 3px solid var(--accent);
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
   font-size: var(--size-body-sm);

@@ -123,6 +123,12 @@
   text-align: end;
 }
 
+.flip {
+  [dir="rtl"] & {
+    transform: scaleX(-1);
+  }
+}
+
 @media (max-width: 900px) {
   .split {
     grid-template-columns: 1fr;

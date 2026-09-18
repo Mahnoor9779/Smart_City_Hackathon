@@ -34,7 +34,9 @@ export type IconName =
   | "monitor"
   | "layers"
   | "trend"
-  | "info";
+  | "info"
+  | "swap"
+  | "chevronDown";
 
 export interface IconProps extends Omit<SVGProps<SVGSVGElement>, "name"> {
   name: IconName;
@@ -127,6 +129,15 @@ const PATHS: Record<IconName, React.ReactNode> = {
       <circle cx="12" cy="12" r="9" />
       <path d="M12 11v5M12 8h.01" />
     </>
+  ),
+  swap: (
+    <>
+      <path d="M4 8h15M15 4l4 4-4 4" />
+      <path d="M20 16H5M9 12l-4 4 4 4" />
+    </>
+  ),
+  chevronDown: (
+    <path d="M6 9l6 6 6-6" />
   ),
 };
 

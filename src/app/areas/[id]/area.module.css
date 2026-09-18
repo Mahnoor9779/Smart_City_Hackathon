@@ -37,9 +37,13 @@
 
 .head {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 220px;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: var(--space-6);
-  align-items: start;
+  align-items: center;
+  padding: var(--space-5);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
 }
 
 .headText {
@@ -58,30 +62,114 @@
 }
 
 .title {
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
-  line-height: 1.1;
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  line-height: 1.12;
   letter-spacing: -0.025em;
   color: var(--text-primary);
 }
 
 .blurb {
   color: var(--text-secondary);
-  max-width: 52ch;
+  max-width: 54ch;
+  font-size: var(--size-body);
+  line-height: var(--leading-body);
+}
+
+.metaRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--size-label);
+  border-radius: var(--radius-full);
+  background: var(--bg-sunken);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+}
+
+.pillDot {
+  width: var(--space-2);
+  height: var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--text-tertiary);
+  flex: none;
+}
+
+.pill[data-step="1"] .pillDot { background: var(--sev-1); }
+.pill[data-step="2"] .pillDot { background: var(--sev-2); }
+.pill[data-step="3"] .pillDot { background: var(--sev-3); }
+.pill[data-step="4"] .pillDot { background: var(--sev-4); }
+.pill[data-step="5"] .pillDot { background: var(--sev-5); }
+.pill[data-step="6"] .pillDot { background: var(--sev-6); }
+
+.metaPill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--size-label);
+  border-radius: var(--radius-full);
+  background: var(--bg-sunken);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
 }
 
 .locator {
   display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-sunken);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.locatorMap {
+  width: 140px;
+  height: 130px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.locatorMeta {
+  display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-1);
+}
+
+.locatorKicker {
+  font-family: var(--font-mono);
+  font-size: var(--size-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.locatorTitle {
+  font-weight: 600;
+  font-size: var(--size-body);
+  color: var(--text-primary);
+  line-height: var(--leading-heading);
 }
 
 .locatorCaption {
   font-family: var(--font-mono);
   font-size: var(--size-label);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
   color: var(--text-tertiary);
-  text-align: center;
+  margin: 0;
 }
 
 .stats {
@@ -147,7 +235,7 @@
   gap: var(--space-3);
   padding: var(--space-4);
   background: var(--info-subtle);
-  border-left: 3px solid var(--info);
+  border-inline-start: 3px solid var(--info);
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
   font-size: var(--size-body-sm);
@@ -164,7 +252,7 @@
     grid-template-columns: 1fr;
   }
   .locator {
-    max-width: 220px;
+    width: 100%;
   }
 }
 

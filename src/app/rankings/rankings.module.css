@@ -132,6 +132,12 @@
   color: var(--accent);
 }
 
+.flip {
+  [dir="rtl"] & {
+    transform: scaleX(-1);
+  }
+}
+
 .foot {
   font-size: var(--size-body-sm);
   line-height: var(--leading-body-sm);

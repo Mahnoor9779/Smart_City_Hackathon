@@ -1,27 +1,17 @@
+"use client";
+
 /**
  * MetricValue
  *
  * THE MOST IMPORTANT COMPONENT IN THE PROJECT. Every number on every screen
- * renders through it, and its props make provenance structurally mandatory:
- * `provenance` is required, so a number without a source is a TYPE ERROR rather
- * than an oversight. ADR-5, feature R02.
+ * renders through it, and its props make provenance structurally mandatory.
  *
- * Two further rules are enforced here rather than left to discipline:
- *
- *   1. NEVER A BARE READING. The exposure twin renders directly beneath the
- *      value at comparable weight. A reading alone is a measurement; a reading
- *      next to the people it affects is information. Feature D01.
- *
- *   2. SEVERITY IS NEVER COLOUR ALONE. The band name renders as text beside the
- *      swatch, so the value survives greyscale printing and colour vision
- *      deficiency. Feature X02.
- *
- * If the value was not measured directly, the word "estimated" appears beside
- * the number itself, not hidden in a tooltip the reader has to find.
+ * Fully reactive to bilingual locale (English / Urdu).
  */
 
 import type { DataState, Exposure, Provenance, SeverityStep } from "@/lib/types";
 import { formatMetric, formatUnit, severityLabel } from "@/lib/format";
+import { useLocale } from "@/lib/i18n/LocaleContext";
 import { StateWrapper, type SkeletonBlock } from "./StateWrapper";
 import { ProvenanceTag } from "./ProvenanceTag";
 import styles from "./MetricValue.module.css";
@@ -49,8 +39,12 @@ export function MetricValue({
   size = "default",
   state = { kind: "ready" },
 }: MetricValueProps) {
+  const { t } = useLocale();
   const estimated = provenance.method !== "measured";
-  const bandName = severityLabel(severityStep);
+  const bandName =
+    severityStep !== null
+      ? t.severity[severityStep] ?? severityLabel(severityStep)
+      : "";
 
   // The placeholder mirrors the regions this instance actually renders, so the
   // layout does not jump when the data arrives. Label, value, then severity and
@@ -72,7 +66,7 @@ export function MetricValue({
             <span className={styles.unit}>{formatUnit(unit)}</span>
           )}
           {estimated && value !== null && (
-            <span className={styles.estimated}>estimated</span>
+            <span className={styles.estimated}>{t.metrics.estimated}</span>
           )}
         </div>
 

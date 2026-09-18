@@ -2,30 +2,19 @@
  * ThemeToggle
  *
  * Three states, not two: System, Light, Dark. BUILD_PROMPT.md Section 9.
- *
- * WHY A SEGMENTED CONTROL AND NOT A CYCLING BUTTON. A single icon button cannot
- * express "follow my system", and someone who chose that deliberately should not
- * lose it by tapping once. Three radios in a group keep all three reachable and
- * keyboard navigable with arrow keys for free.
- *
- * The label is visually hidden rather than removed: the icons carry the meaning
- * on screen, and each radio still has a real accessible name.
+ * Fully reactive to bilingual locale (English / Urdu).
  */
 
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLocale } from "@/lib/i18n/LocaleContext";
 import { Icon, type IconName } from "./Icon";
 import styles from "./ThemeToggle.module.css";
 
 export type ThemeChoice = "system" | "light" | "dark";
 
 const STORAGE_KEY = "lns-theme";
-const CHOICES: readonly { value: ThemeChoice; label: string; icon: IconName }[] = [
-  { value: "system", label: "Match system", icon: "monitor" },
-  { value: "light", label: "Light", icon: "sun" },
-  { value: "dark", label: "Dark", icon: "moon" },
-];
 
 export function applyTheme(choice: ThemeChoice): void {
   const root = document.documentElement;
@@ -35,6 +24,25 @@ export function applyTheme(choice: ThemeChoice): void {
 
 export function ThemeToggle() {
   const [choice, setChoice] = useState<ThemeChoice>("system");
+  const { locale } = useLocale();
+
+  const choices: readonly { value: ThemeChoice; label: string; icon: IconName }[] = [
+    {
+      value: "system",
+      label: locale === "ur" ? "سسٹم کے مطابق" : "Match system",
+      icon: "monitor",
+    },
+    {
+      value: "light",
+      label: locale === "ur" ? "روشن" : "Light",
+      icon: "sun",
+    },
+    {
+      value: "dark",
+      label: locale === "ur" ? "تاریک" : "Dark",
+      icon: "moon",
+    },
+  ];
 
   useEffect(() => {
     try {
@@ -44,8 +52,7 @@ export function ThemeToggle() {
         applyTheme(saved);
       }
     } catch {
-      /* Private windows and blocked site data throw on access. "system" is
-         already correct, so there is nothing to recover. */
+      /* Private windows and blocked site data throw on access */
     }
   }, []);
 
@@ -55,14 +62,16 @@ export function ThemeToggle() {
     try {
       window.localStorage.setItem(STORAGE_KEY, next);
     } catch {
-      /* Preference is not persisted. The page still renders correctly. */
+      /* Ignore */
     }
   }
 
   return (
     <fieldset className={styles.group}>
-      <legend className="visuallyHidden">Colour theme</legend>
-      {CHOICES.map((c) => (
+      <legend className="visuallyHidden">
+        {locale === "ur" ? "تھیم کا انتخاب" : "Colour theme"}
+      </legend>
+      {choices.map((c) => (
         <label key={c.value} className={styles.option} title={c.label}>
           <input
             type="radio"

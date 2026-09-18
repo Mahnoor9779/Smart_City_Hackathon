@@ -1,0 +1,208 @@
+.banner {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: border-color 200ms ease;
+}
+
+.banner[data-alert="severe"] {
+  border-color: var(--sev-4);
+  background: var(--bg-surface);
+}
+
+.banner[data-alert="warning"] {
+  border-color: var(--sev-3);
+  background: var(--bg-surface);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+}
+
+.badgeCol {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.pulseBeacon {
+  width: var(--space-2);
+  height: var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--ok);
+  flex: none;
+}
+
+.banner[data-alert="severe"] .pulseBeacon {
+  background: var(--sev-4);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+.banner[data-alert="warning"] .pulseBeacon {
+  background: var(--sev-3);
+  animation: pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.8); }
+}
+
+.alertType {
+  font-family: var(--font-mono);
+  font-size: var(--size-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.bodyCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1;
+  min-width: 0;
+}
+
+.headline {
+  font-weight: 600;
+  font-size: var(--size-body);
+  color: var(--text-primary);
+  line-height: var(--leading-heading);
+}
+
+.subline {
+  font-size: var(--size-body-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-body-sm);
+}
+
+.actionCol {
+  flex-shrink: 0;
+}
+
+.toggleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--size-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  border-radius: var(--radius-md);
+  background: var(--bg-sunken);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.toggleBtn:hover {
+  background: var(--bg-hover);
+  color: var(--accent);
+}
+
+/* Timeline Drawer */
+
+.timelineDrawer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  background: var(--bg-sunken);
+  border-top: 1px solid var(--border-subtle);
+  overflow-x: auto;
+}
+
+.timelineHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.timelineTitle {
+  font-family: var(--font-mono);
+  font-size: var(--size-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.advisoryNote {
+  font-size: var(--size-body-sm);
+  color: var(--text-secondary);
+}
+
+.track {
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  gap: var(--space-1);
+  align-items: end;
+  height: 80px;
+  padding-top: var(--space-2);
+}
+
+.tick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+  gap: var(--space-1);
+}
+
+.bar {
+  width: 100%;
+  border-radius: var(--radius-sm);
+  background: var(--sev-1);
+  min-height: 4px;
+  transition: height 200ms ease;
+}
+
+.bar[data-step="1"] { background: var(--sev-1); }
+.bar[data-step="2"] { background: var(--sev-2); }
+.bar[data-step="3"] { background: var(--sev-3); }
+.bar[data-step="4"] { background: var(--sev-4); }
+.bar[data-step="5"] { background: var(--sev-5); }
+.bar[data-step="6"] { background: var(--sev-6); }
+
+.hourLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+@media (max-width: 800px) {
+  .inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .actionCol {
+    width: 100%;
+  }
+
+  .toggleBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .track {
+    overflow-x: auto;
+    min-width: 480px;
+  }
+}

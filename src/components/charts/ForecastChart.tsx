@@ -10,21 +10,22 @@
  * Only thresholds inside the visible range are drawn, so the chart adapts to a
  * clean day and a smog day without either looking empty or unreadable.
  *
- * DELIBERATELY NOT DONE. No second y-axis, ever. No number on every point, only
- * the peak is direct-labelled. No rainbow: one hue, and severity is carried by
- * the threshold bands rather than by recolouring the line, so the line stays one
- * readable stroke.
- *
  * ACCESSIBILITY. The series is summarised in the figure's accessible name, and
  * the same numbers exist as text in the facts beside it, so nothing here is
  * available only as a picture. Hovering is an enhancement, never the only route.
+ *
+ * BIDIRECTIONAL / RTL FIX:
+ * In SVG, coordinate axes (time series 0 -> +72h) are mathematically left-to-right.
+ * We enforce dir="ltr" on the SVG so text-anchor: end anchors strictly within
+ * the SVG viewport bounds and prevents threshold labels from overflowing in RTL.
  */
 
 "use client";
 
 import { useId, useMemo, useState } from "react";
 import thresholds from "@config/thresholds.json";
-import { formatMetric, severityLabel, severityForPm25 } from "@/lib/format";
+import { formatMetric, severityForPm25 } from "@/lib/format";
+import { useLocale } from "@/lib/i18n/LocaleContext";
 import styles from "./ForecastChart.module.css";
 
 export interface ForecastChartProps {
@@ -39,6 +40,7 @@ const PAD = { top: 16, right: 16, bottom: 28, left: 40 };
 export function ForecastChart({ series, areaName }: ForecastChartProps) {
   const gradientId = useId();
   const [hover, setHover] = useState<number | null>(null);
+  const { t, locale } = useLocale();
 
   const model = useMemo(() => {
     if (series.length < 2) return null;
@@ -67,7 +69,12 @@ export function ForecastChart({ series, areaName }: ForecastChartProps) {
     // Only thresholds that actually fall inside the visible range.
     const bands = thresholds.severity.steps
       .filter((s) => s.max !== null && s.max > yMin && s.max < yMax)
-      .map((s) => ({ value: s.max as number, label: s.label, y: y(s.max as number) }));
+      .map((s) => ({
+        step: s.step,
+        value: s.max as number,
+        label: t.severity[s.step] ?? s.label,
+        y: y(s.max as number),
+      }));
 
     let peakIndex = 0;
     values.forEach((v, i) => {
@@ -80,12 +87,14 @@ export function ForecastChart({ series, areaName }: ForecastChartProps) {
       .filter((d) => d.i % 12 === 0);
 
     return { x, y, line, area, bands, yMin, yMax, peakIndex, ticks, plotH, plotW };
-  }, [series]);
+  }, [series, t]);
 
   if (!model) {
     return (
       <p className={styles.empty}>
-        No forecast available for {areaName} right now.
+        {locale === "ur"
+          ? `${areaName} کے لیے پیش گوئی فی الحال دستیاب نہیں ہے۔`
+          : `No forecast available for ${areaName} right now.`}
       </p>
     );
   }
@@ -96,13 +105,14 @@ export function ForecastChart({ series, areaName }: ForecastChartProps) {
   const peakPoint = series[peakIndex];
 
   const summary =
-    `PM2.5 forecast for ${areaName}, next 72 hours. ` +
-    `Now ${formatMetric(series[0]?.v ?? null)}, ` +
-    `peak ${formatMetric(peakPoint?.v ?? null)} micrograms per cubic metre ` +
-    `in about ${peakIndex} hours.`;
+    locale === "ur"
+      ? `${areaName} کے لیے پی ایم 2.5 کی اگلے 72 گھنٹوں کی پیش گوئی۔`
+      : `PM2.5 forecast for ${areaName}, next 72 hours. Now ${formatMetric(
+          series[0]?.v ?? null
+        )}, peak ${formatMetric(peakPoint?.v ?? null)} in about ${peakIndex} hours.`;
 
   return (
-    <figure className={styles.figure}>
+    <figure className={styles.figure} dir="ltr">
       <svg
         viewBox={`0 0 ${W} ${H}`}
         className={styles.svg}
@@ -145,7 +155,7 @@ export function ForecastChart({ series, areaName }: ForecastChartProps) {
             y={y(peakPoint?.v ?? 0) - 12}
             className={styles.peakLabel}
           >
-            peak {formatMetric(peakPoint?.v ?? null)}
+            {t.areaDetail.chartPeak(formatMetric(peakPoint?.v ?? null))}
           </text>
         </g>
 
@@ -160,7 +170,7 @@ export function ForecastChart({ series, areaName }: ForecastChartProps) {
 
         {ticks.map((d) => (
           <text key={d.i} x={x(d.i)} y={H - 8} className={styles.tick}>
-            {d.i === 0 ? "now" : `+${d.i}h`}
+            {d.i === 0 ? t.areaDetail.chartNow : `+${d.i}h`}
           </text>
         ))}
 
@@ -177,22 +187,19 @@ export function ForecastChart({ series, areaName }: ForecastChartProps) {
         )}
       </svg>
 
-      <figcaption className={styles.caption}>
+      <figcaption className={styles.caption} dir={locale === "ur" ? "rtl" : "ltr"}>
         {activePoint ? (
           <span className={styles.readout}>
             <strong>{formatMetric(activePoint.v)} &micro;g/m&sup3;</strong>
             <span className={styles.readoutBand}>
-              {severityLabel(severityForPm25(activePoint.v))}
+              {t.severity[severityForPm25(activePoint.v) ?? 1]}
             </span>
             <span className={styles.readoutTime}>
-              {active === 0 ? "now" : `in ${active} hours`}
+              {t.areaDetail.chartInHours(active ?? 0)}
             </span>
           </span>
         ) : (
-          <span>
-            Next 72 hours. Hover to read any hour. Lines mark the health
-            thresholds.
-          </span>
+          <span>{t.areaDetail.chartCaptionDefault}</span>
         )}
       </figcaption>
     </figure>

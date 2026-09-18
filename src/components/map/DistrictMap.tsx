@@ -1,26 +1,19 @@
+"use client";
+
 /**
  * DistrictMap
  *
  * Lahore District drawn from its real OpenStreetMap boundary, with each tehsil
  * shaded by current air quality and the selected one outlined.
  *
- * WHY INLINE SVG AND NOT MAPLIBRE HERE. This map answers one question, "where am
- * I looking", and it has to answer it in the first second on a mid range phone.
- * An SVG of 118 points is about 1.5 KB, renders instantly, needs no tiles, no
- * network, and no JavaScript to appear. The interactive tiled map earns its
- * weight on the dedicated map screen where panning and layers matter. Using the
- * heavy thing here would cost the one moment that has to feel immediate.
- *
- * ACCESSIBILITY. The SVG is a labelled group of buttons, so the whole map is
- * reachable by keyboard and every region announces its name and reading. Colour
- * is never the only channel: the selected region gets a thicker outline, and the
- * reading is always available as text.
+ * Fully reactive to bilingual locale (English / Urdu).
  */
 
 import Link from "next/link";
 import { AREAS, DISTRICT_PATH, MAP_VIEWBOX, DISTRICT_NAME } from "@/lib/geo/lahore";
 import type { AreaReading } from "@/lib/data/air";
 import { severityLabel, formatMetric } from "@/lib/format";
+import { useLocale } from "@/lib/i18n/LocaleContext";
 import styles from "./DistrictMap.module.css";
 
 export interface DistrictMapProps {
@@ -29,8 +22,6 @@ export interface DistrictMapProps {
   selectedId?: string | undefined;
   /**
    * Base path. When set, each region becomes a link to `${linkBase}/${areaId}`.
-   * A string rather than a function because props crossing a server boundary
-   * must be serialisable, and a template is all this ever needed.
    */
   linkBase?: string;
   /** Draw-in animation on first paint. Off for small inline uses. */
@@ -46,22 +37,21 @@ export function DistrictMap({
   animate = true,
   showLabels = true,
 }: DistrictMapProps) {
+  const { t, locale } = useLocale();
   const byId = new Map(readings.map((r) => [r.areaId, r]));
 
+  const mapDistrictName = locale === "ur" ? t.nav.district : DISTRICT_NAME;
+
   return (
-    <figure className={styles.wrap}>
-      {/*
-        The accessible name is an aria-label rather than an SVG <title> element.
-        React 19 treats <title> as document metadata and hoists it to <head>,
-        which makes an SVG title collide with the page title and breaks
-        hydration. aria-label gives the same name with none of that.
-      */}
+    <figure className={styles.wrap} dir="ltr">
       <svg
         viewBox={MAP_VIEWBOX}
         className={styles.svg}
         data-animate={animate ? "true" : undefined}
         role="img"
-        aria-label={`${DISTRICT_NAME}, ${AREAS.length} tehsils shaded by current air quality`}
+        aria-label={`${mapDistrictName}, ${AREAS.length} ${
+          locale === "ur" ? t.nav.tehsilsSuffix : "tehsils"
+        }`}
       >
         {/* District outline. Drawn first so regions sit on top of it. */}
         <path d={DISTRICT_PATH} className={styles.district} />
@@ -70,11 +60,16 @@ export function DistrictMap({
           const reading = byId.get(area.id);
           const step = reading?.severityStep ?? null;
           const isSelected = area.id === selectedId;
+          const aName = t.areas[area.id]?.name ?? area.name;
+          const bandName =
+            step !== null
+              ? t.severity[step] ?? severityLabel(step)
+              : "No data";
           const readingText =
             reading?.pm25 == null
               ? "no reading"
-              : `${formatMetric(reading.pm25)} micrograms per cubic metre, ${severityLabel(step)}`;
-          const label = `${area.name}. ${readingText}`;
+              : `${formatMetric(reading.pm25)} &micro;g/m&sup3;, ${bandName}`;
+          const label = `${aName}. ${readingText}`;
 
           const shape = (
             <path
@@ -110,6 +105,7 @@ export function DistrictMap({
         {showLabels &&
           AREAS.map((area, i) => {
             const r = byId.get(area.id);
+            const aName = t.areas[area.id]?.name ?? area.name;
             return (
               <g
                 key={area.id}
@@ -122,7 +118,7 @@ export function DistrictMap({
                   y={area.centroid[1] - 14}
                   className={styles.label}
                 >
-                  {area.name}
+                  {aName}
                 </text>
                 {r?.pm25 != null && (
                   <text

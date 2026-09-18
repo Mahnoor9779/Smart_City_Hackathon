@@ -4,24 +4,17 @@
  * The ONLY place loading, stale, partial, estimated, failed, and offline markup
  * lives. No data component renders its own. BUILD_PROMPT.md Section 13.
  *
- * Most hackathon dashboards implement one of the seven states and break visibly
- * on the other six, usually while a judge is watching. Centralising them here is
- * what makes handling all seven cheap enough that it actually happens.
- *
- * Every message follows the copy rule: say WHAT BROKE, WHAT STILL WORKS, and
- * WHAT TO DO NEXT. Never a bare "no data".
+ * Fully reactive to bilingual locale (English / Urdu).
  */
+
+"use client";
 
 import type { ReactNode } from "react";
 import type { DataState } from "@/lib/types";
 import { relativeAge, formatLocalTime } from "@/lib/format";
+import { useLocale } from "@/lib/i18n/LocaleContext";
 import styles from "./StateWrapper.module.css";
 
-/**
- * One block of the loading placeholder. The caller describes the shape of what
- * is coming, so the skeleton matches the final layout rather than being a
- * generic stack of bars that reflows the moment data lands.
- */
 export interface SkeletonBlock {
   /** Percentage of the container width. */
   width: number;
@@ -49,14 +42,17 @@ export function StateWrapper({
   skeleton = DEFAULT_SKELETON,
   label,
 }: StateWrapperProps) {
+  const { locale } = useLocale();
+
   switch (state.kind) {
-    case "loading":
+    case "loading": {
+      const loadText = locale === "ur" ? `${label} لوڈ ہو رہا ہے` : `Loading ${label}`;
       return (
         <div
           className={styles.skeleton}
           role="status"
           aria-live="polite"
-          aria-label={`Loading ${label}`}
+          aria-label={loadText}
         >
           {skeleton.map((block, i) => (
             <span
@@ -68,9 +64,10 @@ export function StateWrapper({
               }}
             />
           ))}
-          <span className="visuallyHidden">Loading {label}</span>
+          <span className="visuallyHidden">{loadText}</span>
         </div>
       );
+    }
 
     case "ready":
       return <div className={styles.ready}>{children}</div>;
@@ -80,8 +77,9 @@ export function StateWrapper({
         <div className={styles.stale} data-state="stale">
           <div className={styles.dimmed}>{children}</div>
           <p className={styles.noteWarn}>
-            Last reading {relativeAge(state.ageSeconds)}. Showing the most recent
-            value we have.
+            {locale === "ur"
+              ? `آخری ریکارڈ ${relativeAge(state.ageSeconds, locale)}۔ تازہ ترین دستیاب ڈیٹا دکھایا جا رہا ہے۔`
+              : `Last reading ${relativeAge(state.ageSeconds, "en")}. Showing the most recent value we have.`}
           </p>
         </div>
       );
@@ -91,8 +89,9 @@ export function StateWrapper({
         <div className={styles.partial} data-state="partial">
           {children}
           <p className={styles.note}>
-            {state.total - state.covered} of {state.total} areas have no nearby
-            sensor. Those are drawn hatched rather than estimated.
+            {locale === "ur"
+              ? `${state.total - state.covered} از ${state.total} علاقوں میں قریبی سینسر موجود نہیں۔`
+              : `${state.total - state.covered} of ${state.total} areas have no nearby sensor. Those are drawn hatched rather than estimated.`}
           </p>
         </div>
       );
@@ -102,10 +101,11 @@ export function StateWrapper({
         <div className={styles.estimated} data-state="estimated">
           {children}
           <p className={styles.noteWarn}>
-            Estimated, not measured. Confidence{" "}
-            {Math.round(state.confidence * 100)} percent.{" "}
+            {locale === "ur"
+              ? `تخمینہ شدہ، براہ راست پیمائش نہیں۔ درستگی کا تناسب ${Math.round(state.confidence * 100)} فیصد۔`
+              : `Estimated, not measured. Confidence ${Math.round(state.confidence * 100)} percent. `}
             <a className={styles.link} href={state.methodUrl}>
-              How this is calculated
+              {locale === "ur" ? "طریقہ کار کی تفصیل" : "How this is calculated"}
             </a>
           </p>
         </div>
@@ -114,15 +114,21 @@ export function StateWrapper({
     case "failed":
       return (
         <div className={styles.failed} role="alert" data-state="failed">
-          <p className={styles.failedTitle}>{state.what} is unavailable.</p>
+          <p className={styles.failedTitle}>
+            {locale === "ur"
+              ? `${state.what} دستیاب نہیں ہے۔`
+              : `${state.what} is unavailable.`}
+          </p>
           {state.stillWorking.length > 0 && (
             <p className={styles.note}>
-              Still working: {state.stillWorking.join(", ")}.
+              {locale === "ur"
+                ? `دیگر فعال معلومات: ${state.stillWorking.join(", ")}۔`
+                : `Still working: ${state.stillWorking.join(", ")}.`}
             </p>
           )}
           {state.retry && (
             <button type="button" className={styles.retry} onClick={state.retry}>
-              Try again
+              {locale === "ur" ? "دوبارہ کوشش کریں" : "Try again"}
             </button>
           )}
         </div>
@@ -133,8 +139,9 @@ export function StateWrapper({
         <div className={styles.offline} data-state="offline">
           <div className={styles.dimmed}>{children}</div>
           <p className={styles.noteInfo}>
-            You are offline. Showing values saved at{" "}
-            {formatLocalTime(state.lastKnownAt)}.
+            {locale === "ur"
+              ? `آپ آف لائن ہیں۔ محفوظ شدہ ڈیٹا برائے ${formatLocalTime(state.lastKnownAt)}۔`
+              : `You are offline. Showing values saved at ${formatLocalTime(state.lastKnownAt)}.`}
           </p>
         </div>
       );

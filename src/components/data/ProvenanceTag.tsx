@@ -4,9 +4,7 @@
  * Source, retrieval time, and licence for a single value. Expands to show the
  * method, the confidence, and a link to the source.
  *
- * Never a bare icon. The word "Source" is always visible, because provenance
- * nobody can find is the same as no provenance: nobody navigates away to check.
- * Feature R02, ADR-5.
+ * Fully reactive to bilingual locale (English / Urdu).
  */
 
 "use client";
@@ -14,6 +12,7 @@
 import { useId, useState } from "react";
 import type { Provenance } from "@/lib/types";
 import { ageSeconds, relativeAge, formatLocalTime } from "@/lib/format";
+import { useLocale } from "@/lib/i18n/LocaleContext";
 import styles from "./ProvenanceTag.module.css";
 
 export interface ProvenanceTagProps {
@@ -23,6 +22,7 @@ export interface ProvenanceTagProps {
 export function ProvenanceTag({ provenance: p }: ProvenanceTagProps) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
+  const { locale } = useLocale();
 
   return (
     <div className={styles.wrap} data-provenance="true">
@@ -33,33 +33,42 @@ export function ProvenanceTag({ provenance: p }: ProvenanceTagProps) {
         aria-controls={panelId}
         onClick={() => setOpen((v) => !v)}
       >
-        <span className={styles.label}>Source</span>
-        <span className={styles.value}>{p.sourceLabel}</span>
-        <span className={styles.age}>{relativeAge(ageSeconds(p.retrievedAt))}</span>
+        <span className={styles.label}>{locale === "ur" ? "ماخذ" : "Source"}</span>
+        <span className={styles.value}>
+          {locale === "ur" && p.sourceLabel.includes("Open-Meteo")
+            ? "اوپن میٹیو فضائی معیار"
+            : p.sourceLabel}
+        </span>
+        <span className={styles.age}>
+          {relativeAge(ageSeconds(p.retrievedAt), locale)}
+        </span>
       </button>
 
       {open && (
         <dl className={styles.panel} id={panelId}>
           <div className={styles.row}>
-            <dt>Retrieved</dt>
+            <dt>{locale === "ur" ? "حصول کا وقت" : "Retrieved"}</dt>
             <dd>{formatLocalTime(p.retrievedAt)}</dd>
           </div>
           {p.validAt && (
             <div className={styles.row}>
-              <dt>Reading taken</dt>
+              <dt>{locale === "ur" ? "ریکارڈ کا وقت" : "Reading taken"}</dt>
               <dd>{formatLocalTime(p.validAt)}</dd>
             </div>
           )}
           <div className={styles.row}>
-            <dt>Method</dt>
-            <dd>{methodWording(p.method)}</dd>
+            <dt>{locale === "ur" ? "طریقہ کار" : "Method"}</dt>
+            <dd>{methodWording(p.method, locale)}</dd>
           </div>
           <div className={styles.row}>
-            <dt>Confidence</dt>
-            <dd>{Math.round(p.confidence * 100)} percent</dd>
+            <dt>{locale === "ur" ? "درستگی کا تناسب" : "Confidence"}</dt>
+            <dd>
+              {Math.round(p.confidence * 100)}{" "}
+              {locale === "ur" ? "فیصد" : "percent"}
+            </dd>
           </div>
           <div className={styles.row}>
-            <dt>Licence</dt>
+            <dt>{locale === "ur" ? "لائسنس" : "Licence"}</dt>
             <dd>
               {p.licenceUrl ? (
                 <a
@@ -77,10 +86,11 @@ export function ProvenanceTag({ provenance: p }: ProvenanceTagProps) {
           </div>
           {!p.exportable && (
             <div className={styles.row}>
-              <dt>Reuse</dt>
+              <dt>{locale === "ur" ? "استعمال کی شرائط" : "Reuse"}</dt>
               <dd className={styles.restricted}>
-                Display only. This source does not permit redistribution, so this
-                value is excluded from the open data export.
+                {locale === "ur"
+                  ? "صرف ڈسپلے کے لیے۔ یہ ڈیٹا اوپن ایکسپورٹ میں شامل نہیں۔"
+                  : "Display only. This source does not permit redistribution, so this value is excluded from the open data export."}
               </dd>
             </div>
           )}
@@ -91,7 +101,20 @@ export function ProvenanceTag({ provenance: p }: ProvenanceTagProps) {
 }
 
 /** Method in words a resident would use, not a database enum. */
-function methodWording(method: Provenance["method"]): string {
+function methodWording(method: Provenance["method"], locale: "en" | "ur"): string {
+  if (locale === "ur") {
+    switch (method) {
+      case "measured":
+        return "براہ راست مانیٹرنگ اسٹیشن سے ریکارڈ شدہ";
+      case "interpolated":
+        return "قریبی اسٹیشنوں سے تخمینہ شدہ";
+      case "modelled":
+        return "ماڈل کے حسابی فارمولے پر مبنی";
+      case "static":
+        return "حوالہ جاتی مستقل ڈیٹا";
+    }
+  }
+
   switch (method) {
     case "measured":
       return "Measured directly at a monitoring station";

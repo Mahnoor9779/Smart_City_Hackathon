@@ -61,15 +61,20 @@ export function severityLabel(step: SeverityStep | null): string {
  * Relative time, written the way a person would say it.
  * "last reading 47 minutes ago", not "2026-08-30T09:04:12Z".
  */
-export function relativeAge(seconds: number): string {
-  if (!Number.isFinite(seconds) || seconds < 0) return "just now";
-  if (seconds < 60) return "just now";
+export function relativeAge(seconds: number, locale: "en" | "ur" = "en"): string {
+  if (!Number.isFinite(seconds) || seconds < 0 || seconds < 60) {
+    return locale === "ur" ? "ابھی" : "just now";
+  }
   const mins = Math.floor(seconds / 60);
-  if (mins < 60) return `${mins} minute${mins === 1 ? "" : "s"} ago`;
+  if (mins < 60) {
+    return locale === "ur" ? `${mins} منٹ پہلے` : `${mins} minute${mins === 1 ? "" : "s"} ago`;
+  }
   const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+  if (hours < 24) {
+    return locale === "ur" ? `${hours} گھنٹے پہلے` : `${hours} hour${hours === 1 ? "" : "s"} ago`;
+  }
   const days = Math.floor(hours / 24);
-  return `${days} day${days === 1 ? "" : "s"} ago`;
+  return locale === "ur" ? `${days} دن پہلے` : `${days} day${days === 1 ? "" : "s"} ago`;
 }
 
 /** Seconds between an ISO timestamp and now. Timestamps are stored in UTC and
