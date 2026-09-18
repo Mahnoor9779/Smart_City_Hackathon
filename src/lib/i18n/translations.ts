@@ -138,6 +138,26 @@ export interface TranslationDict {
     inHours: (hours: number) => string;
     noForecast: string;
   };
+  locator: {
+    notificationTitle: string;
+    findMyTehsil: string;
+    findDescription: string;
+    locateButton: string;
+    detectShort: string;
+    outsideShort: string;
+    locating: string;
+    yourTehsil: string;
+    basedOnLocation: (distanceKm: number) => string;
+    savedLocation: string;
+    outsideDistrict: (distanceKm: number) => string;
+    permissionDenied: string;
+    unavailable: string;
+    viewTehsilProfile: string;
+    changeLocation: string;
+    retry: string;
+    yourTehsilChip: string;
+    dismiss: string;
+  };
 }
 
 export const TRANSLATIONS: Record<Locale, TranslationDict> = {
@@ -316,6 +336,26 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
       inHours: (hours: number) => `In ${hours} hours`,
       noForecast: "No forecast",
     },
+    locator: {
+      notificationTitle: "Localize your live alert",
+      findMyTehsil: "Know your tehsil",
+      findDescription: "Detect your location to see air quality, health risk, and clinic access in your tehsil.",
+      locateButton: "Locate my tehsil",
+      detectShort: "Detect Tehsil",
+      outsideShort: "Outside Lahore",
+      locating: "Finding your location...",
+      yourTehsil: "Your tehsil",
+      basedOnLocation: (dist: number) => `Detected ${dist} km from center`,
+      savedLocation: "Saved from previous visit",
+      outsideDistrict: (dist: number) => `You appear to be ${dist} km outside Lahore District. Showing whole-city summary.`,
+      permissionDenied: "Location permission denied. You can select your tehsil manually below.",
+      unavailable: "Location is unavailable on this device. Select your tehsil from the list.",
+      viewTehsilProfile: "View tehsil profile",
+      changeLocation: "Change",
+      retry: "Try again",
+      yourTehsilChip: "Your tehsil",
+      dismiss: "Dismiss",
+    },
   },
   ur: {
     nav: {
@@ -491,6 +531,26 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
       peakingNow: "اس وقت عروج پر",
       inHours: (hours: number) => `${hours} گھنٹوں میں`,
       noForecast: "پیش گوئی دستیاب نہیں",
+    },
+    locator: {
+      notificationTitle: "اپنے علاقے کا لائیو الرٹ جانیے",
+      findMyTehsil: "اپنی تحصیل جانیے",
+      findDescription: "اپنی لوکیشن سے اپنی تحصیل کی فضائی کیفیت، صحت کا رسک اور قریبی ہسپتال دیکھیے۔",
+      locateButton: "میری تحصیل تلاش کریں",
+      detectShort: "تحصیل معلوم کریں",
+      outsideShort: "لاہور سے باہر",
+      locating: "لوکیشن تلاش کی جا رہی ہے...",
+      yourTehsil: "آپ کی تحصیل",
+      basedOnLocation: (dist: number) => `مرکز سے ${dist} کلومیٹر کے فاصلے پر`,
+      savedLocation: "پچھلے دورے سے محفوظ شدہ",
+      outsideDistrict: (dist: number) => `آپ ضلع لاہور سے ${dist} کلومیٹر باہر ہیں۔ پورے شہر کا خلاصہ دکھایا جا رہا ہے۔`,
+      permissionDenied: "لوکیشن کی اجازت نہیں ملی۔ آپ نیچے دی گئی فہرست سے اپنی تحصیل منتخب کر سکتے ہیں۔",
+      unavailable: "اس ڈیوائس پر لوکیشن دستیاب نہیں ہے۔ فہرست سے تحصیل منتخب کریں۔",
+      viewTehsilProfile: "تحصیل کا تفصیلی جائزہ",
+      changeLocation: "تبدیل کریں",
+      retry: "دوبارہ کوشش کریں",
+      yourTehsilChip: "آپ کی تحصیل",
+      dismiss: "چھوڑیں",
     },
   },
 };

@@ -91,9 +91,27 @@
   min-width: 0;
 }
 
+.rowNameGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
 .rowName {
   font-weight: 600;
   color: var(--text-primary);
+}
+
+.yourTehsilBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  background: var(--accent-subtle);
+  color: var(--accent);
+  border-radius: var(--radius-sm);
+  font-size: var(--size-label);
+  font-weight: 600;
 }
 
 .rowMeta {

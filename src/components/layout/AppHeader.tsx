@@ -17,6 +17,7 @@ import Link from "next/link";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { LocaleToggle } from "@/components/ui/LocaleToggle";
+import { LocationPill } from "./LocationPill";
 import { useLocale } from "@/lib/i18n/LocaleContext";
 import { DISTRICT_NAME, ADMIN_LEVEL_LABEL, AREAS } from "@/lib/geo/lahore";
 import styles from "./AppHeader.module.css";
@@ -60,6 +61,7 @@ export function AppHeader() {
         </nav>
 
         <div className={styles.actions}>
+          <LocationPill />
           <LocaleToggle />
           <ThemeToggle />
         </div>

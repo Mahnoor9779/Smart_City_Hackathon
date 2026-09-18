@@ -36,7 +36,10 @@ export type IconName =
   | "trend"
   | "info"
   | "swap"
-  | "chevronDown";
+  | "chevronDown"
+  | "location"
+  | "crosshair"
+  | "close";
 
 export interface IconProps extends Omit<SVGProps<SVGSVGElement>, "name"> {
   name: IconName;
@@ -138,6 +141,21 @@ const PATHS: Record<IconName, React.ReactNode> = {
   ),
   chevronDown: (
     <path d="M6 9l6 6 6-6" />
+  ),
+  location: (
+    <>
+      <path d="M12 21s-7-7.5-7-12a7 7 0 1 1 14 0c0 4.5-7 12-7 12z" />
+      <circle cx="12" cy="9" r="2.5" />
+    </>
+  ),
+  crosshair: (
+    <>
+      <circle cx="12" cy="12" r="7" />
+      <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+    </>
+  ),
+  close: (
+    <path d="M18 6L6 18M6 6l12 12" />
   ),
 };
 
