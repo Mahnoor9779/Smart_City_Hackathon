@@ -8,7 +8,6 @@
 
 import type { Metadata, Viewport } from "next";
 import { publicEnv } from "@/lib/env";
-import { ADMIN_LEVEL_LABEL, AREAS, DISTRICT_NAME } from "@/lib/geo/lahore";
 import { THEME_INIT_SCRIPT } from "@/components/ui/ThemeToggle";
 import { AppHeader } from "@/components/layout/AppHeader";
 import "./globals.css";
@@ -47,20 +46,6 @@ export default function RootLayout({
         </a>
         <AppHeader />
         <main id="main">{children}</main>
-        <footer>
-          {/* The administrative level actually in use is printed here so the
-              interface never implies a precision the data does not have. */}
-          <p>
-            {DISTRICT_NAME} &middot; {AREAS.length} {ADMIN_LEVEL_LABEL}s &middot; grid{" "}
-            {publicEnv.NEXT_PUBLIC_GRID_VERSION} &middot; boundaries from OpenStreetMap,
-            ODbL &middot; air quality from Open-Meteo, CC BY 4.0
-          </p>
-          <p>
-            OpenStreetMap has no union council boundaries for Lahore, so areas are
-            shown at {ADMIN_LEVEL_LABEL} level. Population figures are apportioned
-            estimates, not census counts.
-          </p>
-        </footer>
       </body>
     </html>
   );
