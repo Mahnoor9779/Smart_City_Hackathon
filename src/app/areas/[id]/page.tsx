@@ -39,29 +39,31 @@ export default async function AreaPage({
 
   return (
     <div className={styles.page}>
-      <nav className={styles.crumb} aria-label="Breadcrumb">
-        <Link href="/areas" className={styles.back}>
-          <Icon name="arrowRight" size={16} className={styles.flip} />
-          All {ADMIN_LEVEL_LABEL}s
-        </Link>
-      </nav>
+      <div className={styles.headerGroup}>
+        <nav className={styles.crumb} aria-label="Breadcrumb">
+          <Link href="/areas" className={styles.back}>
+            <Icon name="arrowRight" size={16} className={styles.flip} />
+            All {ADMIN_LEVEL_LABEL}s
+          </Link>
+        </nav>
 
-      <header className={styles.head}>
-        <div className={styles.headText}>
-          <p className={styles.kicker}>{ADMIN_LEVEL_LABEL}</p>
-          <h1 className={styles.title}>{area.name}</h1>
-          <p className={styles.blurb}>{area.blurb}</p>
-        </div>
-        <div className={styles.locator}>
-          <DistrictMap
-            readings={readings}
-            selectedId={area.id}
-            showLabels={false}
-            animate={false}
-          />
-          <p className={styles.locatorCaption}>Where this sits in the district</p>
-        </div>
-      </header>
+        <header className={styles.head}>
+          <div className={styles.headText}>
+            <p className={styles.kicker}>{ADMIN_LEVEL_LABEL}</p>
+            <h1 className={styles.title}>{area.name}</h1>
+            <p className={styles.blurb}>{area.blurb}</p>
+          </div>
+          <div className={styles.locator}>
+            <DistrictMap
+              readings={readings}
+              selectedId={area.id}
+              showLabels={false}
+              animate={false}
+            />
+            <p className={styles.locatorCaption}>Where this sits in the district</p>
+          </div>
+        </header>
+      </div>
 
       <section className={styles.stats}>
         <div className={styles.stat}>

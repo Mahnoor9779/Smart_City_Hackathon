@@ -4,7 +4,7 @@
   gap: var(--space-6);
   max-width: var(--width-page);
   margin: 0 auto;
-  padding: var(--space-7) var(--container-pad) var(--space-9);
+  padding: var(--space-4) var(--container-pad) var(--space-9);
 }
 
 .head {
