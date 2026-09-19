@@ -9,6 +9,7 @@ next-env.d.ts
 .env.local
 .env*.local
 
+.claude/
 data/raw/
 data/interim/
 etl/__pycache__/
@@ -17,3 +18,4 @@ etl/__pycache__/
 coverage/
 .DS_Store
 Thumbs.db
+.vercel

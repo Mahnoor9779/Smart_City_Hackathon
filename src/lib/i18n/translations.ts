@@ -16,6 +16,8 @@ export interface TranslationDict {
     areas: string;
     rankings: string;
     compare: string;
+    weather: string;
+    score: string;
     district: string;
     tehsilsSuffix: string;
     liveAir: string;
@@ -35,6 +37,7 @@ export interface TranslationDict {
     peakingNow: string;
     density: string;
     estimated: string;
+    noData: string;
     ugm3: string;
     km2: string;
     peoplePerKm2: string;
@@ -167,6 +170,8 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
       areas: "Areas",
       rankings: "Rankings",
       compare: "Compare",
+      weather: "Weather",
+      score: "Score",
       district: "Lahore District",
       tehsilsSuffix: "tehsils",
       liveAir: "live air quality",
@@ -214,6 +219,7 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
       peakingNow: "Peaking now",
       density: "Built-Up Density",
       estimated: "estimated",
+      noData: "No data",
       ugm3: "ug/m3",
       km2: "km2",
       peoplePerKm2: "people / km2",
@@ -363,6 +369,8 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
       areas: "علاقے",
       rankings: "درجہ بندی",
       compare: "موازنہ",
+      weather: "موسم",
+      score: "سکور",
       district: "ضلع لاہور",
       tehsilsSuffix: "تحصیلیں",
       liveAir: "براہ راست ہوا کا معیار",
@@ -410,6 +418,7 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
       peakingNow: "اس وقت عروج پر",
       density: "آبادیاتی کثافت",
       estimated: "تخمینہ",
+      noData: "کوئی ڈیٹا نہیں",
       ugm3: "مائیکروگرام / مکعب میٹر",
       km2: "مربع کلومیٹر",
       peoplePerKm2: "افراد فی مربع کلومیٹر",

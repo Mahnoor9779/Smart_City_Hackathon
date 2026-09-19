@@ -31,6 +31,8 @@ export interface AreaReading {
   next24h: number[];
   /** The full 72 hour forecast, hour 0 being now. Drives the forecast chart. */
   series: { t: string; v: number }[];
+  /** Past 7 days of PM2.5 history (oldest first). For the HistoryChart. */
+  past7d: { t: string; v: number }[];
   /** Highest value in the next 72 hours, and how far away it is. */
   peak: { value: number; inHours: number } | null;
   provenance: Provenance;
@@ -68,9 +70,17 @@ function unavailable(areaId: string): AreaReading {
     severityStep: null,
     next24h: [],
     series: [],
+    past7d: [],
     peak: null,
     provenance: provenanceFor(new Date().toISOString()),
   };
+}
+
+const FORECAST_HOURS = 72;
+
+/** Current Asia/Karachi wall-clock time as "YYYY-MM-DDTHH:mm". PKT has no DST. */
+function karachiNow(): string {
+  return new Date(Date.now() + 5 * 3600_000).toISOString().slice(0, 16);
 }
 
 /**
@@ -83,7 +93,7 @@ export async function fetchAirQuality(): Promise<AreaReading[]> {
   const lons = AREAS.map((a) => a.lonLat[0]).join(",");
   const url =
     `${ENDPOINT}?latitude=${lats}&longitude=${lons}` +
-    `&current=pm2_5,pm10&hourly=pm2_5&forecast_days=3&timezone=Asia%2FKarachi`;
+    `&current=pm2_5,pm10&hourly=pm2_5&forecast_days=4&past_days=7&timezone=Asia%2FKarachi`;
 
   let payload: OpenMeteoPoint[];
   try {
@@ -104,21 +114,43 @@ export async function fetchAirQuality(): Promise<AreaReading[]> {
     const pm25 = point?.current?.pm2_5 ?? null;
     const rawTimes = point?.hourly?.time ?? [];
     const rawValues = point?.hourly?.pm2_5 ?? [];
-    const series: { t: string; v: number }[] = [];
+
+    // Parse all hourly points
+    const allHourly: { t: string; v: number }[] = [];
     for (let h = 0; h < rawValues.length; h++) {
       const v = rawValues[h];
       const t = rawTimes[h];
-      if (typeof v === "number" && typeof t === "string") series.push({ t, v });
+      if (typeof v === "number" && typeof t === "string") allHourly.push({ t, v });
     }
-    const hourly = series.map((s) => s.v);
+
+    // Split into past (history) and future (forecast) at the current hour.
+    // Open-Meteo times are Asia/Karachi wall-clock strings with no offset, so
+    // compare them as strings against a Karachi "now" in the same format.
+    // Parsing them with new Date() would use the server's zone, which is UTC
+    // on Vercel and would shift the split by five hours.
+    const nowLocal = point?.current?.time ?? karachiNow();
+    const past7d: { t: string; v: number }[] = [];
+    const series: { t: string; v: number }[] = [];
+    for (const pt of allHourly) {
+      if (pt.t < nowLocal) {
+        past7d.push(pt);
+      } else {
+        series.push(pt);
+      }
+    }
+
+    // forecast_days counts calendar days from midnight, so ask for four and
+    // keep exactly the next 72 hours whatever time of day it is.
+    series.splice(FORECAST_HOURS);
+    const forecastValues = series.map((s) => s.v);
 
     let peak: AreaReading["peak"] = null;
-    if (hourly.length > 0) {
+    if (forecastValues.length > 0) {
       let best = 0;
-      hourly.forEach((v, h) => {
-        if (v > (hourly[best] as number)) best = h;
+      forecastValues.forEach((v, h) => {
+        if (v > (forecastValues[best] as number)) best = h;
       });
-      peak = { value: hourly[best] as number, inHours: best };
+      peak = { value: forecastValues[best] as number, inHours: best };
     }
 
     return {
@@ -126,8 +158,9 @@ export async function fetchAirQuality(): Promise<AreaReading[]> {
       pm25,
       pm10: point?.current?.pm10 ?? null,
       severityStep: severityForPm25(pm25),
-      next24h: hourly.slice(0, 24),
+      next24h: forecastValues.slice(0, 24),
       series,
+      past7d,
       peak,
       provenance: provenanceFor(retrievedAt, point?.current?.time),
     };

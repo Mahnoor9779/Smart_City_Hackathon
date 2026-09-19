@@ -30,6 +30,8 @@ export function AppHeader() {
     { href: "/areas", label: t.nav.areas, icon: "map" },
     { href: "/rankings", label: t.nav.rankings, icon: "list" },
     { href: "/compare", label: t.nav.compare, icon: "layers" },
+    { href: "/weather", label: t.nav.weather, icon: "trend" },
+    { href: "/score", label: t.nav.score, icon: "info" },
   ];
 
   return (

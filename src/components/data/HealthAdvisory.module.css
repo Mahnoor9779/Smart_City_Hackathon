@@ -1,0 +1,67 @@
+.wrap {
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  transition: border-color 0.2s ease;
+}
+
+.wrap[data-urgency="safe"] {
+  border-left: 3px solid var(--sev-1);
+}
+
+.wrap[data-urgency="caution"] {
+  border-left: 3px solid var(--sev-3);
+  background: color-mix(in srgb, var(--sev-3) 4%, var(--bg-surface));
+}
+
+.wrap[data-urgency="warning"] {
+  border-left: 3px solid var(--sev-4);
+  background: color-mix(in srgb, var(--sev-4) 6%, var(--bg-surface));
+}
+
+.wrap[data-urgency="danger"] {
+  border-left: 3px solid var(--sev-6);
+  background: color-mix(in srgb, var(--sev-6) 6%, var(--bg-surface));
+}
+
+.wrap[data-compact] {
+  padding: var(--space-4);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--text-primary);
+}
+
+.headline {
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: var(--size-body);
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: var(--tracking-display);
+}
+
+.list {
+  margin: 0;
+  padding-left: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.item {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Urgency is carried by the coloured left border and the headline wording.
+   The headline itself stays in text colour so it passes contrast in both
+   themes; severity tokens are fills, not text colours. */

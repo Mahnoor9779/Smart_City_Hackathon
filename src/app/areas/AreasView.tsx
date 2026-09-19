@@ -77,7 +77,7 @@ export function AreasView({ readings }: AreasViewProps) {
                   <span className={styles.rowValue}>
                     <span className={styles.num}>{formatMetric(r?.pm25 ?? null)}</span>
                     <span className={styles.band}>
-                      {t.severity[r?.severityStep ?? 1]}
+                      {r?.severityStep != null ? t.severity[r.severityStep] : t.metrics.noData}
                     </span>
                   </span>
                   <Icon name="arrowRight" size={16} className={styles.flip} />

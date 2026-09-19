@@ -1,0 +1,84 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary);
+  letter-spacing: var(--tracking-display);
+}
+
+.peak {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.bar {
+  transition: opacity 0.15s ease;
+}
+
+.bar[data-step="1"] { fill: var(--sev-1); }
+.bar[data-step="2"] { fill: var(--sev-2); }
+.bar[data-step="3"] { fill: var(--sev-3); }
+.bar[data-step="4"] { fill: var(--sev-4); }
+.bar[data-step="5"] { fill: var(--sev-5); }
+.bar[data-step="6"] { fill: var(--sev-6); }
+.bar[data-step="none"] { fill: var(--border-subtle); }
+
+.bar[data-peak] {
+  filter: brightness(1.1);
+  stroke: var(--text-primary);
+  stroke-width: 1;
+}
+
+.peakLine {
+  stroke: var(--text-tertiary);
+  stroke-width: 1;
+  stroke-dasharray: 2 2;
+}
+
+.peakDot {
+  fill: var(--sev-5);
+  stroke: var(--bg-surface);
+  stroke-width: 1.5;
+}
+
+.hourLabel {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  fill: var(--text-tertiary);
+}
+
+.baseline {
+  stroke: var(--border-default);
+  stroke-width: 1;
+}
+
+.note {
+  margin: 0;
+  font-size: var(--size-label);
+  line-height: var(--leading-label);
+  color: var(--text-tertiary);
+}

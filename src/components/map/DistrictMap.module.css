@@ -8,6 +8,7 @@
  */
 
 .wrap {
+  position: relative;
   margin: 0;
   width: 100%;
 }
@@ -52,6 +53,7 @@
 
 .hit:hover .area {
   opacity: 0.82;
+  filter: brightness(1.12);
 }
 
 .hit:focus-visible .area {
@@ -105,6 +107,71 @@
   dominant-baseline: middle;
 }
 
+/* ---- hover tooltip ---- */
+.tooltip {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-floating);
+  pointer-events: none;
+  white-space: nowrap;
+  transform: translate(-50%, calc(-100% - var(--space-3)));
+}
+
+.tooltip[data-flip="true"] {
+  transform: translate(-50%, var(--space-3));
+}
+
+.tipName {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--size-body-sm);
+  color: var(--text-primary);
+}
+
+.tipReading {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--size-label);
+  color: var(--text-primary);
+}
+
+.tipPeople {
+  font-family: var(--font-mono);
+  font-size: var(--size-label);
+  color: var(--text-secondary);
+}
+
+.tipSwatch {
+  width: var(--space-2);
+  height: var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--sev-none);
+}
+
+.tipSwatch[data-step="1"] { background: var(--sev-1); }
+.tipSwatch[data-step="2"] { background: var(--sev-2); }
+.tipSwatch[data-step="3"] { background: var(--sev-3); }
+.tipSwatch[data-step="4"] { background: var(--sev-4); }
+.tipSwatch[data-step="5"] { background: var(--sev-5); }
+.tipSwatch[data-step="6"] { background: var(--sev-6); }
+
+/* The selection ring breathes, but only for people who have not asked the
+   system to reduce motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .selectedRing {
+    animation: pulseRing 2s ease-in-out infinite;
+  }
+}
+
 /* ---- entrance, first paint only ---- */
 @media (prefers-reduced-motion: no-preference) {
   .svg[data-animate="true"] .district {
@@ -121,7 +188,7 @@
 
   .svg[data-animate="true"] .selectedRing {
     opacity: 0;
-    animation: rise 320ms ease-out 420ms forwards;
+    animation: rise 320ms ease-out 420ms forwards, pulseRing 2s ease-in-out 740ms infinite;
   }
 }
 
@@ -141,3 +208,15 @@
     transform: translateY(0);
   }
 }
+
+@keyframes pulseRing {
+  0%, 100% {
+    stroke-width: 9;
+    opacity: 1;
+  }
+  50% {
+    stroke-width: 13;
+    opacity: 0.7;
+  }
+}
+

@@ -14,9 +14,13 @@ import { MetricValue } from "@/components/data/MetricValue";
 import { Icon } from "@/components/ui/Icon";
 import { ForecastChart } from "@/components/charts/ForecastChart";
 import { SeverityScale } from "@/components/charts/SeverityScale";
+import { HistoryChart } from "@/components/charts/HistoryChart";
+import { ExposureTimeline } from "@/components/charts/ExposureTimeline";
+import { HealthAdvisory } from "@/components/data/HealthAdvisory";
+import { PrintButton } from "@/components/ui/PrintButton";
 import type { AreaReading } from "@/lib/data/air";
 import type { Area } from "@/lib/geo/lahore";
-import { formatCount, formatMetric, relativeAge } from "@/lib/format";
+import { formatCount, formatMetric, relativeAge, severityForPm25 } from "@/lib/format";
 import { useLocale } from "@/lib/i18n/LocaleContext";
 import styles from "./area.module.css";
 
@@ -46,6 +50,7 @@ export function AreaDetailView({
             <Icon name="arrowRight" size={16} className={styles.flip} />
             {t.areaDetail.allTehsils}
           </Link>
+          <PrintButton />
         </nav>
 
         <header className={styles.head}>
@@ -58,7 +63,7 @@ export function AreaDetailView({
               {reading?.pm25 != null && (
                 <span className={styles.pill} data-step={reading.severityStep ?? "none"}>
                   <span className={styles.pillDot} />
-                  {formatMetric(reading.pm25)} &micro;g/m&sup3; &middot; {t.severity[reading.severityStep ?? 1]}
+                  {formatMetric(reading.pm25)} &micro;g/m&sup3; &middot; {reading.severityStep != null ? t.severity[reading.severityStep] : t.metrics.noData}
                 </span>
               )}
               <span className={styles.metaPill}>
@@ -146,7 +151,7 @@ export function AreaDetailView({
                   ? t.areaDetail.peakingNowNote
                   : t.areaDetail.peakingHoursNote(
                       peak.inHours,
-                      t.severity[reading?.severityStep ?? 1] ?? ""
+                      t.severity[severityForPm25(peak.value) ?? 1] ?? ""
                     )}
               </p>
             </div>
@@ -182,6 +187,39 @@ export function AreaDetailView({
             <h2 className={styles.h2}>{t.areaDetail.whereSitsScale}</h2>
           </div>
           <SeverityScale value={reading.pm25} />
+        </section>
+      )}
+
+      {/* Health Advisory */}
+      {reading && (
+        <section className={styles.chartBlock}>
+          <HealthAdvisory severityStep={reading.severityStep} />
+        </section>
+      )}
+
+      {/* Historical Trend Chart */}
+      {reading && reading.past7d.length > 4 && (
+        <section className={styles.chartBlock}>
+          <div className={styles.chartHead}>
+            <h2 className={styles.h2}>
+              {locale === "ur" ? "گزشتہ 7 دن اور اگلے 3 دن" : "Past 7 days and next 3 days"}
+            </h2>
+          </div>
+          <HistoryChart
+            history={reading.past7d}
+            forecast={reading.series}
+            areaName={areaName}
+          />
+        </section>
+      )}
+
+      {/* Exposure Timeline */}
+      {reading && reading.series.length > 4 && (
+        <section className={styles.chartBlock}>
+          <ExposureTimeline
+            series={reading.series}
+            population={area.populationEstimate}
+          />
         </section>
       )}
 

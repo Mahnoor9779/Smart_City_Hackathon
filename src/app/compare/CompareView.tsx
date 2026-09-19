@@ -228,7 +228,7 @@ export function CompareView({
                 className={styles.badge}
                 data-step={leftReading?.severityStep ?? "none"}
               >
-                {t.severity[leftReading?.severityStep ?? 1]}
+                {leftReading?.severityStep != null ? t.severity[leftReading.severityStep] : t.metrics.noData}
               </span>
             </div>
 
@@ -239,7 +239,7 @@ export function CompareView({
                 className={styles.badge}
                 data-step={rightReading?.severityStep ?? "none"}
               >
-                {t.severity[rightReading?.severityStep ?? 1]}
+                {rightReading?.severityStep != null ? t.severity[rightReading.severityStep] : t.metrics.noData}
               </span>
             </div>
           </div>

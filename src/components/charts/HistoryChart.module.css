@@ -1,0 +1,115 @@
+.wrap {
+  position: relative;
+}
+
+.legend {
+  display: flex;
+  gap: var(--space-5);
+  margin-bottom: var(--space-3);
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.legendLine {
+  display: inline-block;
+  width: 20px;
+  height: 2px;
+  border-radius: 1px;
+}
+
+.legendLine[data-type="history"] {
+  background: var(--accent);
+}
+
+.legendLine[data-type="forecast"] {
+  background: var(--accent);
+  opacity: 0.5;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--accent) 0px,
+    var(--accent) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+  background-color: transparent;
+}
+
+.svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.threshold {
+  stroke: var(--border-subtle);
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+  opacity: 0.6;
+}
+
+.thresholdLabel {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  fill: var(--text-tertiary);
+}
+
+.baseline {
+  stroke: var(--border-default);
+  stroke-width: 1;
+}
+
+.historyArea {
+  fill: var(--accent);
+  opacity: 0.08;
+}
+
+.forecastArea {
+  fill: var(--accent);
+  opacity: 0.04;
+}
+
+.historyLine {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.forecastLine {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-dasharray: 6 4;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  opacity: 0.6;
+}
+
+.nowLine {
+  stroke: var(--text-primary);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 3;
+  opacity: 0.5;
+}
+
+.nowLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  fill: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.dayLabel {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  fill: var(--text-tertiary);
+}

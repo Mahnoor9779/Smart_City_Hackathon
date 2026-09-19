@@ -73,12 +73,14 @@ export function RankingsView({ readings }: RankingsViewProps) {
                 <tr key={area.id}>
                   <td className={styles.rank}>{i + 1}</td>
                   <th scope="row" className={styles.nameCell}>
-                    <span
-                      className={styles.swatch}
-                      data-step={reading?.severityStep ?? "none"}
-                      aria-hidden="true"
-                    />
-                    {aName}
+                    <span className={styles.nameInner}>
+                      <span
+                        className={styles.swatch}
+                        data-step={reading?.severityStep ?? "none"}
+                        aria-hidden="true"
+                      />
+                      {aName}
+                    </span>
                   </th>
                   <td className={styles.numCol}>
                     <span className={styles.valueCell}>
@@ -95,7 +97,13 @@ export function RankingsView({ readings }: RankingsViewProps) {
                       </span>
                     </span>
                   </td>
-                  <td>{t.severity[reading?.severityStep ?? 1]}</td>
+                  <td className={styles.band}>
+                    {reading?.severityStep != null
+                      ? t.severity[reading.severityStep]
+                      : locale === "ur"
+                        ? "کوئی ڈیٹا نہیں"
+                        : "No data"}
+                  </td>
                   <td className={styles.numCol}>
                     {formatCount(area.populationEstimate)}
                   </td>

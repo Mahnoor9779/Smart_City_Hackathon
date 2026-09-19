@@ -7,7 +7,7 @@
  * Positions at the top of the interface to offer instant civic personalization:
  * - Detects user location on click (avoiding prompt fatigue).
  * - Resolves to the nearest administrative Tehsil using Haversine geodesic math.
- * - Displays live local PM2.5, health band, and direct clinic access.
+ * - Displays live local PM2.5 and health band, with a link to the tehsil profile.
  * - Can be dismissed with a single click.
  *
  * Invariants strictly obeyed: ZERO emoji, ZERO em dashes, accessible vector icons.
@@ -217,7 +217,7 @@ export function TehsilLocator({ readings, onTehsilResolved }: TehsilLocatorProps
 
             {(() => {
               const reading = readings.find((r) => r.areaId === state.area.id);
-              const step = reading?.severityStep ?? 1;
+              const step = reading?.severityStep ?? null;
               return (
                 <div className={styles.statGroup}>
                   <div>
@@ -226,8 +226,8 @@ export function TehsilLocator({ readings, onTehsilResolved }: TehsilLocatorProps
                     </span>
                     <span className={styles.unit}>&micro;g/m&sup3;</span>
                   </div>
-                  <span className={styles.band} data-step={step}>
-                    {t.severity[step]}
+                  <span className={styles.band} data-step={step ?? "none"}>
+                    {step != null ? t.severity[step] : t.metrics.noData}
                   </span>
                 </div>
               );

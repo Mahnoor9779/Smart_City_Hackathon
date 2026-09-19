@@ -7,12 +7,16 @@
  * shaded by current air quality and the selected one outlined.
  *
  * Fully reactive to bilingual locale (English / Urdu).
+ *
+ * Hovering or focusing a tehsil shows a tooltip with its reading, band and
+ * population, so the map answers "how bad, for how many" without a click.
  */
 
+import { useState } from "react";
 import Link from "next/link";
 import { AREAS, DISTRICT_PATH, MAP_VIEWBOX, DISTRICT_NAME } from "@/lib/geo/lahore";
 import type { AreaReading } from "@/lib/data/air";
-import { severityLabel, formatMetric } from "@/lib/format";
+import { severityLabel, formatMetric, formatCount } from "@/lib/format";
 import { useLocale } from "@/lib/i18n/LocaleContext";
 import styles from "./DistrictMap.module.css";
 
@@ -39,6 +43,15 @@ export function DistrictMap({
 }: DistrictMapProps) {
   const { t, locale } = useLocale();
   const byId = new Map(readings.map((r) => [r.areaId, r]));
+  const [hoverId, setHoverId] = useState<string | null>(null);
+  const [vbX, vbY, vbW, vbH] = MAP_VIEWBOX.split(" ").map(Number) as [
+    number,
+    number,
+    number,
+    number,
+  ];
+  const hovered = AREAS.find((a) => a.id === hoverId);
+  const hoveredReading = hovered ? byId.get(hovered.id) : undefined;
 
   const mapDistrictName = locale === "ur" ? t.nav.district : DISTRICT_NAME;
 
@@ -68,7 +81,7 @@ export function DistrictMap({
           const readingText =
             reading?.pm25 == null
               ? "no reading"
-              : `${formatMetric(reading.pm25)} &micro;g/m&sup3;, ${bandName}`;
+              : `${formatMetric(reading.pm25)} µg/m³, ${bandName}`;
           const label = `${aName}. ${readingText}`;
 
           const shape = (
@@ -82,7 +95,14 @@ export function DistrictMap({
           );
 
           return (
-            <g key={area.id} className={styles.region}>
+            <g
+              key={area.id}
+              className={styles.region}
+              onPointerEnter={() => setHoverId(area.id)}
+              onPointerLeave={() => setHoverId((h) => (h === area.id ? null : h))}
+              onFocus={() => setHoverId(area.id)}
+              onBlur={() => setHoverId((h) => (h === area.id ? null : h))}
+            >
               {linkBase ? (
                 <Link href={`${linkBase}/${area.id}`} aria-label={label} className={styles.hit}>
                   {shape}
@@ -133,6 +153,43 @@ export function DistrictMap({
             );
           })}
       </svg>
+
+      {hovered && (
+        <div
+          className={styles.tooltip}
+          aria-hidden="true"
+          data-flip={hovered.centroid[1] - vbY < vbH * 0.3 ? "true" : undefined}
+          style={{
+            left: `${((hovered.centroid[0] - vbX) / vbW) * 100}%`,
+            top: `${((hovered.centroid[1] - vbY) / vbH) * 100}%`,
+          }}
+        >
+          <span className={styles.tipName}>
+            {t.areas[hovered.id]?.name ?? hovered.name}
+          </span>
+          {hoveredReading?.pm25 != null ? (
+            <span className={styles.tipReading}>
+              <span
+                className={styles.tipSwatch}
+                data-step={hoveredReading.severityStep ?? "none"}
+              />
+              {formatMetric(hoveredReading.pm25)} {"µg/m³"}
+              {hoveredReading.severityStep !== null &&
+                ` · ${
+                  t.severity[hoveredReading.severityStep] ??
+                  severityLabel(hoveredReading.severityStep)
+                }`}
+            </span>
+          ) : (
+            <span className={styles.tipReading}>
+              {locale === "ur" ? "کوئی ریڈنگ نہیں" : "No reading"}
+            </span>
+          )}
+          <span className={styles.tipPeople}>
+            {formatCount(hovered.populationEstimate)} {t.metrics.people}
+          </span>
+        </div>
+      )}
     </figure>
   );
 }

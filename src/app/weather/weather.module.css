@@ -1,0 +1,187 @@
+.page {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-5) var(--space-8);
+}
+
+.head {
+  margin-bottom: var(--space-6);
+}
+
+.title {
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: var(--tracking-display);
+  color: var(--text-primary);
+}
+
+.lede {
+  margin-top: var(--space-3);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  max-width: 56ch;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-5);
+}
+
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  border-color: var(--border-default);
+  box-shadow: var(--shadow-raised);
+}
+
+.card[data-heat="warn"] {
+  border-left: 3px solid var(--sev-4);
+}
+
+.card[data-heat="critical"] {
+  border-left: 3px solid var(--sev-6);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: var(--tracking-display);
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.heatBadge {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.heatBadge[data-heat="warn"] {
+  background: var(--sev-4);
+  color: var(--sev-4-on);
+}
+
+.heatBadge[data-heat="critical"] {
+  background: var(--sev-6);
+  color: var(--sev-6-on);
+}
+
+.tempHero {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+}
+
+.tempBig {
+  font-family: var(--font-display);
+  font-size: 2.8rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.tempUnit {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--text-tertiary);
+}
+
+.feelsLike {
+  font-size: 0.82rem;
+  color: var(--text-tertiary);
+  margin-left: var(--space-3);
+}
+
+.highLow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.metaLabel {
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+}
+
+.metaValue {
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.sparkWrap {
+  height: 28px;
+  opacity: 0.7;
+}
+
+.metricsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+  padding-top: var(--space-4);
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  color: var(--text-tertiary);
+}
+
+.metricLabel {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+}
+
+.metricValue {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.metricSub {
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+}
+
+@media (max-width: 480px) {
+  .metricsRow {
+    grid-template-columns: 1fr 1fr;
+  }
+}

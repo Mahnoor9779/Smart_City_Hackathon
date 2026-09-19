@@ -175,4 +175,59 @@ describe("content rules", () => {
       `component sets its own outer margin:\n${offenders.join("\n")}`
     ).toEqual([]);
   });
+
+  it("never reads a custom property that no stylesheet defines", () => {
+    // An undefined var() falls back silently: a fill turns black, a colour
+    // turns inherited. Nothing errors, so the typo ships unless caught here.
+    const defined = new Set<string>();
+    const DEF = /(--[a-z0-9-]+)\s*:/g;
+    for (const f of FILES) {
+      if (extname(f) !== ".css") continue;
+      let m: RegExpExecArray | null;
+      while ((m = DEF.exec(read(f))) !== null) defined.add(m[1] as string);
+    }
+    const USE = /var\((--[a-z0-9-]*[a-z0-9])[,)]/g;
+    const offenders: string[] = [];
+    for (const f of FILES) {
+      const r = rel(f);
+      if (!r.startsWith("src/")) continue;
+      if (extname(f) !== ".css" && extname(f) !== ".tsx") continue;
+      read(f)
+        .split("\n")
+        .forEach((line, i) => {
+          let m: RegExpExecArray | null;
+          while ((m = USE.exec(line)) !== null) {
+            if (!defined.has(m[1] as string)) {
+              offenders.push(`${r}:${i + 1}  ${m[1]}`);
+            }
+          }
+        });
+    }
+    expect(
+      offenders,
+      `custom property read but never defined:\n${offenders.join("\n")}`
+    ).toEqual([]);
+  });
+
+  it("never uses a severity fill as a text colour", () => {
+    // --sev-N are fills. The light end is pale in the light theme and dark in
+    // the dark theme, so as text they vanish. Text on a severity fill uses
+    // --sev-N-on, which the contrast suite checks against its fill.
+    const BAD = /(?<![a-z-])color\s*:\s*["'`]?var\(--sev-(?:\d|none)\)/;
+    const offenders: string[] = [];
+    for (const f of FILES) {
+      const r = rel(f);
+      if (!r.startsWith("src/")) continue;
+      if (extname(f) !== ".css" && extname(f) !== ".tsx") continue;
+      read(f)
+        .split("\n")
+        .forEach((line, i) => {
+          if (BAD.test(line)) offenders.push(`${r}:${i + 1}  ${line.trim()}`);
+        });
+    }
+    expect(
+      offenders,
+      `severity fill used as text colour:\n${offenders.join("\n")}`
+    ).toEqual([]);
+  });
 });

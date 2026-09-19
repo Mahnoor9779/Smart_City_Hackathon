@@ -27,13 +27,46 @@
   body {
     background: var(--bg-canvas);
     color: var(--text-primary);
+    font-size: 11pt;
   }
 
+  /* Hide interactive chrome. Only the app bar outside <main> goes: a page's
+     own <header> carries its title and headline, which the printout needs. */
   nav,
-  header,
+  header:not(main header),
   button,
-  .no-print {
+  .no-print,
+  .skipLink {
     display: none;
+  }
+
+  /* Keep breadcrumb back link hidden but show print header */
+  main {
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Print header branding */
+  main::before {
+    content: "Lahore Civic Nervous System";
+    display: block;
+    font-family: var(--font-display);
+    font-size: 14pt;
+    font-weight: 700;
+    color: var(--text-primary);
+    padding-bottom: 8pt;
+    border-bottom: 2pt solid var(--text-primary);
+    margin-bottom: 16pt;
+  }
+
+  main::after {
+    content: "Printed " attr(data-print-date) " | Air quality: Open-Meteo, CC BY 4.0";
+    display: block;
+    font-size: 8pt;
+    color: var(--text-tertiary);
+    margin-top: 16pt;
+    padding-top: 8pt;
+    border-top: 0.5pt solid var(--border-subtle);
   }
 
   a[href^="http"]::after {
@@ -42,13 +75,39 @@
     color: var(--text-tertiary);
   }
 
+  /* Links should not be blue on paper */
+  a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
   /* Provenance must survive printing. A number on paper without its source is
      the same problem as a number on screen without one. */
   [data-provenance] {
     display: block;
   }
 
+  /* Prevent page breaks inside cards and metrics */
+  article,
+  figure,
+  section {
+    break-inside: avoid;
+  }
+
+  /* Charts should be visible but not too large */
+  svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Severity swatches need inline colour since CSS vars may not print */
+  [data-step] {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
   @page {
     margin: 16mm;
+    size: A4;
   }
 }

@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1010" width="1600" height="1010" font-family="Segoe UI, Helvetica, Arial, sans-serif" role="img" aria-label="Architecture flow of the Lahore Civic Nervous System">
+<defs>
+<marker id="aTeal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#0A6771"/></marker>
+<marker id="aAmber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#A86A12"/></marker>
+<marker id="aGrey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8A999B"/></marker>
+</defs>
+<rect width="1600" height="1010" fill="#F7F9FA"/>
+<text x="40" y="54" font-size="26" font-weight="700" fill="#0E191B">Lahore Civic Nervous System: architecture flow</text>
+<text x="40" y="84" font-size="14" fill="#55686B">From open data sources to the browser. Live air quality for the five tehsils of Lahore District, paired with the population breathing it.</text>
+<text x="40" y="138" font-size="12" font-weight="700" letter-spacing="1.5" fill="#55686B">1  DATA SOURCES</text>
+<text x="350" y="138" font-size="12" font-weight="700" letter-spacing="1.5" fill="#55686B">2  BUILD TIME</text>
+<text x="665" y="138" font-size="12" font-weight="700" letter-spacing="1.5" fill="#55686B">3  SERVER RUNTIME</text>
+<text x="1050" y="138" font-size="12" font-weight="700" letter-spacing="1.5" fill="#55686B">4  PAGES</text>
+<text x="1385" y="138" font-size="12" font-weight="700" letter-spacing="1.5" fill="#55686B">5  PEOPLE</text>
+<rect x="40" y="170" width="260" height="90" rx="8" fill="#E0F0F1" stroke="#0A6771" stroke-width="1.5"/>
+<text x="54" y="194" font-size="15" font-weight="700" fill="#0E191B">Open-Meteo Air Quality API</text>
+<text x="54" y="214" font-size="12" fill="#55686B">LIVE  |  no key  |  CORS open</text>
+<text x="54" y="231" font-size="12" fill="#55686B">PM2.5, PM10, 72 h hourly forecast</text>
+<rect x="40" y="290" width="260" height="70" rx="8" fill="#FFF6E6" stroke="#A86A12" stroke-width="1.5"/>
+<text x="54" y="314" font-size="15" font-weight="700" fill="#0E191B">OpenStreetMap Nominatim</text>
+<text x="54" y="334" font-size="12" fill="#55686B">Lahore District boundary, 1,629 pts</text>
+<rect x="40" y="380" width="260" height="70" rx="8" fill="#FFF6E6" stroke="#A86A12" stroke-width="1.5"/>
+<text x="54" y="404" font-size="15" font-weight="700" fill="#0E191B">OpenStreetMap Overpass</text>
+<text x="54" y="424" font-size="12" fill="#55686B">5 tehsil relations, admin level 7</text>
+<rect x="40" y="470" width="260" height="70" rx="8" fill="#FFF6E6" stroke="#A86A12" stroke-width="1.5"/>
+<text x="54" y="494" font-size="15" font-weight="700" fill="#0E191B">PBS Census 2023</text>
+<text x="54" y="514" font-size="12" fill="#55686B">District population, about 11.1 M</text>
+<rect x="40" y="580" width="260" height="220" rx="8" fill="none" stroke="#8A999B" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="54" y="604" font-size="15" font-weight="700" fill="#55686B">Planned feeds</text>
+<text x="54" y="624" font-size="12" fill="#55686B">OpenAQ ground sensors (key)</text>
+<text x="54" y="641" font-size="12" fill="#55686B">AQICN / WAQI (display only)</text>
+<text x="54" y="658" font-size="12" fill="#55686B">Punjab EPA monitors</text>
+<text x="54" y="675" font-size="12" fill="#55686B">Suthra Punjab fleet</text>
+<text x="54" y="692" font-size="12" fill="#55686B">PITB One Map Punjab</text>
+<text x="54" y="709" font-size="12" fill="#55686B"></text>
+<text x="54" y="726" font-size="12" fill="#55686B">Each attaches as one new file</text>
+<text x="54" y="743" font-size="12" fill="#55686B">behind the SourceAdapter contract</text>
+<rect x="350" y="290" width="270" height="150" rx="8" fill="#FFF6E6" stroke="#A86A12" stroke-width="1.5"/>
+<text x="364" y="314" font-size="15" font-weight="700" fill="#0E191B">Python geometry pipeline</text>
+<text x="364" y="334" font-size="12" fill="#55686B">Douglas-Peucker: 1,629 to 118 pts</text>
+<text x="364" y="351" font-size="12" fill="#55686B">Stitch Overpass ways into rings</text>
+<text x="364" y="368" font-size="12" fill="#55686B">Equirectangular + latitude fix</text>
+<text x="364" y="385" font-size="12" fill="#55686B">Check: 1,809 vs 1,772 km2 (2%)</text>
+<rect x="350" y="470" width="270" height="80" rx="8" fill="#FFFFFF" stroke="#A9BBBE" stroke-width="1.5"/>
+<text x="364" y="494" font-size="15" font-weight="700" fill="#0E191B">src/lib/geo/lahore.ts</text>
+<text x="364" y="514" font-size="12" fill="#55686B">District path, 5 tehsil shapes,</text>
+<text x="364" y="531" font-size="12" fill="#55686B">centroids, areas, populations</text>
+<rect x="350" y="580" width="270" height="90" rx="8" fill="#FFFFFF" stroke="#A9BBBE" stroke-width="1.5"/>
+<text x="364" y="604" font-size="15" font-weight="700" fill="#0E191B">config/*.json</text>
+<text x="364" y="624" font-size="12" fill="#55686B">thresholds: EPA bands 12/35/55/150/250</text>
+<text x="364" y="641" font-size="12" fill="#55686B">scoring weights, layer registry</text>
+<rect x="350" y="700" width="270" height="100" rx="8" fill="#FFFFFF" stroke="#A9BBBE" stroke-width="1.5"/>
+<text x="364" y="724" font-size="15" font-weight="700" fill="#0E191B">Design tokens</text>
+<text x="364" y="744" font-size="12" fill="#55686B">tokens.css: every colour, light + dark</text>
+<text x="364" y="761" font-size="12" fill="#55686B">space.css: 4 px scale</text>
+<text x="364" y="778" font-size="12" fill="#55686B">type.css: one type scale</text>
+<rect x="665" y="150" width="350" height="690" rx="12" fill="#EEF4F5" stroke="#0A6771" stroke-width="1.5"/>
+<text x="681" y="172" font-size="12" font-weight="700" letter-spacing="1" fill="#0A6771">VERCEL  |  NEXT.JS 15  |  SERVER COMPONENTS</text>
+<rect x="685" y="190" width="310" height="110" rx="8" fill="#FFFFFF" stroke="#0A6771" stroke-width="1.5"/>
+<text x="699" y="214" font-size="15" font-weight="700" fill="#0E191B">fetchAirQuality()  lib/data/air.ts</text>
+<text x="699" y="234" font-size="12" fill="#55686B">One request for all 5 tehsils</text>
+<text x="699" y="251" font-size="12" fill="#55686B">Cached, revalidates every 600 s</text>
+<text x="699" y="268" font-size="12" fill="#55686B">Fails soft to the 'failed' state</text>
+<rect x="685" y="315" width="310" height="80" rx="8" fill="#FFFFFF" stroke="#A9BBBE" stroke-width="1.5"/>
+<text x="699" y="339" font-size="15" font-weight="700" fill="#0E191B">Observation + Provenance</text>
+<text x="699" y="359" font-size="12" fill="#55686B">source, time, method: interpolated,</text>
+<text x="699" y="376" font-size="12" fill="#55686B">confidence 0.62, licence, exportable</text>
+<rect x="685" y="410" width="310" height="130" rx="8" fill="#FFFFFF" stroke="#A9BBBE" stroke-width="1.5"/>
+<text x="699" y="434" font-size="15" font-weight="700" fill="#0E191B">Analytics (pure functions)</text>
+<text x="699" y="454" font-size="12" fill="#55686B">districtMean: population weighted</text>
+<text x="699" y="471" font-size="12" fill="#55686B">worstArea, peopleAtOrAbove</text>
+<text x="699" y="488" font-size="12" fill="#55686B">severityForPm25 (one scale, ADR-9)</text>
+<text x="699" y="505" font-size="12" fill="#55686B">roundPopulation: no false precision</text>
+<rect x="685" y="560" width="310" height="100" rx="8" fill="#FFFFFF" stroke="#A9BBBE" stroke-width="1.5"/>
+<text x="699" y="584" font-size="15" font-weight="700" fill="#0E191B">Server-rendered components</text>
+<text x="699" y="604" font-size="12" fill="#55686B">DistrictMap: inline SVG, zero JS</text>
+<text x="699" y="621" font-size="12" fill="#55686B">MetricValue + ProvenanceTag</text>
+<text x="699" y="638" font-size="12" fill="#55686B">StateWrapper: all 7 data states</text>
+<rect x="685" y="680" width="310" height="120" rx="8" fill="#FFFFFF" stroke="#A9BBBE" stroke-width="1.5"/>
+<text x="699" y="704" font-size="15" font-weight="700" fill="#0E191B">Client islands</text>
+<text x="699" y="724" font-size="12" fill="#55686B">ForecastChart: hover crosshair</text>
+<text x="699" y="741" font-size="12" fill="#55686B">AnimatedNumber: headline only</text>
+<text x="699" y="758" font-size="12" fill="#55686B">ThemeToggle: system / light / dark</text>
+<text x="699" y="775" font-size="12" fill="#55686B">Sparkline, SeverityScale</text>
+<rect x="1050" y="150" width="300" height="380" rx="12" fill="#EEF4F5" stroke="#0A6771" stroke-width="1.5"/>
+<text x="1066" y="172" font-size="12" font-weight="700" letter-spacing="1" fill="#0A6771">APP ROUTER</text>
+<rect x="1070" y="190" width="260" height="70" rx="8" fill="#FFFFFF" stroke="#0A6771" stroke-width="1.5"/>
+<text x="1084" y="214" font-size="15" font-weight="700" fill="#0E191B">/   Now</text>
+<text x="1084" y="234" font-size="12" fill="#55686B">One number, one sentence, one action</text>
+<rect x="1070" y="275" width="260" height="60" rx="8" fill="#FFFFFF" stroke="#A9BBBE" stroke-width="1.5"/>
+<text x="1084" y="299" font-size="15" font-weight="700" fill="#0E191B">/areas</text>
+<text x="1084" y="319" font-size="12" fill="#55686B">District map + comparison list</text>
+<rect x="1070" y="350" width="260" height="80" rx="8" fill="#FFFFFF" stroke="#A9BBBE" stroke-width="1.5"/>
+<text x="1084" y="374" font-size="15" font-weight="700" fill="#0E191B">/areas/[id]</text>
+<text x="1084" y="394" font-size="12" fill="#55686B">5 prerendered tehsil profiles,</text>
+<text x="1084" y="411" font-size="12" fill="#55686B">72 h forecast chart</text>
+<rect x="1070" y="445" width="260" height="65" rx="8" fill="#FFFFFF" stroke="#A9BBBE" stroke-width="1.5"/>
+<text x="1084" y="469" font-size="15" font-weight="700" fill="#0E191B">/rankings</text>
+<text x="1084" y="489" font-size="12" fill="#55686B">Worst first, sortable table twin</text>
+<rect x="1050" y="555" width="300" height="70" rx="8" fill="#FFFFFF" stroke="#A9BBBE" stroke-width="1.5"/>
+<text x="1064" y="579" font-size="15" font-weight="700" fill="#0E191B">Build output</text>
+<text x="1064" y="599" font-size="12" fill="#55686B">Static + ISR every 600 s</text>
+<text x="1064" y="616" font-size="12" fill="#55686B">Deployed to Vercel on Node 22</text>
+<rect x="1050" y="650" width="300" height="150" rx="8" fill="#F1EEF8" stroke="#6B4FA0" stroke-width="1.5"/>
+<text x="1064" y="674" font-size="15" font-weight="700" fill="#0E191B">Quality gate: Vitest, 35 tests</text>
+<text x="1064" y="694" font-size="12" fill="#55686B">Token parity across both dark blocks</text>
+<text x="1064" y="711" font-size="12" fill="#55686B">WCAG 2.2 AA contrast, both themes</text>
+<text x="1064" y="728" font-size="12" fill="#55686B">Severity ramp strictly monotonic</text>
+<text x="1064" y="745" font-size="12" fill="#55686B">No em dash, no emoji, 4 px scale</text>
+<text x="1064" y="762" font-size="12" fill="#55686B">Mutation-tested guards</text>
+<rect x="1385" y="280" width="175" height="160" rx="8" fill="#0A6771" stroke="#0A6771" stroke-width="1.5"/>
+<text x="1399" y="304" font-size="15" font-weight="700" fill="#FFFFFF">Browser / phone</text>
+<text x="1399" y="324" font-size="12" fill="#DCEFF1">Residents</text>
+<text x="1399" y="341" font-size="12" fill="#DCEFF1">Officials</text>
+<text x="1399" y="358" font-size="12" fill="#DCEFF1">Planners, journalists</text>
+<text x="1399" y="375" font-size="12" fill="#DCEFF1"></text>
+<text x="1399" y="392" font-size="12" fill="#DCEFF1">360 px first,</text>
+<text x="1399" y="409" font-size="12" fill="#DCEFF1">keyboard + screen reader</text>
+<path d="M300 230 H683" fill="none" stroke="#0A6771" stroke-width="2" marker-end="url(#aTeal)"/>
+<text x="470" y="222" font-size="11" fill="#0A6771" text-anchor="middle" font-style="italic">live HTTPS, every 10 min</text>
+<path d="M300 325 H348" fill="none" stroke="#A86A12" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#aAmber)"/>
+<path d="M300 415 H348" fill="none" stroke="#A86A12" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#aAmber)"/>
+<path d="M300 505 H348" fill="none" stroke="#A86A12" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#aAmber)"/>
+<path d="M485 440 V468" fill="none" stroke="#A86A12" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#aAmber)"/>
+<path d="M620 510 H663" fill="none" stroke="#8A999B" stroke-width="2" marker-end="url(#aGrey)"/>
+<path d="M620 625 H663" fill="none" stroke="#8A999B" stroke-width="2" marker-end="url(#aGrey)"/>
+<path d="M620 750 H663" fill="none" stroke="#8A999B" stroke-width="2" marker-end="url(#aGrey)"/>
+<path d="M840 300 V313" fill="none" stroke="#0A6771" stroke-width="2" marker-end="url(#aTeal)"/>
+<path d="M840 395 V408" fill="none" stroke="#0A6771" stroke-width="2" marker-end="url(#aTeal)"/>
+<path d="M840 540 V558" fill="none" stroke="#0A6771" stroke-width="2" marker-end="url(#aTeal)"/>
+<path d="M840 660 V678" fill="none" stroke="#0A6771" stroke-width="2" marker-end="url(#aTeal)"/>
+<text x="850" y="673" font-size="10" fill="#55686B" text-anchor="start" font-style="italic">serialisable props</text>
+<path d="M1015 350 H1048" fill="none" stroke="#0A6771" stroke-width="2" marker-end="url(#aTeal)"/>
+<text x="1032" y="342" font-size="10" fill="#0A6771" text-anchor="middle" font-style="italic">HTML</text>
+<path d="M1350 360 H1383" fill="none" stroke="#0A6771" stroke-width="2" marker-end="url(#aTeal)"/>
+<path d="M170 800 V880 H840 V842" fill="none" stroke="#8A999B" stroke-width="2" stroke-dasharray="3 5" marker-end="url(#aGrey)"/>
+<text x="505" y="872" font-size="11" fill="#55686B" text-anchor="middle" font-style="italic">future: official feeds plug into the same adapter contract, no rebuild</text>
+<rect x="40" y="911" width="1520" height="62" rx="10" fill="#FFFFFF" stroke="#D3DDDF"/>
+<line x1="64" y1="941" x2="108" y2="941" stroke="#0A6771" stroke-width="2.5"/>
+<text x="120" y="945" font-size="13" fill="#0E191B">Live runtime path</text>
+<line x1="314" y1="941" x2="358" y2="941" stroke="#A86A12" stroke-width="2.5" stroke-dasharray="6 4"/>
+<text x="370" y="945" font-size="13" fill="#0E191B">Build time, run once</text>
+<line x1="564" y1="941" x2="608" y2="941" stroke="#8A999B" stroke-width="2.5"/>
+<text x="620" y="945" font-size="13" fill="#0E191B">Internal import</text>
+<line x1="814" y1="941" x2="858" y2="941" stroke="#8A999B" stroke-width="2.5" stroke-dasharray="3 5"/>
+<text x="870" y="945" font-size="13" fill="#0E191B">Planned, not yet wired</text>
+<text x="1540" y="945" font-size="12" fill="#55686B" text-anchor="end">lahore-civic-nervous-system.vercel.app</text>
+</svg>

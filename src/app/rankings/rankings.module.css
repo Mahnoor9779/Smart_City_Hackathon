@@ -31,8 +31,11 @@
 }
 
 /* Wide content scrolls inside its own container so the page never scrolls
-   sideways. */
+   sideways. position: relative makes this the containing block for the
+   visually-hidden header label, which otherwise escapes the clip and widens
+   the whole page on phones. */
 .scroll {
+  position: relative;
   overflow-x: auto;
   border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
@@ -83,13 +86,18 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* The cell stays a table cell; flex on a <th> breaks the row into
+   anonymous boxes. The flex layout lives on the inner span. */
 .nameCell {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
   font-weight: 600;
   color: var(--text-primary);
   white-space: nowrap;
+}
+
+.nameInner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
 }
 
 .swatch {
@@ -106,6 +114,10 @@
 .swatch[data-step="4"] { background: var(--sev-4); }
 .swatch[data-step="5"] { background: var(--sev-5); }
 .swatch[data-step="6"] { background: var(--sev-6); }
+
+.band {
+  white-space: nowrap;
+}
 
 .numCol {
   text-align: end;

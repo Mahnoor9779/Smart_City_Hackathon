@@ -16,6 +16,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Sparkline, trendWord } from "@/components/charts/Sparkline";
 import { SeverityScale } from "@/components/charts/SeverityScale";
 import { SmogAlertBanner } from "@/components/data/SmogAlertBanner";
+import { HealthAdvisory } from "@/components/data/HealthAdvisory";
 import type { AreaReading } from "@/lib/data/air";
 import {
   districtMean,
@@ -107,7 +108,6 @@ export function NowView({ readings }: NowViewProps) {
                 <p className={styles.exposure}>
                   <Icon name="people" size={18} />
                   <span>
-                    <strong>{formatCount(exposed)} </strong>
                     {t.home.exposedCount(formatCount(exposed))}
                   </span>
                 </p>
@@ -142,6 +142,13 @@ export function NowView({ readings }: NowViewProps) {
           </p>
         </div>
       </section>
+
+      {/* Health advisory when air is unhealthy or worse */}
+      {step !== null && step >= 3 && (
+        <section className={styles.section}>
+          <HealthAdvisory severityStep={step} compact />
+        </section>
+      )}
 
       {/* ---------- the five areas, each a way in ---------- */}
       <section className={styles.section}>

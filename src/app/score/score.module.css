@@ -1,0 +1,236 @@
+.page {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-5) var(--space-8);
+}
+
+.head {
+  margin-bottom: var(--space-6);
+}
+
+.title {
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: var(--tracking-display);
+  color: var(--text-primary);
+}
+
+.lede {
+  margin-top: var(--space-3);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  max-width: 64ch;
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  border-color: var(--border-default);
+  box-shadow: var(--shadow-raised);
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.rankCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 44px;
+}
+
+.rank {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+}
+
+/* The grade is a filled badge: severity tokens are fills, and text on them
+   uses the paired -on token, which the contrast suite guarantees. */
+.grade {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-6);
+  height: var(--space-6);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+  border-radius: var(--radius-md);
+}
+
+.grade[data-grade="A"] { background: var(--sev-1); color: var(--sev-1-on); }
+.grade[data-grade="B"] { background: var(--sev-2); color: var(--sev-2-on); }
+.grade[data-grade="C"] { background: var(--sev-3); color: var(--sev-3-on); }
+.grade[data-grade="D"] { background: var(--sev-4); color: var(--sev-4-on); }
+.grade[data-grade="F"] { background: var(--sev-6); color: var(--sev-6-on); }
+
+.nameCol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.cardName {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: var(--tracking-display);
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.pop {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+}
+
+.scoreCol {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+}
+
+.scoreBig {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.scoreMax {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+.breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+  padding-top: var(--space-4);
+}
+
+.compRow {
+  display: grid;
+  grid-template-columns: 140px 1fr 40px 80px;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.compLabel {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.estBadge {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text-tertiary);
+  background: var(--bg-surface-alt);
+  padding: 0 var(--space-1);
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.compBar {
+  height: 8px;
+  background: var(--bg-surface-alt);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.compFill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.compScore {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.compWeight {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-tertiary);
+  text-align: right;
+}
+
+.viewLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--text-link);
+  text-decoration: none;
+  align-self: flex-end;
+  transition: opacity 0.15s ease;
+}
+
+.viewLink:hover {
+  opacity: 0.8;
+}
+
+.footnote {
+  margin-top: var(--space-6);
+  font-size: 0.82rem;
+  color: var(--text-tertiary);
+  max-width: 64ch;
+}
+
+@media (max-width: 600px) {
+  .compRow {
+    grid-template-columns: 100px 1fr 36px;
+  }
+
+  .compWeight {
+    display: none;
+  }
+
+  .cardTop {
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+}

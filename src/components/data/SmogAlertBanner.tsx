@@ -149,7 +149,7 @@ export function SmogAlertBanner({ readings }: SmogAlertBannerProps) {
                   className={styles.bar}
                   data-step={item.step ?? "none"}
                   style={{ height: `${Math.min(100, Math.max(16, (item.mean / 250) * 100))}%` }}
-                  title={`+${item.hour}h: ${item.mean} ug/m3 (${t.severity[item.step ?? 1]})`}
+                  title={`+${item.hour}h: ${item.mean} ug/m3 (${item.step != null ? t.severity[item.step] : t.metrics.noData})`}
                 />
                 <span className={styles.hourLabel}>
                   {item.hour === 0 ? t.alert.nowTick : `+${item.hour}h`}

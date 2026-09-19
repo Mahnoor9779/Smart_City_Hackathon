@@ -17,6 +17,7 @@ export const metadata: Metadata = {
   title: "Lahore Civic Nervous System",
   description:
     "Live air quality, population exposure, and access to care across Lahore District, on one map.",
+  manifest: "/manifest.json",
 };
 
 export const viewport: Viewport = {
@@ -30,6 +31,14 @@ export const viewport: Viewport = {
 
 const LOCALE_INIT_SCRIPT = `(function(){try{var l=localStorage.getItem("lns-locale");if(l==="ur"){document.documentElement.setAttribute("lang","ur");document.documentElement.setAttribute("dir","rtl");}}catch(e){}})();`;
 
+// Production only. Dev chunk URLs are not content-hashed, so a cache-first
+// worker would keep serving stale code after every edit. In dev, remove any
+// worker left over from an earlier session for the same reason.
+const SW_REGISTER_SCRIPT =
+  process.env.NODE_ENV === "production"
+    ? `(function(){if("serviceWorker"in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){});})}})();`
+    : `(function(){if("serviceWorker"in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister();})}).catch(function(){});}})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -42,6 +51,7 @@ export default function RootLayout({
         {/* Applies saved locale and theme before first paint */}
         <script dangerouslySetInnerHTML={{ __html: LOCALE_INIT_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: SW_REGISTER_SCRIPT }} />
       </head>
       <body>
         <a className="skipLink" href="#main">
